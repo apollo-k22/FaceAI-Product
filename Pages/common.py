@@ -1,0 +1,10 @@
+from PyQt5.QtCore import QRegularExpression
+
+
+class Common:
+    CASE_NUMBER_LENGTH = 14
+    CASE_PS_LENGTH = 31
+    CASE_EXAMINER_NAME_LENGTH = 63
+    CASE_EXAMINER_NO_LENGTH = 20
+    CASE_REMARKS_LEGNTH = 139
+    CREATE_CASE_REGX = "\w"

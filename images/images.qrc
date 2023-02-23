@@ -1,0 +1,26 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>Group 69.png</file>
+    <file>Architecture.png</file>
+    <file>AIFace.gif</file>
+    <file>icon-next2.png</file>
+    <file>icon-back2.png</file>
+    <file>Background.png</file>
+    <file alias="Background.jpg">Background.jpg</file>
+    <file>FaceAI-Logo.png</file>
+    <file>icon-avatar.png</file>
+    <file>icon-back.png</file>
+    <file>icon-folder.png</file>
+    <file>icon-next.png</file>
+    <file>Icon -upload.png</file>
+    <file>Main Screen.png</file>
+    <file>btn1create.png</file>
+    <file>btn2probe.png</file>
+    <file>continuetoprobe.png</file>
+    <file>Cross.png</file>
+    <file>export_to_pdf.png</file>
+    <file>generate_report.png</file>
+    <file>Group 68.png</file>
+    <file>start_prob_button_img.png</file>
+  </qresource>
+</RCC>
