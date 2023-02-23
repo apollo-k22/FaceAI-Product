@@ -21,7 +21,7 @@ import datetime
 from commons.case_info import CaseInfo
 from commons.probing_result import ProbingResult
 from commons.qss import QSS
-import images
+import images 
 
 
 class StartHome(QMainWindow):
