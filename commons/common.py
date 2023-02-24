@@ -3,13 +3,14 @@ import numpy as np
 
 
 class Common:
+    # DATABASE_PATH =
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
     CASE_EXAMINER_NAME_LENGTH = 63
     CASE_EXAMINER_NO_LENGTH = 20
     CASE_REMARKS_LEGNTH = 139
     CREATE_CASE_REGX = "\w"
-    EXTENSIONS = {'.png', '.jpe?g', '.bmp', '.tif', '.gif', '.png'}
+    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.bmp', '.tif', '.gif', '.jpeg', '.bmp', '.gif', '.ico']
     IMAGE_FILTER = "Image Files (*.bmp *.cur *.gif *.icns *.ico *.jpeg" \
                    " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
                    " *.tif *.tiff *.wbmp" \
@@ -48,6 +49,7 @@ class Common:
     @staticmethod
     def show_message(icon, text, information_text, title, detailed_text):
         msg = QMessageBox()
+        msg.setStyleSheet("background-color:lightblue")
         msg.setIcon(icon)
         msg.setText(text)
         msg.setInformativeText(information_text)
