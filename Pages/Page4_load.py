@@ -69,7 +69,7 @@ class LoaderProbingPage(QMainWindow):
                 "face_rectangle": {}
             }
             result = {
-                "face_path": target_url,
+                "image_path": target_url,
                 "confidence": random() * 100
             }
             faces.append(face)

@@ -53,7 +53,7 @@ class ProbeResultItemWidget(QWidget):
         self.wdt_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.wdt_image.setMinimumSize(330, 350)
         self.wdt_image.setMaximumSize(400, 500)
-        style = "color:rgb(255, 255, 255);border-image:url(" + self.result_item['face_path'] + ");"
+        style = "color:rgb(255, 255, 255);border-image:url(" + self.result_item['image_path'] + ");"
         self.wdt_image.setStyleSheet(style)
 
         image_geo = self.wdt_image.geometry()
