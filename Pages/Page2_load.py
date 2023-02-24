@@ -9,7 +9,7 @@ from PyQt5.QtCore import pyqtSlot
 from sympy import false, true
 from commons.common import Common
 from commons.case_info import CaseInfo
-from insightfaces.main import recognition
+from insightfaces.main import is_face
 
 
 class LoaderCreateNewCasePage(QMainWindow):
@@ -110,6 +110,8 @@ class LoaderCreateNewCasePage(QMainWindow):
     @pyqtSlot()
     def continue_probe_slot(self):
         is_empty, ledit_name = self.is_empty_input_values()
+        if not is_face(self.case_info.subject_image_url):
+            return
         if is_empty == true:
             Common.show_message(QMessageBox.Warning, "Please fill all fields", "", "Empty Warning",
                                 ledit_name + " is empty")
