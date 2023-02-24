@@ -110,7 +110,7 @@ class LoaderCreateNewCasePage(QMainWindow):
     @pyqtSlot()
     def continue_probe_slot(self):
         is_empty, ledit_name = self.is_empty_input_values()
-        if not is_face(self.case_info.subject_image_url):
+        if not is_face(self.subject_photo_url):
             return
         if is_empty == true:
             Common.show_message(QMessageBox.Warning, "Please fill all fields", "", "Empty Warning",
