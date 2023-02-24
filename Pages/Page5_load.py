@@ -1,8 +1,10 @@
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QRegExp
-from PyQt5.QtGui import QIntValidator, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout
+import json
 
+from PyQt5 import uic
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QRegExp, Qt
+from PyQt5.QtGui import QIntValidator, QPixmap
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QGridLayout, \
+    QSizePolicy, QTextEdit
 from commons.common import Common
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
@@ -33,8 +35,9 @@ class LoaderProbeReportPreviewPage(QMainWindow):
         self.lbeSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.leditRemainingPhotoNumber = self.findChild(QLineEdit, "leditRemainingPhotoNumber")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
-        self.vlyReportResultLayout = self.findChild(QVBoxLayout, "report_result_layout")
-        self.vlyReportResultLayout_buff = QVBoxLayout(self)
+        self.etextJsonResult = self.findChild(QTextEdit, "teditJsonResult")
+        self.vlyReportResultLayout = self.findChild(QVBoxLayout, "vlyTargetResults")
+        self.glyReportBuff = QGridLayout()
         self.init_actions()
         # self.init_input_values()
         # self.init_result_views()
@@ -54,7 +57,13 @@ class LoaderProbeReportPreviewPage(QMainWindow):
 
     @pyqtSlot()
     def on_clicked_go_remaining(self):
-        remaining_number = self.leditRemainingPhotoNumber.text()
+        remaining_number = int(self.leditRemainingPhotoNumber.text())
+        if remaining_number > 0:
+            # remove some items from json results except remaining number
+            self.probe_result.json_result['results'] = \
+                Common.remove_elements_from_list_tail(self.probe_result.json_result['results'], remaining_number)
+            # repaint target images view
+            self.init_target_images_view()
 
     # set validator to input box
     def set_validate_input_data(self):
@@ -68,7 +77,9 @@ class LoaderProbeReportPreviewPage(QMainWindow):
         self.btnGoRemaining.clicked.connect(self.on_clicked_go_remaining)
 
     def init_input_values(self):
-        self.lblProbeId.setText("123456789")
+        probe_id = Common.generate_probe_id()
+        self.probe_result.probe_id = probe_id
+        self.lblProbeId.setText(probe_id)
         self.lblProbeResult.setText(self.probe_result.is_matched())
         self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
         self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
@@ -77,33 +88,39 @@ class LoaderProbeReportPreviewPage(QMainWindow):
         self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
         subject_pixmap = QPixmap(self.probe_result.case_info.subject_image_url)
         self.lblSubjectImage.setPixmap(subject_pixmap)
+        self.lblSubjectImage.setScaledContents(True)
+        self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        subject_pixmap.scaled(self.lblSubjectImage.rect().x(), self.lblSubjectImage.rect().y(), Qt.KeepAspectRatio,
+                              Qt.FastTransformation)
 
-    def init_result_views(self):
-        # Common.clear_layout(self.vlyReportResultLayout)
-        # Common.box_delete(self.vlyReportResultLayout)
-        self.vlyReportResultLayout_buff.setParent(None)
-        self.vlyReportResultLayout_buff = QVBoxLayout(self)
-        self.vlyReportResultLayout.addLayout(self.vlyReportResultLayout_buff)
+        js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+        self.etextJsonResult.setPlainText(js_result)
+
+    def init_target_images_view(self):
+        # clear all child on result container layout
+        self.clear_result_list()
+        print(str(self.vlyReportResultLayout.count()))
+        # add items to result container layout
+        self.glyReportBuff = QGridLayout(self)
+        # if there is one matched image
         results = self.probe_result.json_result['results']
-        hly_result = QHBoxLayout()
-        index = 1
+        # hly_result = QHBoxLayout()
+        index = 0
         for result in results:
-            result_view_item = ProbeResultItemWidget(result)
+            # show the cross button on image
+            result_view_item = ProbeResultItemWidget(result, True)
             # connect delete signal from delete button on target image.
             result_view_item.delete_item_signal.connect(self.delete_result_item)
-            if index % 4:
-                hly_result.addWidget(result_view_item)
-            else:
-                hly_result_buff = hly_result
-                hly_result = QHBoxLayout()
-                # add QHLayoutBox row to result show part
-                self.vlyReportResultLayout_buff.addLayout(hly_result_buff)
-                hly_result.addWidget(result_view_item)
+            self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
             index += 1
-        # if the number of remaining items is less than 3
-        self.vlyReportResultLayout_buff.addLayout(hly_result)
+        self.vlyReportResultLayout.addLayout(self.glyReportBuff)
 
     @pyqtSlot(object)
     def delete_result_item(self, item):
         self.probe_result.remove_json_item(item)
-        self.init_result_views()
+        self.init_target_images_view()
+
+    def clear_result_list(self):
+        Common.clear_layout(self.vlyReportResultLayout)
+        self.repaint()
+        self.showMaximized()

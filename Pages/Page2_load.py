@@ -42,6 +42,14 @@ class LoaderCreateNewCasePage(QMainWindow):
         self.set_event_actions()
         self.set_regxs()
 
+        # init for testing
+        self.leditCaseNumber.setText("1231")
+        self.leditPS.setText("ps1")
+        self.leditExaminerName.setText("examiner")
+        self.leditExaminerNo.setText("examiner no")
+        self.leditRemarks.setText("remarks")
+        self.subject_photo_url = "Architecture.png"
+
     # set slots to each widget
     def set_event_actions(self):
         self.btnSelectPhoto.clicked.connect(self.get_subject_photo)
@@ -63,6 +71,7 @@ class LoaderCreateNewCasePage(QMainWindow):
             self.check_value_validation(line_edit, newPos, regx, length)
         )
 
+    @pyqtSlot()
     # get subject photo from file dialog and set the gotten photo on button
     def get_subject_photo(self):
         self.subject_photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', "Image files", Common.IMAGE_FILTER)

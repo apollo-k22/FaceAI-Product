@@ -34,6 +34,15 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
 
+        self.image_urls = ["Background.png",
+                           "book-1.jpg",
+                           "book-2.jpg",
+                           "book-3.jpg",
+                           "book-4.jpg",
+                           "pro4.jpg",
+                           "profile-bg.jpg",
+                           ]
+
     @pyqtSlot()
     def start_probe_slot(self):
         if len(self.image_urls) == 0:

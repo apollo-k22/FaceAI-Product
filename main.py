@@ -21,14 +21,12 @@ import datetime
 from commons.case_info import CaseInfo
 from commons.probing_result import ProbingResult
 from commons.qss import QSS
-import images 
+import images
 
 
 class StartHome(QMainWindow):
     def __init__(self):
         super().__init__()
-
-
         # app_unlocked = False
         # app_expire = 0
         # app_expire_date = ""
@@ -160,8 +158,8 @@ class StartHome(QMainWindow):
     def show_p4_probing(self, case_info):
         self.ui_3_select_target_photo.hide()
         # start probing
-        self.ui_4_probing.start_probing(case_info)
         self.ui_4_probing.showMaximized()
+        self.ui_4_probing.start_probing(case_info)
 
     @pyqtSlot(ProbingResult)
     def show_p5_probe_report_preview(self, probe_result):
@@ -169,13 +167,23 @@ class StartHome(QMainWindow):
         self.ui_6_probe_report.hide()
         self.ui_5_probe_report_preview.probe_result = probe_result
         self.ui_5_probe_report_preview.init_input_values()
-        self.ui_5_probe_report_preview.init_result_views()
+        self.ui_5_probe_report_preview.init_target_images_view()
         self.ui_5_probe_report_preview.showMaximized()
 
     @pyqtSlot(ProbingResult)
     def show_p6_probe_report(self, probe_result):
         self.ui_5_probe_report_preview.hide()
         self.ui_6_probe_report.probe_result = probe_result
+        self.ui_6_probe_report.init_input_values()
+        self.ui_6_probe_report.init_target_images_view()
+        self.ui_6_probe_report.showMaximized()
+
+    @pyqtSlot()
+    def show_p6_probe_report(self):
+        self.ui_5_probe_report_preview.hide()
+        # self.ui_6_probe_report.probe_result = probe_result
+        self.ui_6_probe_report.init_input_values()
+        self.ui_6_probe_report.init_target_images_view()
         self.ui_6_probe_report.showMaximized()
 
     @pyqtSlot()

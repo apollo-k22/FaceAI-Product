@@ -552,7 +552,7 @@ border: 1px solid rgb(53, 132, 228);</string>
              <enum>QLayout::SetDefaultConstraint</enum>
             </property>
             <item>
-             <widget class="QTableWidget" name="tableWidget">
+             <widget class="QTableWidget" name="twdtResultTable">
               <property name="minimumSize">
                <size>
                 <width>650</width>
@@ -574,8 +574,7 @@ border: 1px solid rgb(53, 132, 228);</string>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(80, 99, 120);
 color: rgb(255, 255, 255);
-QTableWidget::section{Background-color:rgb(190,1,1);border-radius:14px;}
-</string>
+QHeaderView::section {&quot;&quot;background-color: red; };</string>
               </property>
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustToContents</enum>
