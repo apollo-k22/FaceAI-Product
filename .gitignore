@@ -3,6 +3,7 @@ dist
 build
 Pages/__pycache__
 __pycache__
+main.spec
 
 # Security Files and Folders
 Pages/license.dat
