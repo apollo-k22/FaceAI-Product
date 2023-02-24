@@ -92,7 +92,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         direct = QFileDialog.getExistingDirectory(self, 'Entire Folder')
         desktop = pathlib.Path(direct)
         for path in desktop.glob(r'**/*'):
-            if path.suffix in Common.EXTENSIONS:
+            if Common.EXTENSIONS.count(path.suffix):
                 self.image_urls.append(path)
 
     # get all images from old cases

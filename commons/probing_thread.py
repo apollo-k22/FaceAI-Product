@@ -19,10 +19,20 @@ class ProbingThread(QThread):
         json_data = recognition(self.probing_result.case_info.subject_image_url,
                                 self.probing_result.case_info.target_image_urls)
         print(json_data)
-        self.probing_result.json_result = json_data
+        self.probing_result.json_result = self.process_images_url(json_data)
+        print("treated data:", self.probing_result.json_result)
         self.finished_probing_signal.emit(self.probing_result)
-    # def start(self, priority: 'QThread.Priority' = ...) -> None:
-    #     self.start()
-    #
-    # def run(self) -> None:
-    #     self.run()
+
+    def process_images_url(self, json_data):
+        ret_json = json_data
+        results = json_data["results"]
+        results_buff = []
+        if type(results).__name__ == 'list':
+            for item in results:
+                img_url = item['image_path']
+                img_url = img_url.replace("\\", "/")
+                item['image_path'] = img_url
+                print(img_url)
+                results_buff.append(item)
+            ret_json['results'] = results_buff
+        return ret_json
