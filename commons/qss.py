@@ -35,6 +35,8 @@ QScrollArea  QWidget  QTextEdit
     border: 1px solid rgb(53, 132, 228);
     font: 12pt "Arial";
 }
-
+QMessageBox{
+    background-color: rgb(98, 136, 178)
+}
 
 """

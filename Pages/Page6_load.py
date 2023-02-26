@@ -1,13 +1,15 @@
 import json
+from datetime import date, datetime
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt, QDateTime
 from PyQt5.QtGui import QIntValidator, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGridLayout, QTextEdit, \
     QSizePolicy
 from sympy import false
 
 from commons.common import Common
+from commons.db_connection import DBConnection
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 
@@ -15,7 +17,7 @@ from commons.probing_result import ProbingResult
 class LoaderProbeReportPage(QMainWindow):
     return_home_signal = pyqtSignal()
     go_back_signal = pyqtSignal(object)
-    export_pdf_signal = pyqtSignal()
+    export_pdf_signal = pyqtSignal(object)
     go_remaining_signal = pyqtSignal()
 
     def __init__(self):
@@ -45,7 +47,8 @@ class LoaderProbeReportPage(QMainWindow):
 
     @pyqtSlot()
     def on_clicked_export_pdf(self):
-        self.export_pdf_signal.emit()
+        self.write_probe_results_to_database()
+        self.export_pdf_signal.emit(self.probe_result)
 
     @pyqtSlot()
     def on_clicked_return_home(self):
@@ -65,7 +68,31 @@ class LoaderProbeReportPage(QMainWindow):
             # repaint target images view
             self.init_target_images_view()
 
+    def write_probe_results_to_database(self):
+        cases_fields = ["probe_id", "matched", "report_generation_time", "case_no",
+                        "PS", "examiner_no", "examiner_name", "remarks",
+                        "subject_url", "json_result", "created_date"]
+        # create path "FaceAI Media" if not exists
+        # so that subject and target images will be saved to that directory
+        Common.create_path(Common.MEDIA_PATH)
 
+        # copy subject and target images to media directory, after that, replace urls with urls in media folder
+        self.probe_result.case_info.subject_image_url = Common.copy_file(self.probe_result.case_info.subject_image_url,
+                                                                         Common.MEDIA_PATH)
+        target_images = []
+        for target in self.probe_result.case_info.target_image_urls:
+            target_images.append(Common.copy_file(target, Common.MEDIA_PATH))
+        self.probe_result.case_info.target_image_urls = target_images
+
+        # make data to be inserted to database and insert
+        probe_result = self.probe_result
+        case_info = self.probe_result.case_info
+        cases_data = [(probe_result.probe_id, probe_result.matched, probe_result.json_result["time_used"],
+                       case_info.case_number, case_info.case_PS, case_info.examiner_no, case_info.examiner_name,
+                       case_info.remarks, case_info.subject_image_url, json.dumps(probe_result.json_result),
+                       QDateTime().currentDateTime().toString("yyyy-MM-dd hh-mm-ss"))]
+        db = DBConnection()
+        db.insert_values("cases", cases_fields, cases_data)
 
     # set validator to input box
     def set_validate_input_data(self):
@@ -116,5 +143,3 @@ class LoaderProbeReportPage(QMainWindow):
         Common.clear_layout(self.vlyReportResult)
         self.repaint()
         self.showMaximized()
-
-

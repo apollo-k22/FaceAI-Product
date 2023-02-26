@@ -1,5 +1,7 @@
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtWidgets import QMessageBox
 
+from commons.common import Common
 from commons.probing_result import ProbingResult
 from insightfaces.main import recognition
 

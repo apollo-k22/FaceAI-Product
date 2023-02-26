@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from commons.case_info import CaseInfo
 from commons.common import Common
 
@@ -6,6 +8,9 @@ class ProbingResult(object):
     def __init__(self):
         super().__init__()
         self.case_info = CaseInfo()
+        self.probe_id = ""
+        self.matched = "Non Matched"
+        self.created_date = datetime.now()
         self.json_result = {'time_used': 2, 'thresholds': {}, 'faces': [], 'results': []}
 
     def is_matched(self):
@@ -19,8 +24,9 @@ class ProbingResult(object):
             results = self.json_result['results']
             for result in results:
                 if float(result['confidence']) > Common.MATCH_LEVEL:
-                    return "Matched"
-        return "Non Matched"
+                    self.matched = "Matched"
+                    return self.matched
+        return self.matched
 
     def remove_json_item(self, item):
         if self.json_result['results'].index(item) >= 0:

@@ -34,22 +34,26 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
         #
-        # self.image_urls = ["Background.png",
-        #                    "book-1.jpg",
-        #                    "book-2.jpg",
-        #                    "book-3.jpg",
-        #                    "book-4.jpg",
-        #                    "pro4.jpg",
-        #                    "profile-bg.jpg",
-        #                    ]
+        self.image_urls = ["Background.png",
+                           "book-1.jpg",
+                           "book-2.jpg",
+                           "book-3.jpg",
+                           "book-4.jpg",
+                           "pro4.jpg",
+                           "profile-bg.jpg",
+                           ]
 
     @pyqtSlot()
     def start_probe_slot(self):
-        if len(self.image_urls) == 0:
-            Common.show_message(QMessageBox.Warning, "Please select target images.", "", "Empty Warning", "")
+        if self.case_info.subject_image_url == '':
+            Common.show_message(QMessageBox.Warning, "Please select subject image.", "", "Empty Warning", "")
+            self.go_back_signal.emit()
         else:
-            self.case_info.target_image_urls = self.image_urls
-            self.start_probe_signal.emit(self.case_info)
+            if len(self.image_urls) == 0:
+                Common.show_message(QMessageBox.Warning, "Please select target images.", "", "Empty Warning", "")
+            else:
+                self.case_info.target_image_urls = self.image_urls
+                self.start_probe_signal.emit(self.case_info)
 
     @pyqtSlot()
     def return_home_slot(self):
@@ -98,7 +102,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
     # get all images from old cases
     def select_from_old_cases(self):
         self.image_urls.clear()
-        desktop = pathlib.Path(Common.MEDIA_FOLDER)
+        desktop = pathlib.Path(Common.MEDIA_PATH)
         for path in desktop.glob(r'**/*'):
             if path.suffix in Common.EXTENSIONS:
                 self.image_urls.append(path)
