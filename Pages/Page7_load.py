@@ -1,6 +1,7 @@
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidget, QTableWidgetItem
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractScrollArea, \
+    QVBoxLayout
 
 from commons.db_connection import DBConnection
 from commons.export_pdf_button import ExportPdfButton
@@ -21,9 +22,13 @@ class LoaderProbeReportListPage(QMainWindow):
         self.btnGoBack = self.findChild(QPushButton, "btnGoBack")
         self.btnExportAllZip = self.findChild(QPushButton, "btnExportAllZip")
         self.btnGoRemainingPage = self.findChild(QPushButton, "btnGoRemainingPage")
-        self.resultTable = self.findChild(QTableWidget, "twdtResultTable")
-        style = "::section {""background-color: rgb(0, 90, 226);border: 1px solid rgb(53, 132, 228); }"
-        self.resultTable.horizontalHeader().setStyleSheet(style)
+        self.vlyTableContainer = self.findChild(QVBoxLayout, "vlyTableContainer")
+        self.resultTable = self.findChild(QTableWidget, "resultTable")
+        style = "::section {background-color: rgb(0, 90, 226);border: 1px solid rgb(53, 132, 228); }"
+        self.setStyleSheet(style)
+        self.resultTable.setMinimumHeight(0)
+        # self.resultTable.horizontalHeader().resizeSections(QHeaderView.ResizeMode.ResizeToContents)
+        self.init_actions()
 
     @pyqtSlot()
     def on_clicked_go_back(self):
@@ -44,12 +49,16 @@ class LoaderProbeReportListPage(QMainWindow):
         self.init_table()
 
     def init_table(self):
+
         db = DBConnection()
         reports = db.get_values()
         row_index = 0
+        # set table row and column num
+        self.resultTable.setRowCount(len(reports))
         for report in reports:
             case_info = report.case_info
             datetime_item = QTableWidgetItem(report.created_date)
+            datetime_item.setSizeHint(QSize(50, 50))
             case_no = QTableWidgetItem(case_info.case_number)
             ps = QTableWidgetItem(case_info.case_PS)
             probe_id = QTableWidgetItem(report.probe_id)

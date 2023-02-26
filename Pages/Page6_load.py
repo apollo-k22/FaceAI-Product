@@ -106,9 +106,7 @@ class LoaderProbeReportPage(QMainWindow):
         self.btnGoRemaining.clicked.connect(self.on_clicked_go_remaining)
 
     def init_input_values(self):
-        probe_id = Common.generate_probe_id()
-        self.probe_result.probe_id = probe_id
-        self.lblProbeId.setText(probe_id)
+        self.lblProbeId.setText(self.probe_result.probe_id)
         self.lblProbeResult.setText(self.probe_result.is_matched())
         self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
         self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)

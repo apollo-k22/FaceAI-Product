@@ -200,7 +200,6 @@ class StartHome(QMainWindow):
     def show_p7_probe_report_list_without_param(self):
         self.hide()
         self.ui_4_probing.hide()
-        self.ui_7_prove_report_list.init_actions()
         self.ui_7_prove_report_list.init_views()
         self.ui_7_prove_report_list.showMaximized()
 

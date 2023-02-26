@@ -130,6 +130,24 @@ class DBConnection:
             if self.connection:
                 self.connection.close()
 
+    def is_exist_value(self, table_name, field, value):
+        try:
+            query_string = "select * from " + table_name + " where " + field + "=" + value
+            self.connection = sqlite3.connect(self.connection_string)
+            cursor = self.connection.cursor()
+            cursor.execute(query_string)
+            rows = cursor.fetchone()
+            self.connection.commit()
+            if rows:
+                for row in rows:
+                    return True
+        except sqlite3.IntegrityError as e:
+            print('INTEGRITY ERROR\n')
+            print(traceback.print_exc())
+        finally:
+            if self.connection:
+                self.connection.close()
+        return False
     # def update_table(self, table_name, fields, values):
     #     try:
     #         self.connection = sqlite3.connect("data.db")
