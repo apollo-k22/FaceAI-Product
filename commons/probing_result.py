@@ -1,4 +1,5 @@
 from commons.case_info import CaseInfo
+from commons.common import Common
 
 
 class ProbingResult(object):
@@ -17,7 +18,7 @@ class ProbingResult(object):
             # else:
             results = self.json_result['results']
             for result in results:
-                if float(result['confidence']) > 70.0:
+                if float(result['confidence']) > Common.MATCH_LEVEL:
                     return "Matched"
         return "Non Matched"
 

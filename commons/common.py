@@ -4,11 +4,12 @@ import numpy as np
 
 class Common:
     # DATABASE_PATH =
+    MATCH_LEVEL = 0.7
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
     CASE_EXAMINER_NAME_LENGTH = 63
     CASE_EXAMINER_NO_LENGTH = 20
-    CASE_REMARKS_LEGNTH = 139
+    CASE_REMARKS_LENGTH = 139
     CREATE_CASE_REGX = "\w"
     EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.bmp', '.tif', '.gif', '.jpeg', '.bmp', '.gif', '.ico']
     IMAGE_FILTER = "Image Files (*.bmp *.cur *.gif *.icns *.ico *.jpeg" \

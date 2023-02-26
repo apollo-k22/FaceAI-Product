@@ -62,7 +62,7 @@ class LoaderCreateNewCasePage(QMainWindow):
         self.set_regx_line_edit(self.leditPS, Common.CREATE_CASE_REGX, Common.CASE_PS_LENGTH)
         self.set_regx_line_edit(self.leditExaminerName, Common.CREATE_CASE_REGX, Common.CASE_EXAMINER_NAME_LENGTH)
         self.set_regx_line_edit(self.leditExaminerNo, Common.CREATE_CASE_REGX, Common.CASE_EXAMINER_NO_LENGTH)
-        self.set_regx_line_edit(self.leditRemarks, Common.CREATE_CASE_REGX, Common.CASE_REMARKS_LEGNTH)
+        self.set_regx_line_edit(self.leditRemarks, Common.CREATE_CASE_REGX, Common.CASE_REMARKS_LENGTH)
 
     # set regular expression for checking on line edit
     def set_regx_line_edit(self, line_edit, regx, length):
@@ -111,6 +111,8 @@ class LoaderCreateNewCasePage(QMainWindow):
     def continue_probe_slot(self):
         is_empty, ledit_name = self.is_empty_input_values()
         if not is_face(self.subject_photo_url):
+            Common.show_message(QMessageBox.Warning, "Please select image with face", "", "Empty Warning",
+                                ledit_name + " has no face")
             return
         if is_empty == true:
             Common.show_message(QMessageBox.Warning, "Please fill all fields", "", "Empty Warning",
