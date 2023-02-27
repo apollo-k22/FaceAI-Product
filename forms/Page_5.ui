@@ -24,7 +24,7 @@
     <item>
      <widget class="QScrollArea" name="full_page_scroll">
       <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOn</enum>
+       <enum>Qt::ScrollBarAsNeeded</enum>
       </property>
       <property name="widgetResizable">
        <bool>true</bool>
@@ -34,7 +34,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1121</width>
+         <width>1138</width>
          <height>1483</height>
         </rect>
        </property>
@@ -529,10 +529,16 @@ color: white;</string>
              <layout class="QVBoxLayout" name="verticalLayout_4" stretch="2,0">
               <item>
                <widget class="QLabel" name="lblSubjectImage">
-                <property name="minimumSize">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
                  <size>
-                  <width>0</width>
-                  <height>0</height>
+                  <width>700</width>
+                  <height>700</height>
                  </size>
                 </property>
                 <property name="styleSheet">
@@ -710,7 +716,7 @@ color: white;</string>
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>450</height>
+            <height>400</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -727,8 +733,8 @@ color: white;</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1101</width>
-             <height>481</height>
+             <width>1118</width>
+             <height>398</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="scroll_layout_widget">
@@ -741,7 +747,7 @@ color: white;</string>
                <number>20</number>
               </property>
               <item>
-               <layout class="QVBoxLayout" name="report_result_layout">
+               <layout class="QVBoxLayout" name="vlyTargetResults">
                 <property name="spacing">
                  <number>0</number>
                 </property>
@@ -786,12 +792,18 @@ color: white;</string>
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>80</height>
+              <height>120</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
+              <height>500</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>0</width>
               <height>80</height>
              </size>
             </property>
@@ -801,6 +813,9 @@ color: white;</string>
             <property name="horizontalScrollBarPolicy">
              <enum>Qt::ScrollBarAsNeeded</enum>
             </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
@@ -809,37 +824,30 @@ color: white;</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1082</width>
-               <height>83</height>
+               <width>1116</width>
+               <height>186</height>
               </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_21">
               <item>
-               <widget class="QLabel" name="label_50">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>65</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>65</height>
-                 </size>
+               <widget class="QTextEdit" name="teditJsonResult">
+                <property name="enabled">
+                 <bool>true</bool>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(98, 136, 178);
+                 <string notr="true">background-color: transparent;
 border-radius: 10px;
-border: 1px solid rgb(53, 132, 228);</string>
+border: 1px solid rgb(53, 132, 228);
+color: rgb(255,255,255);
+font: 12pt &quot;Arial&quot;;</string>
                 </property>
-                <property name="text">
+                <property name="text" stdset="0">
                  <string/>
                 </property>
                </widget>
@@ -884,6 +892,9 @@ border: 1px solid rgb(53, 132, 228);</string>
             </item>
             <item>
              <widget class="QPushButton" name="btnGenerateReport">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -898,7 +909,7 @@ border: 1px solid rgb(53, 132, 228);</string>
               </property>
               <property name="maximumSize">
                <size>
-                <width>250</width>
+                <width>150</width>
                 <height>60</height>
                </size>
               </property>
@@ -986,7 +997,7 @@ background-position: center;</string>
               </property>
               <property name="maximumSize">
                <size>
-                <width>250</width>
+                <width>150</width>
                 <height>60</height>
                </size>
               </property>

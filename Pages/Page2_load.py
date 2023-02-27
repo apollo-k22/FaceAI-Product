@@ -9,17 +9,18 @@ from PyQt5.QtCore import pyqtSlot
 from sympy import false, true
 from commons.common import Common
 from commons.case_info import CaseInfo
-from insightfaces.main import recognition
+from insightfaces.main import FaceAI
 
 
-class LoaderCreateNewCasePage(QMainWindow):
+class LoaderCreateNewCasePage(QMainWindow, FaceAI):
     # when clicked 'return home' button, this will be emitted
     return_home_signal = pyqtSignal()
     # when clicked 'continue to probe' button, this will be emitted
     continue_probe_signal = pyqtSignal(object)
 
-    def __init__(self):
+    def __init__(self, faceai):
         super().__init__()
+        self.faceai = faceai
         self.window = uic.loadUi("./forms/Page_2.ui", self)
         # instance CaseInfo to save the case information
         self.case_info = CaseInfo()
@@ -33,14 +34,18 @@ class LoaderCreateNewCasePage(QMainWindow):
         self.leditExaminerNo = self.findChild(QLineEdit, 'leditExaminerNo')
         self.leditRemarks = self.findChild(QLineEdit, 'leditRemarks')
 
-        # recognition(
-        #     r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-        #     [r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt4.png']);
-
         # set image url
         self.subject_photo_url = ''
         self.set_event_actions()
         self.set_regxs()
+
+        # init for testing
+        # self.leditCaseNumber.setText("1231")
+        # self.leditPS.setText("ps1")
+        # self.leditExaminerName.setText("examiner")
+        # self.leditExaminerNo.setText("examiner no")
+        # self.leditRemarks.setText("remarks")
+        # self.subject_photo_url = "Architecture.png"
 
     # set slots to each widget
     def set_event_actions(self):
@@ -54,7 +59,7 @@ class LoaderCreateNewCasePage(QMainWindow):
         self.set_regx_line_edit(self.leditPS, Common.CREATE_CASE_REGX, Common.CASE_PS_LENGTH)
         self.set_regx_line_edit(self.leditExaminerName, Common.CREATE_CASE_REGX, Common.CASE_EXAMINER_NAME_LENGTH)
         self.set_regx_line_edit(self.leditExaminerNo, Common.CREATE_CASE_REGX, Common.CASE_EXAMINER_NO_LENGTH)
-        self.set_regx_line_edit(self.leditRemarks, Common.CREATE_CASE_REGX, Common.CASE_REMARKS_LEGNTH)
+        self.set_regx_line_edit(self.leditRemarks, Common.CREATE_CASE_REGX, Common.CASE_REMARKS_LENGTH)
 
     # set regular expression for checking on line edit
     def set_regx_line_edit(self, line_edit, regx, length):
@@ -63,6 +68,7 @@ class LoaderCreateNewCasePage(QMainWindow):
             self.check_value_validation(line_edit, newPos, regx, length)
         )
 
+    @pyqtSlot()
     # get subject photo from file dialog and set the gotten photo on button
     def get_subject_photo(self):
         self.subject_photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', "Image files", Common.IMAGE_FILTER)
@@ -101,6 +107,10 @@ class LoaderCreateNewCasePage(QMainWindow):
     @pyqtSlot()
     def continue_probe_slot(self):
         is_empty, ledit_name = self.is_empty_input_values()
+        if not self.faceai.is_face(self.subject_photo_url):
+            Common.show_message(QMessageBox.Warning, "Please select image with face", "", "Empty Warning",
+                                ledit_name + " has no face")
+            return
         if is_empty == true:
             Common.show_message(QMessageBox.Warning, "Please fill all fields", "", "Empty Warning",
                                 ledit_name + " is empty")

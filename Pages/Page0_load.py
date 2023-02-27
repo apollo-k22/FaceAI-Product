@@ -1,3 +1,5 @@
+from sqlite3 import OperationalError
+
 from PyQt5 import uic
 import sys
 # from PyQt5 import QtWidgets
@@ -14,26 +16,23 @@ import time
 from time import ctime
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-import cpuinfo
-import wmi
-import AES256Crypto
+import cpuinfo, wmi
 
 class LicenseBoxPage(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.window = uic.loadUi("../forms/Page_0.ui", self)
+        self.window = uic.loadUi("./forms/Page_0.ui", self)
         self.btnConfirm.clicked.connect(self.procLicenseConfirm)   
-        
-        # AES256Crypto.encrypt("aaaaaaaaaa", "sssssss")
+
     
     # The function for license process confirm
     def procLicenseConfirm(self):      
 
-        # info = cpuinfo.get_cpu_info()
-        # print(info)        
+        info = cpuinfo.get_cpu_info()
+        print(info)        
 
-        lic = "1111-1111-1111-1111-1111" #self.licenseBox.text()
+        lic = self.licenseBox.text()
         if len(lic) < 3:
             print("License length is not enough")
             return

@@ -1,62 +1,56 @@
-from PyQt5.QtCore import QRegularExpression
 from PyQt5.QtWidgets import QMessageBox
+import numpy as np
 
 
 class Common:
+    # DATABASE_PATH =
+    MATCH_LEVEL = 0.7
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
     CASE_EXAMINER_NAME_LENGTH = 63
     CASE_EXAMINER_NO_LENGTH = 20
-    CASE_REMARKS_LEGNTH = 139
+    CASE_REMARKS_LENGTH = 139
     CREATE_CASE_REGX = "\w"
-    EXTENSIONS = {'.png', '.jpe?g', '.bmp', '.tif', '.gif', '.png'}
-    IMAGE_FILTER = "All files (*.*);;BMP (*.bmp);;CUR (*.cur);;GIF (*.gif);;ICNS (*.icns);;" \
-                   "ICO (*.ico);;JPEG (*.jpeg);;" \
-                   "JPG (*.jpg);;PBM (*.pbm);;PGM (*.pgm);;PNG (*.png);;" \
-                   "PPM (*.ppm);;SVG (*.svg);;SVGZ (*.svgz);;TGA (*.tga);;" \
-                   "TIF (*.tif);;TIFF (*.tiff);;WBMP (*.wbmp);;" \
-                   "WEBP (*.webp);;XBM (*.xbm);;XPM (*.xpm)"
+    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.bmp', '.tif', '.gif', '.jpeg', '.bmp', '.gif', '.ico']
+    IMAGE_FILTER = "Image Files (*.bmp *.cur *.gif *.icns *.ico *.jpeg" \
+                   " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
+                   " *.tif *.tiff *.wbmp" \
+                   " *.webp *.xbm *.xpm)"
     MEDIA_FOLDER = "FaceAI Media"
+    LABEL_MAX_HEIGHT_IN_ITEM = 30
+    LABEL_MAX_WIDTH_IN_ITEM = 170
+    VALUE_MAX_HEIGHT_IN_ITEM = 30
+    VALUE_MAX_WIDTH_IN_ITEM = 230
+    CROSS_BUTTON_SIZE = 30
 
-    def clear_layout(self, layout):
-        if layout is not None:
-            while layout.count():
-                item = layout.takeAt(0)
-                layout.removeItem(item)
-                # widget = item.widget()
-                # if widget is not None:
-                #     widget.setParent(None)
-                # else:
-                #     self.clear_layout(item.layout())
 
-    def clear_item(self, item):
-        if hasattr(item, "layout"):
-            if callable(item.layout):
-                layout = item.layout()
+    @staticmethod
+    def clear_layout(layout):
+        print(str(layout.count()))
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+            elif child.layout():
+                Common.clear_layout(child)
+
+    @staticmethod
+    def remove_elements_from_list_tail(removing_list, start_index):
+        ret_list = []
+        list_len = len(removing_list)
+        if start_index < list_len:
+            for index in range(start_index):
+                print(str(index))
+                ret_list.append(removing_list[index])
+                print(removing_list[index])
         else:
-            layout = None
-
-        if hasattr(item, "widget"):
-            if callable(item.widget):
-                widget = item.widget()
-        else:
-            widget = None
-
-        if widget:
-            widget.setParent(None)
-        elif layout:
-            for i in reversed(range(layout.count())):
-                self.clear_item(layout.itemAt(i))
-
-    def box_delete(self, box):
-        for i in range(box.count()):
-            layout_item = box.itemAt(i)
-            box.removeItem(layout_item)
-            return
+            ret_list = removing_list
+        return ret_list
 
     @staticmethod
     def show_message(icon, text, information_text, title, detailed_text):
         msg = QMessageBox()
+        msg.setStyleSheet("background-color:lightblue")
         msg.setIcon(icon)
         msg.setText(text)
         msg.setInformativeText(information_text)
@@ -69,6 +63,24 @@ class Common:
     def resize_image(url):
         print("")
 
-    @classmethod
-    def clear_layout(self, vlyReportResultLayout):
-        pass
+    # this method make one integer with the number of integers,
+    # each digit is between start and end
+    @staticmethod
+    def generate_digits(start, end, number):
+        arr = np.random.uniform(start, end, number)
+        arr = np.round(arr).astype(int)
+        return "".join(str(x) for x in arr)
+
+    @staticmethod
+    def generate_probe_id():
+        probe_id = str(Common.generate_digits(0, 9, 9))
+        while Common.verify_probe_id(probe_id):
+            return probe_id
+        else:
+            Common.generate_probe_id()
+
+    # verify generated probe_id whether is already exist on database
+    # if exist, return false
+    @staticmethod
+    def verify_probe_id(probe_id):
+        return True

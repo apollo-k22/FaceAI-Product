@@ -22,12 +22,23 @@ from commons.case_info import CaseInfo
 from commons.probing_result import ProbingResult
 from commons.qss import QSS
 import images
+from cryptophic.dec_thread import DecThread
+from insightfaces.faceai_init_thread import FaceAIInitThread
+from insightfaces.main import FaceAI
 
 
 class StartHome(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.faceai = FaceAI()
 
+        self.dec_thread = DecThread()
+        self.dec_thread.finished_decrypting_signal.connect(self.finished_decrypting_slot)
+        self.dec_thread.start()
+
+        self.faceai_init_thread = FaceAIInitThread(self.faceai)
+        self.faceai_init_thread.finished_initializing_signal.connect(self.finished_initializing_slot)
+        self.faceai_init_thread.start()
 
         # app_unlocked = False
         # app_expire = 0
@@ -56,9 +67,9 @@ class StartHome(QMainWindow):
         self.window = uic.loadUi("./forms/Page_1.ui", self)
         # self.setStyleSheet("background-image:url(../images/Background.png);")
         # self.ui_0_license = LicenseBoxPage()
-        self.ui_2_create_new_case = LoaderCreateNewCasePage()
+        self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai)
         self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage()
-        self.ui_4_probing = LoaderProbingPage()
+        self.ui_4_probing = LoaderProbingPage(self.faceai)
         self.ui_5_probe_report_preview = LoaderProbeReportPreviewPage()
         self.ui_6_probe_report = LoaderProbeReportPage()
         self.ui_7_prove_report_list = LoaderProbeReportListPage()
@@ -88,6 +99,15 @@ class StartHome(QMainWindow):
         #     else:
         #         print("expire error")
         #         self.show_p0_license()
+
+    @pyqtSlot()
+    def finished_decrypting_slot(self):
+        self.dec_thread.quit()
+
+    @pyqtSlot()
+    def finished_initializing_slot(self):
+        print("faceai init ok")
+        self.faceai_init_thread.quit()
 
     # set the connection between signal and slot for page transitions
     def set_page_transition(self):
@@ -160,8 +180,8 @@ class StartHome(QMainWindow):
     def show_p4_probing(self, case_info):
         self.ui_3_select_target_photo.hide()
         # start probing
-        self.ui_4_probing.start_probing(case_info)
         self.ui_4_probing.showMaximized()
+        self.ui_4_probing.start_probing(case_info)
 
     @pyqtSlot(ProbingResult)
     def show_p5_probe_report_preview(self, probe_result):
@@ -169,13 +189,23 @@ class StartHome(QMainWindow):
         self.ui_6_probe_report.hide()
         self.ui_5_probe_report_preview.probe_result = probe_result
         self.ui_5_probe_report_preview.init_input_values()
-        self.ui_5_probe_report_preview.init_result_views()
+        self.ui_5_probe_report_preview.init_target_images_view()
         self.ui_5_probe_report_preview.showMaximized()
 
     @pyqtSlot(ProbingResult)
     def show_p6_probe_report(self, probe_result):
         self.ui_5_probe_report_preview.hide()
         self.ui_6_probe_report.probe_result = probe_result
+        self.ui_6_probe_report.init_input_values()
+        self.ui_6_probe_report.init_target_images_view()
+        self.ui_6_probe_report.showMaximized()
+
+    @pyqtSlot()
+    def show_p6_probe_report(self):
+        self.ui_5_probe_report_preview.hide()
+        # self.ui_6_probe_report.probe_result = probe_result
+        self.ui_6_probe_report.init_input_values()
+        self.ui_6_probe_report.init_target_images_view()
         self.ui_6_probe_report.showMaximized()
 
     @pyqtSlot()

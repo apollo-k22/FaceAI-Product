@@ -1,11 +1,11 @@
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtWidgets import QMainWindow, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidget
 
 
 class LoaderProbeReportListPage(QMainWindow):
     return_home_signal = pyqtSignal()
-    go_back_signal = pyqtSignal(object)
+    go_back_signal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -15,6 +15,9 @@ class LoaderProbeReportListPage(QMainWindow):
         self.btnGoBack = self.findChild(QPushButton, "btnGoBack")
         self.btnExportAllZip = self.findChild(QPushButton, "btnExportAllZip")
         self.btnGoRemainingPage = self.findChild(QPushButton, "btnGoRemainingPage")
+        self.resultTable = self.findChild(QTableWidget, "twdtResultTable")
+        style = "::section {""background-color: rgb(0, 90, 226);border: 1px solid rgb(53, 132, 228); }"
+        self.resultTable.horizontalHeader().setStyleSheet(style)
 
         self.init_actions()
 

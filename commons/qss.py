@@ -28,5 +28,13 @@ QPushButton {
     background-image: url(":/newPrefix/Background.png");
     background-color:red;
 }
+QScrollArea  QWidget  QTextEdit
+{
+    background-color: rgb(98, 136, 178);
+    border-radius: 10px;
+    border: 1px solid rgb(53, 132, 228);
+    font: 12pt "Arial";
+}
+
 
 """
