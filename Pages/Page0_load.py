@@ -33,7 +33,7 @@ class LicenseBoxPage(QMainWindow):
         print(info)        
 
         lic = self.licenseBox.text()
-        if len(lic) < 3:
+        if len(lic) < 20:
             print("License length is not enough")
             return
         licenseFileName = "license.dat"

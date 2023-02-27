@@ -195,7 +195,7 @@ background: none;</string>
         </property>
         <property name="icon">
          <iconset resource="../images/images.qrc">
-          <normaloff>:/newPrefix/continuetoprobe.png</normaloff>:/newPrefix/continuetoprobe.png</iconset>
+          <normaloff>:/newPrefix/confirm.png</normaloff>:/newPrefix/confirm.png</iconset>
         </property>
         <property name="iconSize">
          <size>

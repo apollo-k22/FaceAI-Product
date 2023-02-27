@@ -2,7 +2,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer, pyqtSlot
-# from Page0_load import LicenseBoxPage
+from Pages.Page0_load import LicenseBoxPage
 from Pages.Page2_load import LoaderCreateNewCasePage
 from Pages.Page3_load import LoaderSelectTargetPhotoPage
 from Pages.Page4_load import LoaderProbingPage
@@ -23,6 +23,7 @@ from commons.probing_result import ProbingResult
 from commons.qss import QSS
 import images
 from cryptophic.dec_thread import DecThread
+from cryptophic.main import exit_process
 from insightfaces.faceai_init_thread import FaceAIInitThread
 from insightfaces.main import FaceAI
 
@@ -39,33 +40,33 @@ class StartHome(QMainWindow):
         self.faceai_init_thread = FaceAIInitThread(self.faceai)
         self.faceai_init_thread.finished_initializing_signal.connect(self.finished_initializing_slot)
 
-        # app_unlocked = False
-        # app_expire = 0
-        # app_expire_date = ""
-        # try:
-        #     connection = sqlite3.connect("data.db")
-        #     cursor = connection.cursor()
-        #
-        #     (count,) = connection.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{}'".format("appinfo")).fetchone()
-        #     if count == 0:
-        #         cursor.execute("""CREATE TABLE appinfo (isdst, expire, fpo, atpo)""")
-        #         cursor.execute("INSERT INTO appinfo VALUES (?,?,?,?)", (False, "expire", "fpo", "atpo"))
-        #         connection.commit()
-        #
-        #     cursor.execute("SELECT * FROM appinfo")
-        #     result = cursor.fetchone()
-        #     app_unlocked = result[0]
-        #     app_expire_date = result[1]
-        #
-        # except OperationalError:
-        #     print("Database Error")
-        #
-        # finally:
-        #     connection.close()
+        app_unlocked = False
+        app_expire = 0
+        app_expire_date = ""
+        try:
+            connection = sqlite3.connect("data.db")
+            cursor = connection.cursor()
+        
+            (count,) = connection.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{}'".format("appinfo")).fetchone()
+            if count == 0:
+                cursor.execute("""CREATE TABLE appinfo (isdst, expire, fpo, atpo)""")
+                cursor.execute("INSERT INTO appinfo VALUES (?,?,?,?)", (False, "expire", "fpo", "atpo"))
+                connection.commit()
+        
+            cursor.execute("SELECT * FROM appinfo")
+            result = cursor.fetchone()
+            app_unlocked = result[0]
+            app_expire_date = result[1]
+        
+        except OperationalError:
+            print("Database Error")
+        
+        finally:
+            connection.close()
 
         self.window = uic.loadUi("./forms/Page_1.ui", self)
         # self.setStyleSheet("background-image:url(../images/Background.png);")
-        # self.ui_0_license = LicenseBoxPage()
+        self.ui_0_license = LicenseBoxPage()
         self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai)
         self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage()
         self.ui_4_probing = LoaderProbingPage(self.faceai)
@@ -81,23 +82,23 @@ class StartHome(QMainWindow):
         self.set_page_transition()
         self.showMaximized()
 
-        # if app_unlocked == False:
-        #     self.show_p0_license()
-        # else:
-        #     try:
-        #         NIST = 'pool.ntp.org'
-        #         ntp = ntplib.NTPClient()
-        #         ntpResponse = time.time() #ntp.request(NIST)
-        #         # print(ntpResponse.tx_time)
-        #     except:
-        #         print("ntp error")
-        #
-        #     app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
-        #     if app_expire.total_seconds() > 0:
-        #         self.showMaximized()
-        #     else:
-        #         print("expire error")
-        #         self.show_p0_license()
+        if app_unlocked == False:
+            self.show_p0_license()
+        else:
+            try:
+                NIST = 'pool.ntp.org'
+                ntp = ntplib.NTPClient()
+                ntpResponse = time.time() #ntp.request(NIST)
+                # print(ntpResponse.tx_time)
+            except:
+                print("ntp error")
+        
+            app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
+            if app_expire.total_seconds() > 0:
+                self.showMaximized()
+            else:
+                print("expire error")
+                self.show_p0_license()
 
     @pyqtSlot()
     def finished_decrypting_slot(self):
@@ -227,7 +228,11 @@ class StartHome(QMainWindow):
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    app.setStyleSheet(QSS)
-    window = StartHome()
-    app.exec_()
+    try:
+        app = QApplication(sys.argv)
+        app.setStyleSheet(QSS)
+        window = StartHome()
+        app.exec_()
+    finally:
+        exit_process()
+        print("exit")

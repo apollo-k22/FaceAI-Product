@@ -30,18 +30,15 @@ def decrypt(folder_path):
     
     with open(keypath, 'rb') as f:
         key = f.read()
-    print(key)
 
     decfiles = []
     try: 
         for root, dirs, files in os.walk(folder_path):
-            print(files)
             for filename in files:
                 decfiles.append({"encfile": os.path.join(root, filename), "decfile": os.path.join("\\", filename)})
         for decfile in decfiles:
             try:
-                decryptFile(decfile["encfile"], dec_secure_path+decfile["decfile"].replace(".enc",""), str(key), bufferSize)
-                # os.remove(decfile)
+                decryptFile(decfile["encfile"], dec_secure_path+decfile["decfile"], str(key), bufferSize)
             except Exception:
                 print("Decrypt Error1")
                 return False
@@ -50,3 +47,9 @@ def decrypt(folder_path):
         return False
 
     return True
+
+def exit_process():
+    for root, dirs, files in os.walk(dec_secure_path):
+            for filename in files:
+                os.remove(os.path.join(root, filename))
+
