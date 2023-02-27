@@ -27,6 +27,174 @@ def stretch(passw, iv1):
     
     return digest
 
+# encrypt file function
+# arguments:
+# infile: plaintext file path
+# outfile: ciphertext file path
+# passw: encryption password
+# bufferSize: optional buffer size, must be a multiple of
+#             AES block size (16)
+#             using a larger buffer speeds up things when dealing
+#             with big files
+#             Default is 64KB.
+def encryptFile(infile, outfile, passw, bufferSize = bufferSizeDef):
+    try:
+        with open(infile, "rb") as fIn:
+            # check that output file does not exist
+            # or that, if exists, is not the same as the input file
+            # (i.e.: overwrite if it seems safe)
+            if path.isfile(outfile):
+                if path.samefile(infile, outfile):
+                    raise ValueError("Input and output files "
+                                     "are the same.")
+            try:
+                with open(outfile, "wb") as fOut:
+                    # encrypt file stream
+                    encryptStream(fIn, fOut, passw, bufferSize)
+                
+            except IOError:
+                raise ValueError("Unable to write output file.")
+            
+    except IOError:
+        raise ValueError("Unable to read input file.")
+                
+
+# encrypt binary stream function
+# arguments:
+# fIn: input binary stream
+# fOut: output binary stream
+# passw: encryption password
+# bufferSize: encryption buffer size, must be a multiple of
+#             AES block size (16)
+#             using a larger buffer speeds up things when dealing
+#             with long streams
+def encryptStream(fIn, fOut, passw, bufferSize):
+    # validate bufferSize
+    if bufferSize % AESBlockSize != 0:
+        raise ValueError("Buffer size must be a multiple of AES block size.")
+    
+    if len(passw) > maxPassLen:
+        raise ValueError("Password is too long.")
+
+    # generate external iv (used to encrypt the main iv and the
+    # encryption key)
+    iv1 = urandom(AESBlockSize)
+    
+    # stretch password and iv
+    key = stretch(passw, iv1)
+    
+    # generate random main iv
+    iv0 = urandom(AESBlockSize)
+    
+    # generate random internal key
+    intKey = urandom(32)
+    
+    # instantiate AES cipher
+    cipher0 = Cipher(algorithms.AES(intKey), modes.CBC(iv0),
+                     backend=default_backend())
+    encryptor0 = cipher0.encryptor()
+    
+    # instantiate HMAC-SHA256 for the ciphertext
+    hmac0 = hmac.HMAC(intKey, hashes.SHA256(),
+                      backend=default_backend())
+    
+    # instantiate another AES cipher
+    cipher1 = Cipher(algorithms.AES(key), modes.CBC(iv1),
+                     backend=default_backend())
+    encryptor1 = cipher1.encryptor()
+    
+    # encrypt main iv and key
+    c_iv_key = encryptor1.update(iv0 + intKey) + encryptor1.finalize()
+    
+    # calculate HMAC-SHA256 of the encrypted iv and key
+    hmac1 = hmac.HMAC(key, hashes.SHA256(),
+                      backend=default_backend())
+    hmac1.update(c_iv_key)
+
+    # write header
+    fOut.write(bytes("AES256", "utf8"))
+    
+    # write version (AES Crypt version 2 file format -
+    # see https://www.aescrypt.com/aes_file_format.html)
+    fOut.write(b"\x02")
+    
+    # reserved byte (set to zero)
+    fOut.write(b"\x00")
+    
+    # setup "CREATED-BY" extension
+    cby = "FaceAI " + version
+    
+    # write "CREATED-BY" extension length
+    fOut.write(b"\x00" + bytes([1+len("Made"+cby)]))
+    
+    # write "CREATED-BY" extension
+    fOut.write(bytes("Made", "utf8") + b"\x00" +
+               bytes(cby, "utf8"))
+    
+    # write "container" extension length
+    fOut.write(b"\x00\x80")
+    
+    # write "container" extension
+    for i in range(128):
+        fOut.write(b"\x00")
+        
+    # write end-of-extensions tag
+    fOut.write(b"\x00\x00")
+    
+    # write the iv used to encrypt the main iv and the
+    # encryption key
+    fOut.write(iv1)
+    
+    # write encrypted main iv and key
+    fOut.write(c_iv_key)
+    
+    # write HMAC-SHA256 of the encrypted iv and key
+    fOut.write(hmac1.finalize())
+    
+    # encrypt file while reading it
+    while True:
+        # try to read bufferSize bytes
+        fdata = fIn.read(bufferSize)
+        
+        # get the real number of bytes read
+        bytesRead = len(fdata)
+        
+        # check if EOF was reached
+        if bytesRead < bufferSize:
+            # file size mod 16, lsb positions
+            fs16 = bytes([bytesRead % AESBlockSize])
+            # pad data (this is NOT PKCS#7!)
+            # ...unless no bytes or a multiple of a block size
+            # of bytes was read
+            if bytesRead % AESBlockSize == 0:
+                padLen = 0
+            else:
+                padLen = 16 - bytesRead % AESBlockSize
+            fdata += bytes([padLen])*padLen
+            # encrypt data
+            cText = encryptor0.update(fdata) \
+                    + encryptor0.finalize()
+            # update HMAC
+            hmac0.update(cText)
+            # write encrypted file content
+            fOut.write(cText)
+            # break
+            break
+        # ...otherwise a full bufferSize was read
+        else:
+            # encrypt data
+            cText = encryptor0.update(fdata)                                
+            # update HMAC
+            hmac0.update(cText)
+            # write encrypted file content
+            fOut.write(cText)
+    
+    # write plaintext file size mod 16 lsb positions
+    fOut.write(fs16)
+    
+    # write HMAC-SHA256 of the encrypted file
+    fOut.write(hmac0.finalize())
+
 # decrypt file function
 # arguments:
 # infile: ciphertext file path

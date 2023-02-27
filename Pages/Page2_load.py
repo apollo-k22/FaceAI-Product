@@ -40,12 +40,12 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
         self.set_regxs()
 
         # init for testing
-        self.leditCaseNumber.setText("1231")
-        self.leditPS.setText("ps1")
-        self.leditExaminerName.setText("examiner")
-        self.leditExaminerNo.setText("examiner no")
-        self.leditRemarks.setText("remarks")
-        self.subject_photo_url = "Architecture.png"
+        # self.leditCaseNumber.setText("1231")
+        # self.leditPS.setText("ps1")
+        # self.leditExaminerName.setText("examiner")
+        # self.leditExaminerNo.setText("examiner no")
+        # self.leditRemarks.setText("remarks")
+        # self.subject_photo_url = "Architecture.png"
 
     # set slots to each widget
     def set_event_actions(self):

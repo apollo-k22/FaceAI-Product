@@ -16,6 +16,7 @@ import ntplib
 import time
 from time import ctime
 import datetime
+from cryptophic.license import read_information_db, get_cpu_info
 
 # start home page for probing
 from commons.case_info import CaseInfo
@@ -40,32 +41,7 @@ class StartHome(QMainWindow):
         self.faceai_init_thread = FaceAIInitThread(self.faceai)
         self.faceai_init_thread.finished_initializing_signal.connect(self.finished_initializing_slot)
 
-        app_unlocked = False
-        app_expire = 0
-        app_expire_date = ""
-        try:
-            connection = sqlite3.connect("data.db")
-            cursor = connection.cursor()
-        
-            (count,) = connection.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{}'".format("appinfo")).fetchone()
-            if count == 0:
-                cursor.execute("""CREATE TABLE appinfo (isdst, expire, fpo, atpo)""")
-                cursor.execute("INSERT INTO appinfo VALUES (?,?,?,?)", (False, "expire", "fpo", "atpo"))
-                connection.commit()
-        
-            cursor.execute("SELECT * FROM appinfo")
-            result = cursor.fetchone()
-            app_unlocked = result[0]
-            app_expire_date = result[1]
-        
-        except OperationalError:
-            print("Database Error")
-        
-        finally:
-            connection.close()
-
         self.window = uic.loadUi("./forms/Page_1.ui", self)
-        # self.setStyleSheet("background-image:url(../images/Background.png);")
         self.ui_0_license = LicenseBoxPage()
         self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai)
         self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage()
@@ -80,18 +56,26 @@ class StartHome(QMainWindow):
         self.btnGo2ProbeReport.clicked.connect(self.show_p7_probe_report_list_without_param)
         # set the connection between signal and slot for page transitions
         self.set_page_transition()
-        self.showMaximized()
+        # self.showMaximized()
+
+        app_unlocked = False
+        app_expire = 0
+        app_expire_date = ""        
+        app_unlocked, app_expire_date, app_cpu_info = read_information_db()
+        print(app_unlocked, app_expire_date)
+        if app_cpu_info != get_cpu_info():
+            __exit__()
 
         if app_unlocked == False:
             self.show_p0_license()
         else:
-            try:
-                NIST = 'pool.ntp.org'
-                ntp = ntplib.NTPClient()
-                ntpResponse = time.time() #ntp.request(NIST)
-                # print(ntpResponse.tx_time)
-            except:
-                print("ntp error")
+            # try:
+            #     NIST = 'pool.ntp.org'
+            #     ntp = ntplib.NTPClient()
+            #     ntpResponse = time.time() #ntp.request(NIST)
+            #     # print(ntpResponse.tx_time)
+            # except:
+            #     print("ntp error")
         
             app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
             if app_expire.total_seconds() > 0:
@@ -112,6 +96,7 @@ class StartHome(QMainWindow):
 
     # set the connection between signal and slot for page transitions
     def set_page_transition(self):
+        self.ui_0_license.continue_app_signal.connect(self.show_p1_home)
         self.ui_2_create_new_case.return_home_signal.connect(self.show_p1_home)
         # transit the case information 'create case page' to 'select target page'
         self.ui_2_create_new_case.continue_probe_signal.connect(
