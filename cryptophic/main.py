@@ -35,7 +35,7 @@ def encrypt_file(file_name):
     with open(keypath, 'rb') as f:
         key = f.read()
 
-    encfile = {"decfile": os.path.join(dec_secure_path, file_name), "encfile": os.path.join(".\\", file_name)}
+    encfile = {"decfile": os.path.join(dec_secure_path, file_name), "encfile": os.path.join(".", file_name)}
     try:
         encryptFile(encfile["decfile"], encfile["encfile"], str(key), bufferSize)
         os.remove(encfile["decfile"])
@@ -52,7 +52,7 @@ def decrypt_file(file_name):
     with open(keypath, 'rb') as f:
         key = f.read()
 
-    decfile = {"encfile": os.path.join(".\\", file_name), "decfile": os.path.join("\\", file_name)}
+    decfile = {"encfile": os.path.join(".", file_name), "decfile": os.path.join("\\", file_name)}
     try:
         decryptFile(decfile["encfile"], dec_secure_path+decfile["decfile"], str(key), bufferSize)
     except Exception:
