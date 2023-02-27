@@ -163,13 +163,9 @@ class NumberedCanvas(canvas.Canvas):
         self.drawRightString(self.width / 2.0 + 10, 0.35 * inch,
                              "Page %d of %d" % (self._pageNumber, page_count))
 
-
-
-
-if __name__ == '__main__':
+def create_pdf(probe_id, probe_result, export_path):
     buffer = BytesIO()
-    
-    probid = "523598675"
+
     reportinfo = {
         "result": "Matched",
         "created": datetime.strftime(datetime.now(), "%d/%m/%Y %I:%M %p"),
@@ -184,80 +180,19 @@ if __name__ == '__main__':
                 "sim": 0.8,
                 "caseno": "wwwwwww",
                 "ps": "wwwwwwwwwwwwwwww"
-            },
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
-            },
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
-            },
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
-            },
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
-            },
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
-            },
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
-            },
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
-            },
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
             }
         ],
-        "json": {
-            "faces": {
-                'image_path': "path",
-                'face_token': "token",
-                'face_rectangle': {
-                    'left': -1,
-                    'top': -1,
-                    'width': -1,
-                    'height': -1,
-                },
-                'face_angle': -1
-            },
-            "results": {
-                'image_path': "path",        
-                'face_token': "token",
-                'confidence': -1,
-                'user_id': "",
-            }
-        }
+        "json": {}
     }
 
-    report = GenReport(buffer, probid)
+    report = GenReport(buffer, probe_id)
     pdf = report.print_reports(reportinfo)
     buffer.seek(0)
  
     with open('sample.pdf', 'wb') as f:
         f.write(buffer.read())
+
+    return True
+    
+
+    
