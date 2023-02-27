@@ -38,7 +38,6 @@ class StartHome(QMainWindow):
 
         self.faceai_init_thread = FaceAIInitThread(self.faceai)
         self.faceai_init_thread.finished_initializing_signal.connect(self.finished_initializing_slot)
-        self.faceai_init_thread.start()
 
         # app_unlocked = False
         # app_expire = 0
@@ -103,6 +102,7 @@ class StartHome(QMainWindow):
     @pyqtSlot()
     def finished_decrypting_slot(self):
         self.dec_thread.quit()
+        self.faceai_init_thread.start()
 
     @pyqtSlot()
     def finished_initializing_slot(self):

@@ -1,11 +1,12 @@
 import pyaes, pbkdf2, binascii, os, secrets
 import os
 import time
-import pyAesCrypt
+from cryptophic.aes256_crypto import decryptFile
 
 # AES supports multiple key sizes: 16 (AES128), 24 (AES192), or 32 (AES256).
 bufferSize = 64 * 1024
 keypath = r".\key.key"
+dec_secure_path = r"C:\\Users\\" + os.getlogin() + r"\\.secure\\.encfiles"
 
 # Generating 32-byte key and return generated key
 def generate_key():
@@ -23,30 +24,10 @@ def generate_token():
     # print(binascii.hexlify(key))
     return key, binascii.hexlify(key)
 
-def encrypt(folder_path):
-    with open(keypath, 'rb') as f:
-        key = f.read()
-    print(key)
-
-    encfiles = []
-    try: 
-        for root, dirs, files in os.walk(folder_path):
-            for filename in files:
-                encfiles.append(os.path.join(root, filename))
-        for encfile in encfiles:
-            try:
-                pyAesCrypt.encryptFile(encfile, encfile+".enc", str(key), bufferSize)
-                os.remove(encfile)
-            except Exception:
-                print("Encrypt Error1")
-                return False
-    except:
-        print("Encrypt Error2")
-        return False
-
-    return True
-
 def decrypt(folder_path):
+    if not os.path.isdir(dec_secure_path): 
+        os.makedirs(dec_secure_path)
+    
     with open(keypath, 'rb') as f:
         key = f.read()
     print(key)
@@ -54,13 +35,13 @@ def decrypt(folder_path):
     decfiles = []
     try: 
         for root, dirs, files in os.walk(folder_path):
+            print(files)
             for filename in files:
-                decfiles.append(os.path.join(root, filename))
-
+                decfiles.append({"encfile": os.path.join(root, filename), "decfile": os.path.join("\\", filename)})
         for decfile in decfiles:
             try:
-                pyAesCrypt.decryptFile(decfile, decfile.replace(".enc",""), str(key), bufferSize)
-                os.remove(decfile)
+                decryptFile(decfile["encfile"], dec_secure_path+decfile["decfile"].replace(".enc",""), str(key), bufferSize)
+                # os.remove(decfile)
             except Exception:
                 print("Decrypt Error1")
                 return False
