@@ -12,3 +12,6 @@ license.dat.enc
 data.db
 models
 key.key
+
+# Ignored folders
+FaceAI Media
