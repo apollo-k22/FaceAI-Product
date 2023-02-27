@@ -57,18 +57,17 @@ class StartHome(QMainWindow):
         # set the connection between signal and slot for page transitions
         self.set_page_transition()
         # self.showMaximized()
-
         app_unlocked = False
         app_expire = 0
         app_expire_date = ""        
         app_unlocked, app_expire_date, app_cpu_info = read_information_db()
         print(app_unlocked, app_expire_date)
-        if app_cpu_info != get_cpu_info():
-            __exit__()
 
         if app_unlocked == False:
             self.show_p0_license()
-        else:
+        else:            
+            if app_cpu_info != get_cpu_info():
+                quit()
             # try:
             #     NIST = 'pool.ntp.org'
             #     ntp = ntplib.NTPClient()
