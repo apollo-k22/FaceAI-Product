@@ -1,6 +1,6 @@
 from io import BytesIO
 from reportlab.lib.pagesizes import letter, A4, LETTER
-from reportlab.platypus import BaseDocTemplate, SimpleDocTemplate, Paragraph, PageTemplate, Frame, TableStyle, Table
+from reportlab.platypus import BaseDocTemplate, SimpleDocTemplate, Paragraph, PageTemplate, Frame, TableStyle, Table, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
 from reportlab.lib.units import inch, mm
@@ -9,8 +9,9 @@ from reportlab.lib.colors import blue, black, red, white, HexColor
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from datetime import datetime
+import json
  
-class MyPrint:
+class GenReport:
     _probid_ = "0"
     def __init__(self, buffer, probid):
         self.buffer = buffer
@@ -43,7 +44,7 @@ class MyPrint:
         canvas.restoreState()
 
 
-    def print_users(self, reportinfo):
+    def print_reports(self, reportinfo):
         buffer = self.buffer
         doc = SimpleDocTemplate(buffer,
                                 rightMargin=self.margin,
@@ -51,35 +52,6 @@ class MyPrint:
                                 topMargin=self.margin * 2.4,
                                 bottomMargin=self.margin,
                                 pagesize=self.pagesize)
-
-        # doc = BaseDocTemplate(buffer)
-
-        # column_gap = 10 * mm
-        # doc.addPageTemplates([
-        #     PageTemplate(
-        #         frames=[
-        #             Frame(
-        #                 doc.leftMargin,
-        #                 doc.bottomMargin,
-        #                 doc.width / 2,
-        #                 doc.height,
-        #                 id='left',
-        #                 rightPadding=column_gap / 2,
-        #                 showBoundary=0  # set to 1 for debugging
-        #             ),
-        #             Frame(
-        #                 doc.leftMargin + doc.width / 2,
-        #                 doc.bottomMargin,
-        #                 doc.width / 2,
-        #                 doc.height,
-        #                 id='right',
-        #                 leftPadding=column_gap / 2,
-        #                 showBoundary=0
-        #             ),
-        #         ]
-        #     ),
-        # ])
-
  
         # Our container for 'Flowable' objects
         elements = []
@@ -92,10 +64,11 @@ class MyPrint:
         # See the ReportLab documentation for the full list of functionality.
         textsize = 12
         leading = 14
+        spacing = 6
         # elements.append(Paragraph('''<para align=center leading=18 fontName='Arial'><font size=12 color=0xff0000><b>''' + 'Probe result: ' + reportinfo["result"] + '''</b></font></para>'''))
         elements.append(Paragraph('Probe result: ' + reportinfo["result"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=red, leading=20)))
 
-        ministy = TableStyle([('GRID', (0,0), (-1,-1), 1.0, white),])
+        tablestyle = TableStyle([('GRID', (0,0), (-1,-1), 1.0, white),])
         nested1 = [
             Paragraph('Time of report generation: ' + reportinfo["created"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
             Paragraph('Case no.:' + reportinfo["casenum"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
@@ -104,36 +77,52 @@ class MyPrint:
             Paragraph('BP no.: ' + reportinfo["bpnum"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
             Paragraph('Remarks: ' + reportinfo["remarks"] * 5, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
         ]   
-        nested2 = [Paragraph('Subject photo', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=leading))]
-        t = Table([[nested1, nested2]],
+        img = Image(r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png', kind='proportional')
+        img.drawHeight = 3.0*inch
+        img.drawWidth = 3.6*inch
+        img.hAlign = TA_CENTER
+        img.vAlign = TA_CENTER
+        nested2 = [
+            img,
+            Paragraph('Subject photo', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=leading))
+        ]
+        table1 = Table([[nested1, nested2]],
                   colWidths=('50%', '50%'),
                   rowHeights=None,
-                  style=ministy)
-        elements.append(t)
+                  style=tablestyle)
+        elements.append(table1)
 
-        elements.append(Paragraph('The subject photo has matched to the following old case photos. Respective similarity scores and case details are attached herewith.', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceBefore=6)))
+        elements.append(Paragraph('The subject photo has matched to the following old case photos. Respective similarity scores and case details are attached herewith.', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceBefore=spacing, spaceAfter=spacing)))
+
+        nested = {}
+        for index, target in enumerate(reportinfo["targets"]):            
+            img = Image(target['path'], kind='proportional')
+            img.drawHeight = 3.0*inch
+            img.drawWidth = 3.6*inch
+            img.hAlign = TA_CENTER
+            img.vAlign = TA_CENTER
+            nested[index % 2] = [
+                img,
+                Paragraph('Similarity score: %.2f%%(%s)'%(target['sim']*100, "High match"), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+            ]
+            if index % 2 == 0:
+                continue
+            table = Table([[nested[0], nested[1]]],
+                    colWidths=('50%', '50%'),
+                    rowHeights=None,
+                    style=tablestyle)
+            elements.append(table)
+
+        elements.append(Paragraph('JSON results', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
         
+        jsondata = json.dumps(reportinfo["json"], indent=4)
+        print(jsondata)
+        elements.append(Paragraph(jsondata, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
 
         doc.build(elements, onFirstPage=self._header_footer, onLaterPages=self._header_footer,
                   canvasmaker=NumberedCanvas)        
-        
-    '''
-        Usage with django
-    @staff_member_required
-    def print_users(request):
-        # Create the HttpResponse object with the appropriate PDF headers.
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="My Users.pdf"'
-     
-        buffer = BytesIO()
-     
-        report = MyPrint(buffer, 'Letter')
-        pdf = report.print_users()
-     
-        response.write(pdf)
-        return response
-    '''
-
 
 class NumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
@@ -188,11 +177,86 @@ if __name__ == '__main__':
         "ps": "wwwwwwwwwwwwww",
         "examname": "wwwwwwwwwwwwwwwwww",
         "bpnum": "wwwwwwwwwwwwwwwwwwwwww",
-        "remarks": "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+        "remarks": "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+        "targets": [
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            },
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            },
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            },
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            },
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            },
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            },
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            },
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            },
+            {
+                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
+                "sim": 0.8,
+                "caseno": "wwwwwww",
+                "ps": "wwwwwwwwwwwwwwww"
+            }
+        ],
+        "json": {
+            "faces": {
+                'image_path': "path",
+                'face_token': "token",
+                'face_rectangle': {
+                    'left': -1,
+                    'top': -1,
+                    'width': -1,
+                    'height': -1,
+                },
+                'face_angle': -1
+            },
+            "results": {
+                'image_path': "path",        
+                'face_token': "token",
+                'confidence': -1,
+                'user_id': "",
+            }
+        }
     }
 
-    report = MyPrint(buffer, probid)
-    pdf = report.print_users(reportinfo)
+    report = GenReport(buffer, probid)
+    pdf = report.print_reports(reportinfo)
     buffer.seek(0)
  
     with open('sample.pdf', 'wb') as f:

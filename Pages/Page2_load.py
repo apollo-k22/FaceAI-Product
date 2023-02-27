@@ -9,17 +9,18 @@ from PyQt5.QtCore import pyqtSlot
 from sympy import false, true
 from commons.common import Common
 from commons.case_info import CaseInfo
-from insightfaces.main import is_face
+from insightfaces.main import FaceAI
 
 
-class LoaderCreateNewCasePage(QMainWindow):
+class LoaderCreateNewCasePage(QMainWindow, FaceAI):
     # when clicked 'return home' button, this will be emitted
     return_home_signal = pyqtSignal()
     # when clicked 'continue to probe' button, this will be emitted
     continue_probe_signal = pyqtSignal(object)
 
-    def __init__(self):
+    def __init__(self, faceai):
         super().__init__()
+        self.faceai = faceai
         self.window = uic.loadUi("./forms/Page_2.ui", self)
         # instance CaseInfo to save the case information
         self.case_info = CaseInfo()
@@ -32,10 +33,6 @@ class LoaderCreateNewCasePage(QMainWindow):
         self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
         self.leditExaminerNo = self.findChild(QLineEdit, 'leditExaminerNo')
         self.leditRemarks = self.findChild(QLineEdit, 'leditRemarks')
-
-        # recognition(
-        #     r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-        #     [r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt4.png']);
 
         # set image url
         self.subject_photo_url = ''
@@ -110,7 +107,7 @@ class LoaderCreateNewCasePage(QMainWindow):
     @pyqtSlot()
     def continue_probe_slot(self):
         is_empty, ledit_name = self.is_empty_input_values()
-        if not is_face(self.subject_photo_url):
+        if not self.faceai.is_face(self.subject_photo_url):
             Common.show_message(QMessageBox.Warning, "Please select image with face", "", "Empty Warning",
                                 ledit_name + " has no face")
             return

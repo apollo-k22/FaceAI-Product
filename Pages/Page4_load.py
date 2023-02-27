@@ -9,17 +9,17 @@ from PyQt5.QtWidgets import QLabel
 from commons.case_info import CaseInfo
 from commons.probing_result import ProbingResult
 from commons.probing_thread import ProbingThread
-from insightfaces.main import recognition
+from insightfaces.main import FaceAI
 
 
-class LoaderProbingPage(QMainWindow):
+class LoaderProbingPage(QMainWindow, FaceAI):
     completed_probing_signal = pyqtSignal(ProbingResult)
 
-    def __init__(self):
+    def __init__(self, faceai):
         super().__init__()
-
+        self.faceai = faceai
         self.probing_result = ProbingResult()
-        self.probing_thread = ProbingThread(CaseInfo)
+        self.probing_thread = ProbingThread(CaseInfo, self.faceai)
         self.gif = QMovie(":/newPrefix/AIFace.gif")  # ('ui/animated_gif_logo_UI_.gif') !!!
         self.window = uic.loadUi("./forms/Page_4.ui", self)
         self.lblFaceGif = self.findChild(QLabel, "lblFaceGif")
@@ -40,12 +40,6 @@ class LoaderProbingPage(QMainWindow):
         self.probing_thread.probing_result.case_info = case_info
         self.probing_thread.finished_probing_signal.connect(self.finished_probing_slot)
         self.probing_thread.start()
-
-        # self.make_mock()
-        # json_data = recognition(self.probing_result.case_info.subject_image_url,
-        # self.probing_result.case_info.target_image_urls)
-        # print(json_data)
-        # self.probing_result.json_result = json_data
 
     @pyqtSlot(ProbingResult)
     def finished_probing_slot(self, probing_result):

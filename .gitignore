@@ -1,12 +1,14 @@
 # Build and Release Folders
 dist
 build
-Pages/__pycache__
 __pycache__
 main.spec
+commons/__init__.py
+commons/__pycache__
+Pages/__pycache__
 
 # Security Files and Folders
-Pages/license.dat
-Pages/license2.dat
-Pages/data.db
+license.dat.enc
+data.db
 models
+key.key
