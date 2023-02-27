@@ -40,7 +40,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
                            "book-3.jpg",
                            "book-4.jpg",
                            "pro4.jpg",
-                           "profile-bg.jpg",
+                           "open.jpg",
                            ]
 
     @pyqtSlot()

@@ -36,15 +36,15 @@ class DBConnection:
                                  "matched TEXT," \
                                  "report_generation_time TEXT," \
                                  "json_result TEXT);"
-            # query_string_targets = "create table if not exists targets (" \
-            #                        "id INTEGER PRIMARY KEY, " \
-            #                        "target_url TEXT," \
-            #                        "case_id INTEGER," \
-            #                        "similarity FLOAT);"
+            query_string_targets = "create table if not exists targets (" \
+                                   "id INTEGER PRIMARY KEY, " \
+                                   "target_url TEXT," \
+                                   "case_id INTEGER," \
+                                   "similarity FLOAT);"
             self.connection = sqlite3.connect(self.connection_string)
             cursor = self.connection.cursor()
             cursor.execute(query_string_cases)
-            # cursor.execute(query_string_targets)
+            cursor.execute(query_string_targets)
             self.connection.commit()
         except sqlite3.IntegrityError as e:
             print('INTEGRITY ERROR\n')

@@ -578,6 +578,9 @@ color: rgb(255, 255, 255);</string>
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
               <property name="iconSize">
                <size>
                 <width>0</width>
@@ -606,7 +609,7 @@ color: rgb(255, 255, 255);</string>
                <bool>false</bool>
               </attribute>
               <attribute name="verticalHeaderCascadingSectionResizes">
-               <bool>true</bool>
+               <bool>false</bool>
               </attribute>
               <attribute name="verticalHeaderMinimumSectionSize">
                <number>35</number>
@@ -621,7 +624,7 @@ color: rgb(255, 255, 255);</string>
                <bool>false</bool>
               </attribute>
               <attribute name="verticalHeaderStretchLastSection">
-               <bool>true</bool>
+               <bool>false</bool>
               </attribute>
               <column>
                <property name="text">
