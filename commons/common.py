@@ -1,9 +1,13 @@
+import pathlib
+
+from PyQt5.QtCore import QFile
 from PyQt5.QtWidgets import QMessageBox
 import numpy as np
 
 
 class Common:
-    # DATABASE_PATH =
+    DATABASE_PATH = "FaceAI Media"
+    REPORTS_PATH = "FaceAI Probe Reports"
     MATCH_LEVEL = 0.7
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
@@ -16,13 +20,12 @@ class Common:
                    " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
                    " *.tif *.tiff *.wbmp" \
                    " *.webp *.xbm *.xpm)"
-    MEDIA_FOLDER = "FaceAI Media"
+    MEDIA_PATH = "FaceAI Media"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
     LABEL_MAX_WIDTH_IN_ITEM = 170
     VALUE_MAX_HEIGHT_IN_ITEM = 30
     VALUE_MAX_WIDTH_IN_ITEM = 230
     CROSS_BUTTON_SIZE = 30
-
 
     @staticmethod
     def clear_layout(layout):
@@ -33,6 +36,23 @@ class Common:
                 child.widget().deleteLater()
             elif child.layout():
                 Common.clear_layout(child)
+
+    @staticmethod
+    def create_path(path_name):
+        path = pathlib.Path(path_name)
+        print(path.mkdir(parents=True, exist_ok=True))
+
+    @staticmethod
+    def copy_file(from_path, to_directory):
+        to_path = to_directory + "/" + Common.get_file_name_from_path(from_path)
+        if not QFile.exists(to_path):
+            QFile.copy(from_path, to_path)
+        return to_path
+
+    @staticmethod
+    def get_file_name_from_path(url):
+        pa = pathlib.Path(url)
+        return pa.name
 
     @staticmethod
     def remove_elements_from_list_tail(removing_list, start_index):

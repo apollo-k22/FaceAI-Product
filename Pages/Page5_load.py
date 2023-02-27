@@ -6,6 +6,7 @@ from PyQt5.QtGui import QIntValidator, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QGridLayout, \
     QSizePolicy, QTextEdit
 from commons.common import Common
+from commons.db_connection import DBConnection
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 
@@ -78,6 +79,10 @@ class LoaderProbeReportPreviewPage(QMainWindow):
 
     def init_input_values(self):
         probe_id = Common.generate_probe_id()
+        # check whether probe id exist on database
+        db = DBConnection()
+        while db.is_exist_value("cases", "probe_id", probe_id):
+            probe_id = Common.generate_probe_id()
         self.probe_result.probe_id = probe_id
         self.lblProbeId.setText(probe_id)
         self.lblProbeResult.setText(self.probe_result.is_matched())

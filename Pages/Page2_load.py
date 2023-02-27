@@ -40,12 +40,12 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
         self.set_regxs()
 
         # init for testing
-        # self.leditCaseNumber.setText("1231")
-        # self.leditPS.setText("ps1")
-        # self.leditExaminerName.setText("examiner")
-        # self.leditExaminerNo.setText("examiner no")
-        # self.leditRemarks.setText("remarks")
-        # self.subject_photo_url = "Architecture.png"
+        self.leditCaseNumber.setText("1231")
+        self.leditPS.setText("ps1")
+        self.leditExaminerName.setText("examiner")
+        self.leditExaminerNo.setText("examiner no")
+        self.leditRemarks.setText("remarks")
+        self.subject_photo_url = "Architecture.png"
 
     # set slots to each widget
     def set_event_actions(self):
@@ -73,13 +73,15 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
     def get_subject_photo(self):
         self.subject_photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', "Image files", Common.IMAGE_FILTER)
         if self.subject_photo_url:
-            # create icon with selected file name
-            icon = QIcon(self.subject_photo_url)
-            # get button size
-            btn_size = self.btnSelectPhoto.rect().size()
-            self.btnSelectPhoto.setIcon(icon)
-            # set image size to button size
-            self.btnSelectPhoto.setIconSize(btn_size)
+            btn_style = "border-image:url(" + self.subject_photo_url + ");"
+            self.btnSelectPhoto.setStyleSheet(btn_style)
+            # # create icon with selected file name
+            # icon = QIcon(self.subject_photo_url)
+            # # get button size
+            # btn_size = self.btnSelectPhoto.rect().size()
+            # self.btnSelectPhoto.setIcon(icon)
+            # # set image size to button size
+            # self.btnSelectPhoto.setIconSize(btn_size)
 
     # a slot to call whenever move cursor on line edit.
     @pyqtSlot(int, int)
@@ -88,7 +90,7 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
         # set regx option to use unicode printable characters
         regx.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
         text = lineEdit.text()
-        if (pos != 0):
+        if pos != 0:
             match = regx.match(text[pos - 1])
             # check whether valid the latest input character
             if not match.hasMatch():
@@ -107,14 +109,15 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
     @pyqtSlot()
     def continue_probe_slot(self):
         is_empty, ledit_name = self.is_empty_input_values()
-        if not self.faceai.is_face(self.subject_photo_url):
-            Common.show_message(QMessageBox.Warning, "Please select image with face", "", "Empty Warning",
-                                ledit_name + " has no face")
-            return
         if is_empty == true:
             Common.show_message(QMessageBox.Warning, "Please fill all fields", "", "Empty Warning",
                                 ledit_name + " is empty")
         else:
+            if not self.faceai.is_face(self.subject_photo_url):
+                Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+                                    "Incorrect image selected.",
+                                    "")
+                return
             # init the case data for next probe step
             self.case_info.case_number = self.leditCaseNumber.text()
             self.case_info.case_PS = self.leditPS.text()

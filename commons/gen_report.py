@@ -189,7 +189,7 @@ def create_pdf(probe_id, probe_result, export_path):
     pdf = report.print_reports(reportinfo)
     buffer.seek(0)
  
-    with open('sample.pdf', 'wb') as f:
+    with open('%s/report_%s.pdf'%(export_path, probe_id), 'wb') as f:
         f.write(buffer.read())
 
     return True

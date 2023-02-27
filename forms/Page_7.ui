@@ -544,7 +544,7 @@ border: 1px solid rgb(53, 132, 228);</string>
            </spacer>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <layout class="QVBoxLayout" name="vlyTableContainer">
             <property name="spacing">
              <number>0</number>
             </property>
@@ -552,11 +552,11 @@ border: 1px solid rgb(53, 132, 228);</string>
              <enum>QLayout::SetDefaultConstraint</enum>
             </property>
             <item>
-             <widget class="QTableWidget" name="twdtResultTable">
+             <widget class="QTableWidget" name="resultTable">
               <property name="minimumSize">
                <size>
                 <width>650</width>
-                <height>300</height>
+                <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
@@ -573,11 +573,13 @@ border: 1px solid rgb(53, 132, 228);</string>
               </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(80, 99, 120);
-color: rgb(255, 255, 255);
-QHeaderView::section {&quot;&quot;background-color: red; };</string>
+color: rgb(255, 255, 255);</string>
               </property>
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
               </property>
               <property name="iconSize">
                <size>
@@ -607,7 +609,7 @@ QHeaderView::section {&quot;&quot;background-color: red; };</string>
                <bool>false</bool>
               </attribute>
               <attribute name="verticalHeaderCascadingSectionResizes">
-               <bool>true</bool>
+               <bool>false</bool>
               </attribute>
               <attribute name="verticalHeaderMinimumSectionSize">
                <number>35</number>
@@ -622,53 +624,8 @@ QHeaderView::section {&quot;&quot;background-color: red; };</string>
                <bool>false</bool>
               </attribute>
               <attribute name="verticalHeaderStretchLastSection">
-               <bool>true</bool>
+               <bool>false</bool>
               </attribute>
-              <row>
-               <property name="text">
-                <string>New Row</string>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Arial</family>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>New Row</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>New Row</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>New Row</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>New Row</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>New Row</string>
-               </property>
-              </row>
               <column>
                <property name="text">
                 <string>Date &amp; Time</string>
@@ -809,309 +766,6 @@ QHeaderView::section {&quot;&quot;background-color: red; };</string>
                 </brush>
                </property>
               </column>
-              <item row="0" column="0">
-               <property name="text">
-                <string>30-01-2023</string>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Arial</family>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="NoBrush">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="0" column="1">
-               <property name="text">
-                <string>1232</string>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Arial</family>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="0" column="2">
-               <property name="text">
-                <string>86 Characters</string>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>255</red>
-                  <green>255</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="0" column="3">
-               <property name="text">
-                <string>6765</string>
-               </property>
-              </item>
-              <item row="0" column="4">
-               <property name="text">
-                <string>Nick John</string>
-               </property>
-              </item>
-              <item row="0" column="5">
-               <property name="text">
-                <string>232123421</string>
-               </property>
-              </item>
-              <item row="0" column="6">
-               <property name="text">
-                <string>Export</string>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>88</red>
-                  <green>156</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="1" column="0">
-               <property name="text">
-                <string>30-01-2023</string>
-               </property>
-              </item>
-              <item row="1" column="1">
-               <property name="text">
-                <string>1232</string>
-               </property>
-              </item>
-              <item row="1" column="2">
-               <property name="text">
-                <string>86 Characters</string>
-               </property>
-              </item>
-              <item row="1" column="3">
-               <property name="text">
-                <string>6765</string>
-               </property>
-              </item>
-              <item row="1" column="4">
-               <property name="text">
-                <string>Nick John</string>
-               </property>
-              </item>
-              <item row="1" column="5">
-               <property name="text">
-                <string>232123421</string>
-               </property>
-              </item>
-              <item row="1" column="6">
-               <property name="text">
-                <string>Export</string>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>88</red>
-                  <green>156</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="2" column="0">
-               <property name="text">
-                <string>30-01-2023</string>
-               </property>
-              </item>
-              <item row="2" column="1">
-               <property name="text">
-                <string>1232</string>
-               </property>
-              </item>
-              <item row="2" column="2">
-               <property name="text">
-                <string>86 Characters</string>
-               </property>
-              </item>
-              <item row="2" column="3">
-               <property name="text">
-                <string>6765</string>
-               </property>
-              </item>
-              <item row="2" column="4">
-               <property name="text">
-                <string>Nick John</string>
-               </property>
-              </item>
-              <item row="2" column="5">
-               <property name="text">
-                <string>232123421</string>
-               </property>
-              </item>
-              <item row="2" column="6">
-               <property name="text">
-                <string>Export</string>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>88</red>
-                  <green>156</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="3" column="0">
-               <property name="text">
-                <string>30-01-2023</string>
-               </property>
-              </item>
-              <item row="3" column="1">
-               <property name="text">
-                <string>1232</string>
-               </property>
-              </item>
-              <item row="3" column="2">
-               <property name="text">
-                <string>86 Characters</string>
-               </property>
-              </item>
-              <item row="3" column="3">
-               <property name="text">
-                <string>6765</string>
-               </property>
-              </item>
-              <item row="3" column="4">
-               <property name="text">
-                <string>Nick John</string>
-               </property>
-              </item>
-              <item row="3" column="5">
-               <property name="text">
-                <string>232123421</string>
-               </property>
-              </item>
-              <item row="3" column="6">
-               <property name="text">
-                <string>Export</string>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>88</red>
-                  <green>156</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="4" column="0">
-               <property name="text">
-                <string>30-01-2023</string>
-               </property>
-              </item>
-              <item row="4" column="1">
-               <property name="text">
-                <string>1232</string>
-               </property>
-              </item>
-              <item row="4" column="2">
-               <property name="text">
-                <string>86 Characters</string>
-               </property>
-              </item>
-              <item row="4" column="3">
-               <property name="text">
-                <string>6765</string>
-               </property>
-              </item>
-              <item row="4" column="4">
-               <property name="text">
-                <string>Nick John</string>
-               </property>
-              </item>
-              <item row="4" column="5">
-               <property name="text">
-                <string>232123421</string>
-               </property>
-              </item>
-              <item row="4" column="6">
-               <property name="text">
-                <string>Export</string>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="SolidPattern">
-                 <color alpha="255">
-                  <red>88</red>
-                  <green>156</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
-              <item row="5" column="0">
-               <property name="text">
-                <string>30-01-2023</string>
-               </property>
-              </item>
-              <item row="5" column="1">
-               <property name="text">
-                <string>1232</string>
-               </property>
-              </item>
-              <item row="5" column="2">
-               <property name="text">
-                <string>86 Characters</string>
-               </property>
-              </item>
-              <item row="5" column="3">
-               <property name="text">
-                <string>6765</string>
-               </property>
-              </item>
-              <item row="5" column="4">
-               <property name="text">
-                <string>Nick John</string>
-               </property>
-              </item>
-              <item row="5" column="5">
-               <property name="text">
-                <string>232123421</string>
-               </property>
-              </item>
-              <item row="5" column="6">
-               <property name="text">
-                <string>Export</string>
-               </property>
-               <property name="foreground">
-                <brush brushstyle="NoBrush">
-                 <color alpha="255">
-                  <red>88</red>
-                  <green>156</green>
-                  <blue>255</blue>
-                 </color>
-                </brush>
-               </property>
-              </item>
              </widget>
             </item>
             <item>

@@ -77,7 +77,7 @@ class StartHome(QMainWindow):
         # Click to go page2 from page 1 button
         self.btnCreateCase.clicked.connect(self.show_p2_create_new_case)
         # Click to go to page 7 from page 1 button
-        self.btnGo2ProbeReport.clicked.connect(self.show_p7_probe_report_list)
+        self.btnGo2ProbeReport.clicked.connect(self.show_p7_probe_report_list_without_param)
         # set the connection between signal and slot for page transitions
         self.set_page_transition()
         self.showMaximized()
@@ -146,6 +146,7 @@ class StartHome(QMainWindow):
         self.ui_7_prove_report_list.return_home_signal.connect(self.show_p1_home)
         # when clicked "go back" button, go back to "Probe report" page
         self.ui_7_prove_report_list.go_back_signal.connect(self.show_p6_probe_report)
+        self.ui_7_prove_report_list.go_back_empty_signal.connect(self.show_p6_probe_report_without_param)
 
     @pyqtSlot(CaseInfo)
     def show_p3_select_target_photos(self, case_info):
@@ -201,17 +202,27 @@ class StartHome(QMainWindow):
         self.ui_6_probe_report.showMaximized()
 
     @pyqtSlot()
-    def show_p6_probe_report(self):
-        self.ui_5_probe_report_preview.hide()
+    def show_p6_probe_report_without_param(self):
+        self.ui_7_prove_report_list.hide()
         # self.ui_6_probe_report.probe_result = probe_result
         self.ui_6_probe_report.init_input_values()
         self.ui_6_probe_report.init_target_images_view()
         self.ui_6_probe_report.showMaximized()
 
+    @pyqtSlot(ProbingResult)
+    def show_p7_probe_report_list(self, probe_result):
+        self.hide()
+        self.ui_6_probe_report.hide()
+        self.ui_7_prove_report_list.probe_result = probe_result
+        self.ui_7_prove_report_list.init_actions()
+        self.ui_7_prove_report_list.init_views()
+        self.ui_7_prove_report_list.showMaximized()
+
     @pyqtSlot()
-    def show_p7_probe_report_list(self):
+    def show_p7_probe_report_list_without_param(self):
         self.hide()
         self.ui_4_probing.hide()
+        self.ui_7_prove_report_list.init_views()
         self.ui_7_prove_report_list.showMaximized()
 
 
