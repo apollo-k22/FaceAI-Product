@@ -11,6 +11,6 @@ class DecThread(QThread):
         self.decrypting()
 
     def decrypting(self):
-        res = decrypt(r".\test_model")
+        res = decrypt(r".\models")
         print("Decrypting: ", res)
         self.finished_decrypting_signal.emit()

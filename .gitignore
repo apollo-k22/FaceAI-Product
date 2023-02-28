@@ -8,7 +8,7 @@ commons/__pycache__
 Pages/__pycache__
 
 # Security Files and Folders
-license.dat.enc
+license.dat
 data.db
 models
 key.key
