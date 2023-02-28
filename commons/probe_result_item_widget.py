@@ -1,14 +1,16 @@
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QPushButton, QFormLayout, QLabel
 from commons.common import Common
+from commons.db_connection import DBConnection
 
 
 class ProbeResultItemWidget(QWidget):
     delete_item_signal = pyqtSignal(object)
 
-    def __init__(self, result_item, is_shown_delete_button, parent=None):
+    def __init__(self, result_item, is_shown_delete_button, is_used_old_cases, parent=None):
         QWidget.__init__(self, parent=parent)
         self.result_item = result_item
+        self.is_used_old_cases = is_used_old_cases
         # set whether to show cross button on image
         self.is_showed_cross_button = is_shown_delete_button
 
@@ -19,7 +21,8 @@ class ProbeResultItemWidget(QWidget):
 
         self.wdt_image = QWidget()
 
-        self.btn_delete = QPushButton(self.wdt_image)
+        if self.is_showed_cross_button:
+            self.btn_delete = QPushButton(self.wdt_image)
 
         self.fly_info_container = QFormLayout()
 
@@ -42,9 +45,10 @@ class ProbeResultItemWidget(QWidget):
         self.delete_item_signal.emit(self.result_item)
 
     def resizeEvent(self, event):
-        image_geo = self.wdt_image.geometry()
-        self.btn_delete.setGeometry(image_geo.width() - Common.CROSS_BUTTON_SIZE,
-                                    0, Common.CROSS_BUTTON_SIZE, Common.CROSS_BUTTON_SIZE)
+        if self.is_showed_cross_button:
+            image_geo = self.wdt_image.geometry()
+            self.btn_delete.setGeometry(image_geo.width() - Common.CROSS_BUTTON_SIZE,
+                                        0, Common.CROSS_BUTTON_SIZE, Common.CROSS_BUTTON_SIZE)
 
     def init_view(self):
         self.vly_item_container.setSpacing(6)
@@ -56,10 +60,13 @@ class ProbeResultItemWidget(QWidget):
         style = "color:rgb(255, 255, 255);border-image:url(" + self.result_item['image_path'] + ");"
         self.wdt_image.setStyleSheet(style)
 
-        image_geo = self.wdt_image.geometry()
-        self.btn_delete.setGeometry(image_geo.width() - Common.CROSS_BUTTON_SIZE,
-                                    0, Common.CROSS_BUTTON_SIZE, Common.CROSS_BUTTON_SIZE)
-        self.btn_delete.setStyleSheet("image: url(:/newPrefix/cross-icon.png);")
+        if self.is_showed_cross_button:
+            image_geo = self.wdt_image.geometry()
+            self.btn_delete.setGeometry(image_geo.width() - Common.CROSS_BUTTON_SIZE,
+                                        0, Common.CROSS_BUTTON_SIZE, Common.CROSS_BUTTON_SIZE)
+            self.btn_delete.setStyleSheet("image: url(:/newPrefix/cross-icon.png);")
+            self.btn_delete.clicked.connect(self.on_clicked_delete)
+
         self.vly_img_container.addWidget(self.wdt_image)
 
         self.lbl_similarity_score_label.setText("Similarity Score: ")
@@ -84,5 +91,9 @@ class ProbeResultItemWidget(QWidget):
 
         if self.result_item['confidence']:
             self.lbl_similarity_score.setText(str(self.result_item['confidence']))
-        self.btn_delete.clicked.connect(self.on_clicked_delete)
-        self.btn_delete.setEnabled(self.is_showed_cross_button)
+        if self.is_used_old_cases:
+            db = DBConnection()
+            case_no, ps = db.get_case_info(self.result_item['image_path'])
+            self.lbl_case_number.setText(case_no)
+            self.lbl_ps.setText(ps)
+

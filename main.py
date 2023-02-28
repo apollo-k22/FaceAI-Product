@@ -183,6 +183,7 @@ class StartHome(QMainWindow):
     @pyqtSlot(ProbingResult)
     def show_p6_probe_report(self, probe_result):
         self.ui_5_probe_report_preview.hide()
+        self.ui_7_prove_report_list.hide()
         self.ui_6_probe_report.probe_result = probe_result
         self.ui_6_probe_report.init_input_values()
         self.ui_6_probe_report.init_target_images_view()
@@ -191,7 +192,7 @@ class StartHome(QMainWindow):
     @pyqtSlot()
     def show_p6_probe_report_without_param(self):
         self.ui_7_prove_report_list.hide()
-        # self.ui_6_probe_report.probe_result = probe_result
+        self.ui_6_probe_report.probe_result = ProbingResult()
         self.ui_6_probe_report.init_input_values()
         self.ui_6_probe_report.init_target_images_view()
         self.ui_6_probe_report.showMaximized()

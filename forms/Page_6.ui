@@ -11,16 +11,23 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>FaceAI Probe Report</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
-    <string notr="true">background-image: url(:/newPrefix/Background.png);</string>
+    <string notr="true">background-image: url(:/newPrefix/Background.png);
+border:none;</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="leftMargin">
+     <number>10</number>
+    </property>
+    <property name="topMargin">
+     <number>10</number>
+    </property>
     <item>
      <widget class="QScrollArea" name="full_page_scroll">
       <property name="verticalScrollBarPolicy">
@@ -34,15 +41,21 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1315</width>
-         <height>1483</height>
+         <width>1299</width>
+         <height>1596</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0,0">
         <property name="spacing">
          <number>15</number>
         </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
         <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
          <number>0</number>
         </property>
         <property name="bottomMargin">
@@ -54,18 +67,19 @@
            <widget class="QLabel" name="logo">
             <property name="minimumSize">
              <size>
-              <width>135</width>
-              <height>80</height>
+              <width>200</width>
+              <height>100</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>135</width>
-              <height>80</height>
+              <width>200</width>
+              <height>100</height>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">image:url(&quot;E:/super/FaceAI GUI PyQT/assets/images/FaceAI-Logo.png&quot;);</string>
+             <string notr="true">image:url(&quot;:/newProfix/FaceAI-Logo.png&quot;);
+background:transparent;</string>
             </property>
             <property name="text">
              <string/>
@@ -99,7 +113,7 @@
            <number>0</number>
           </property>
           <property name="leftMargin">
-           <number>15</number>
+           <number>0</number>
           </property>
           <property name="rightMargin">
            <number>25</number>
@@ -138,12 +152,12 @@
                <cursorShape>PointingHandCursor</cursorShape>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-image:url(&quot;:/newPrefix/icon-back2.png&quot;);
+               <string notr="true">image:url(&quot;:/newPrefix/icon-back2.png&quot;);
 background-size: cover;
 background-repeat: no-repeat;
 background-color: rgb(127, 0, 226);
 border-radius: 10px;
-border: 1px solid white;</string>
+background:transparent;</string>
               </property>
               <property name="text">
                <string/>
@@ -194,10 +208,11 @@ border: 1px solid white;</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);</string>
+             <string notr="true">color: rgb(255, 255, 255);
+background:transparent;</string>
             </property>
             <property name="text">
-             <string>FaceAI Probe Report Preview</string>
+             <string>FaceAI Probe Report</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -219,7 +234,7 @@ border: 1px solid white;</string>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>60</width>
                 <height>20</height>
                </size>
               </property>
@@ -260,7 +275,8 @@ border: 1px solid white;</string>
 color: white;
 color: rgb(255, 255, 255);
 background-color: rgb(53, 132, 228);
-image:url(&quot;:/newPrefix/export_to_pdf.png&quot;);</string>
+image:url(&quot;:/newPrefix/export_to_pdf.png&quot;);
+background:transparent;</string>
               </property>
               <property name="text">
                <string/>
@@ -441,7 +457,7 @@ background:none;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">
+                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 color: white;</string>
                 </property>
@@ -459,7 +475,7 @@ color: white;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">
+                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 color: white;</string>
                 </property>
@@ -477,7 +493,7 @@ color: white;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">
+                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 color: white;</string>
                 </property>
@@ -495,7 +511,7 @@ color: white;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">
+                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 color: white;</string>
                 </property>
@@ -513,7 +529,7 @@ color: white;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">
+                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 color: white;</string>
                 </property>
@@ -531,7 +547,7 @@ color: white;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">
+                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 color: white;</string>
                 </property>
@@ -549,7 +565,7 @@ color: white;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">
+                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 color: white;</string>
                 </property>
@@ -615,7 +631,7 @@ border-radius: 10px;
            </layout>
           </item>
           <item>
-           <widget class="QLabel" name="label_9">
+           <widget class="QLabel" name="lblMatchedDescription">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -628,7 +644,8 @@ border-radius: 10px;
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);</string>
+             <string notr="true">background:transparent;
+color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
              <string>The subject photo has matched to the following target photos. Respective facial recognition similarity scores are attached herewith.</string>
@@ -664,7 +681,8 @@ border-radius: 10px;
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">color: rgb(255, 255, 255)</string>
+               <string notr="true">background:transparent;
+color: rgb(255, 255, 255)</string>
               </property>
               <property name="text">
                <string>Keep First</string>
@@ -686,7 +704,9 @@ border-radius: 10px;
                </size>
               </property>
               <property name="styleSheet">
-               <string notr="true">border-radius: 10px;</string>
+               <string notr="true">background:transparent;
+border-radius: 10px;
+border: 1px solid rgb(53, 132, 228);</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -701,7 +721,8 @@ border-radius: 10px;
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">color: rgb(255, 255, 255)</string>
+               <string notr="true">background:transparent;
+color: rgb(255, 255, 255)</string>
               </property>
               <property name="text">
                <string>matched photos</string>
@@ -733,7 +754,8 @@ border-radius: 10px;
                <cursorShape>PointingHandCursor</cursorShape>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: #005ae2;
+               <string notr="true">background:transparent;
+background-color: #005ae2;
 border-radius: 10px;
 color: white;</string>
               </property>
@@ -768,9 +790,12 @@ color: white;</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1295</width>
-             <height>448</height>
+             <width>1299</width>
+             <height>450</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:transparent;</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_32">
             <item>
@@ -802,7 +827,8 @@ color: white;</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);</string>
+             <string notr="true">background:transparent;
+color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
              <string>Facial Recognition JSON results</string>
@@ -814,7 +840,7 @@ color: white;</string>
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>80</height>
+              <height>300</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -823,11 +849,20 @@ color: white;</string>
               <height>500</height>
              </size>
             </property>
+            <property name="baseSize">
+             <size>
+              <width>0</width>
+              <height>300</height>
+             </size>
+            </property>
             <property name="verticalScrollBarPolicy">
-             <enum>Qt::ScrollBarAsNeeded</enum>
+             <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
             <property name="horizontalScrollBarPolicy">
              <enum>Qt::ScrollBarAsNeeded</enum>
+            </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
             </property>
             <property name="widgetResizable">
              <bool>true</bool>
@@ -837,8 +872,8 @@ color: white;</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1293</width>
-               <height>182</height>
+               <width>1297</width>
+               <height>300</height>
               </rect>
              </property>
              <property name="sizePolicy">
@@ -863,11 +898,14 @@ color: white;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background-color: transparent;
+                 <string notr="true">background: transparent;
 border-radius: 10px;
 border: 1px solid rgb(53, 132, 228);
 color: rgb(255,255,255);
 font: 12pt &quot;Arial&quot;;</string>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::AdjustToContents</enum>
                 </property>
                </widget>
               </item>
@@ -932,7 +970,8 @@ font: 12pt &quot;Arial&quot;;</string>
               <property name="styleSheet">
                <string notr="true">border-radius: 10px;
 border: none;
-color: rgb(243, 243, 243);</string>
+color: rgb(243, 243, 243);
+background:transparent;</string>
               </property>
               <property name="text">
                <string>Return to Home</string>
@@ -962,17 +1001,6 @@ color: rgb(243, 243, 243);</string>
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1335</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
   <include location="../images/images.qrc"/>

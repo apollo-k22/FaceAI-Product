@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1310</width>
+    <width>1466</width>
     <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>FaceAI Probe Reports</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -30,19 +30,19 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,2">
       <property name="leftMargin">
-       <number>15</number>
+       <number>10</number>
       </property>
       <property name="topMargin">
-       <number>15</number>
+       <number>10</number>
       </property>
       <property name="rightMargin">
-       <number>15</number>
+       <number>10</number>
       </property>
       <property name="bottomMargin">
        <number>15</number>
       </property>
       <item>
-       <layout class="QVBoxLayout" name="logoverticalLayout" stretch="0,0">
+       <layout class="QVBoxLayout" name="logoverticalLayout" stretch="0">
         <item>
          <widget class="QLabel" name="logo">
           <property name="sizePolicy">
@@ -53,8 +53,8 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>100</width>
-            <height>0</height>
+            <width>200</width>
+            <height>100</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -64,7 +64,8 @@
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: rgb(46, 52, 54);</string>
+           <string notr="true">background-color: rgb(46, 52, 54);
+background:transparent;</string>
           </property>
           <property name="text">
            <string/>
@@ -76,19 +77,6 @@
            <bool>true</bool>
           </property>
          </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </item>
@@ -124,7 +112,8 @@
             </property>
             <property name="styleSheet">
              <string notr="true">border-radius: 10px;
-border: 1px solid white;</string>
+border: 1px solid white;
+background:transparent;</string>
             </property>
             <property name="text">
              <string/>
@@ -157,7 +146,7 @@ border: 1px solid white;</string>
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="report_layout" stretch="0,0,0,0,0,0">
+         <layout class="QVBoxLayout" name="report_layout" stretch="0,0,0,0,0">
           <property name="leftMargin">
            <number>10</number>
           </property>
@@ -173,31 +162,6 @@ border: 1px solid white;</string>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <widget class="QLabel" name="label_9">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>25</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);</string>
-              </property>
-              <property name="text">
-               <string>Probe Reports</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -209,6 +173,49 @@ color: rgb(255, 255, 255);</string>
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="baseSize">
+               <size>
+                <width>0</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>25</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background:transparent;
+color: rgb(255, 255, 255);</string>
+              </property>
+              <property name="text">
+               <string>Probe Reports</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -263,7 +270,7 @@ padding:12px 20px 12px 20px;</string>
                </size>
               </property>
               <property name="styleSheet">
-               <string notr="true">
+               <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 border-radius: 8px;
 color: rgb(90, 105, 128);
@@ -385,13 +392,13 @@ padding:12px 20px 12px 20px;</string>
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>56</width>
+                  <width>80</width>
                   <height>41</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>56</width>
+                  <width>80</width>
                   <height>41</height>
                  </size>
                 </property>
@@ -402,13 +409,17 @@ padding:12px 20px 12px 20px;</string>
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(149, 172, 207);</string>
+                 <string notr="true">color: rgb(149, 172, 207);
+background:transparent;</string>
                 </property>
                 <property name="text">
                  <string>Sort by:</string>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
@@ -422,13 +433,13 @@ padding:12px 20px 12px 20px;</string>
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>270</width>
+                  <width>200</width>
                   <height>41</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>270</width>
+                  <width>200</width>
                   <height>41</height>
                  </size>
                 </property>
@@ -449,7 +460,27 @@ color: rgb(90, 105, 128);
                 </property>
                 <item>
                  <property name="text">
-                  <string>100</string>
+                  <string>5 results</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>10 results</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>15 results</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>50 results</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>100 results</string>
                  </property>
                 </item>
                 <item>
@@ -469,13 +500,13 @@ color: rgb(90, 105, 128);
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>56</width>
+                  <width>80</width>
                   <height>41</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>56</width>
+                  <width>80</width>
                   <height>41</height>
                  </size>
                 </property>
@@ -486,7 +517,8 @@ color: rgb(90, 105, 128);
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(149, 172, 207);</string>
+                 <string notr="true">background:transparent;
+color: rgb(149, 172, 207);</string>
                 </property>
                 <property name="text">
                  <string>entries</string>
@@ -518,6 +550,7 @@ color: rgb(90, 105, 128);
               </property>
               <property name="styleSheet">
                <string notr="true">border-radius: 8px;
+background:transparent;
 color: rgb(255, 255, 255);
 padding:12px 30px 12px 30px;
 background-color: rgb(0, 90, 226);
@@ -529,19 +562,6 @@ border: 1px solid rgb(53, 132, 228);</string>
              </widget>
             </item>
            </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item>
            <layout class="QVBoxLayout" name="vlyTableContainer">
@@ -562,7 +582,13 @@ border: 1px solid rgb(53, 132, 228);</string>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>429</height>
+                <height>500</height>
+               </size>
+              </property>
+              <property name="baseSize">
+               <size>
+                <width>0</width>
+                <height>400</height>
                </size>
               </property>
               <property name="font">
@@ -573,7 +599,8 @@ border: 1px solid rgb(53, 132, 228);</string>
               </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(80, 99, 120);
-color: rgb(255, 255, 255);</string>
+color: rgb(255, 255, 255);
+background:transparent;</string>
               </property>
               <property name="sizeAdjustPolicy">
                <enum>QAbstractScrollArea::AdjustToContents</enum>
@@ -784,425 +811,10 @@ color: rgb(255, 255, 255);</string>
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0">
-            <property name="spacing">
-             <number>200</number>
-            </property>
+           <layout class="QHBoxLayout" name="hlyPaginationContainer">
             <property name="rightMargin">
              <number>0</number>
             </property>
-            <item>
-             <layout class="QHBoxLayout" name="hlyPagenation" stretch="0,0,0,0,0,0,0,0">
-              <property name="spacing">
-               <number>3</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="btnPreviousPage">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>32</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-image: url(:/newPrefix/icon-back2.png);
-backgroud-size: cover;
-border: 1px solid #7F00E2;
-border-radius: 10px;
-background-repeat: no-repeat;
-background-color: rgb(127, 0, 226);
-
-
-
-
-
-
-</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>../images/icon-back.png</normaloff>../images/icon-back.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="autoRepeat">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">border-radius: 10px;
-background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);
-border: 1px solid white;</string>
-                </property>
-                <property name="text">
-                 <string>1</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_7">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">border-radius: 10px;
-background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);
-border: 1px solid white;</string>
-                </property>
-                <property name="text">
-                 <string>2</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_6">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">border-radius: 10px;
-background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);
-border: 1px solid white;</string>
-                </property>
-                <property name="text">
-                 <string>3</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_10">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>50</width>
-                  <height>50</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-padding-bottom:5px;</string>
-                </property>
-                <property name="text">
-                 <string>.....</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignBottom|Qt::AlignHCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_2">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">border-radius: 10px;
-background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);
-border: 1px solid white;</string>
-                </property>
-                <property name="text">
-                 <string>19</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_8">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">border-radius: 10px;
-background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);
-border: 1px solid white;</string>
-                </property>
-                <property name="text">
-                 <string>20</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="btnNextPage">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>60</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>32</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-image: url(:/newPrefix/icon-next2.png);
-backgroud-size: cover;
-border-radius: 10px;
-background-repeat: no-repeat;
-background-color: #005AE2;
-
-
-
-
-
-
-</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>../images/icon-next.png</normaloff>../images/icon-next.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="autoRepeat">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,0,0,0">
-              <property name="spacing">
-               <number>6</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_11">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);</string>
-                </property>
-                <property name="text">
-                 <string>Go to</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="leditRemainingPage">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">border: 1px solid rgb(53, 132, 228);
-border-radius: 10px;</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_12">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(0, 0, 0);
-color: rgb(255, 255, 255);</string>
-                </property>
-                <property name="text">
-                 <string>Page</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="btnGoRemainingPage">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>70</width>
-                  <height>60</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>12</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">border-radius: 10px;
-background-color: rgb(42, 90, 226);
-color: rgb(255, 255, 255);
-border: 1px solid white;</string>
-                </property>
-                <property name="text">
-                 <string>Go</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
            </layout>
           </item>
           <item>
@@ -1276,7 +888,7 @@ border:none;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1310</width>
+     <width>1466</width>
      <height>21</height>
     </rect>
    </property>

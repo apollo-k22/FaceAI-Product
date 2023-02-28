@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Probing | FaceAI</class>
+ <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>FaceAI Probing</string>
   </property>
   <property name="iconSize">
    <size>
@@ -47,21 +47,36 @@ background-size: contain;
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="leftMargin">
-     <number>60</number>
+     <number>10</number>
     </property>
     <property name="topMargin">
-     <number>50</number>
+     <number>10</number>
     </property>
     <property name="rightMargin">
-     <number>100</number>
+     <number>10</number>
     </property>
     <item>
      <widget class="QLabel" name="label">
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>100</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
-        <width>135</width>
-        <height>80</height>
+        <width>200</width>
+        <height>100</height>
        </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>200</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:transparent;</string>
       </property>
       <property name="text">
        <string/>
@@ -76,6 +91,12 @@ background-size: contain;
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>100</number>
+      </property>
+      <property name="rightMargin">
+       <number>100</number>
+      </property>
       <item>
        <widget class="QLabel" name="lblFaceGif">
         <property name="sizePolicy">

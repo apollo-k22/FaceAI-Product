@@ -16,7 +16,6 @@
         <file>btn1create.png</file>
         <file>btn2probe.png</file>
         <file>continuetoprobe.png</file>
-        <file>confirm.png</file>
         <file>Cross.png</file>
         <file>export_to_pdf.png</file>
         <file>generate_report.png</file>
@@ -25,6 +24,7 @@
         <file>continue_to_prob.png</file>
         <file>cross-icon.png</file>
         <file>cross-icon2.png</file>
+        <file>Group 67.png</file>
         <file>error.png</file>
         <file>warning.png</file>
     </qresource>
