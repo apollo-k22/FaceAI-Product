@@ -60,13 +60,14 @@ class StartHome(QMainWindow):
         app_unlocked = False
         app_expire = 0
         app_expire_date = ""        
-        app_unlocked, app_expire_date, app_cpu_info = read_information_db()
+        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
         print(app_unlocked, app_expire_date)
-
+        
         if app_unlocked == False:
             self.show_p0_license()
-        else:            
-            if app_cpu_info != get_cpu_info():
+        else:      
+            fpo_info, atpo_info = get_cpu_info()      
+            if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
                 quit()
             # try:
             #     NIST = 'pool.ntp.org'
@@ -149,6 +150,7 @@ class StartHome(QMainWindow):
 
     @pyqtSlot()
     def show_p1_home(self):
+        self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
         self.ui_6_probe_report.hide()

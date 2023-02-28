@@ -60,6 +60,7 @@ def read_information_db():
         unlocked = result[0]
         expire_date = result[1]
         fpo_info = result[2]
+        atpo_info = result[3]
     
     except OperationalError:
         print("Database Error")
@@ -67,7 +68,7 @@ def read_information_db():
     finally:
         connection.close()
 
-    return (unlocked, expire_date, fpo_info)
+    return (unlocked, expire_date, fpo_info, atpo_info)
 
 def write_infomation_db(isdst, expire, fpo, atpo):
     try:
@@ -84,8 +85,10 @@ def write_infomation_db(isdst, expire, fpo, atpo):
 
 def get_cpu_info():
     fpo_value = ""
+    atpo_value = ""
     c = wmi.WMI()
     for s in c.Win32_Processor():
         fpo_value = s.ProcessorId
-
-    return fpo_value
+        atpo_value = s.Description
+    
+    return (fpo_value, atpo_value)

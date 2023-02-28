@@ -25,27 +25,28 @@ class LicenseBoxPage(QMainWindow):
 
         self.window = uic.loadUi("./forms/Page_0.ui", self)
         self.btnConfirm.clicked.connect(self.procLicenseConfirm)   
-
-    @pyqtSlot()
-    def continue_app(self):
-        self.hide()
-        self.continue_app_signal.emit()
+        self.lblNotify = self.findChild(QLabel, "labelNotify")
 
     # The function for license process confirm
-    def procLicenseConfirm(self):    
-        info = cpuinfo.get_cpu_info()
+    def procLicenseConfirm(self):  
+        # info = cpuinfo.get_cpu_info()
         # print(info)        
 
         lic = self.licenseBox.text()
         if len(lic) < 20:
-            print(len(lic))
             print("License length is not enough")
+            self.lblNotify.setText("License length is not enough")
             return
-        licenseFileName = "license.dat"
         # Read license list file
         ret, expire_flag = access_license_list(lic)
+        
+        if not ret:
+            self.lblNotify.setText("The license is not correct")
+            return
 
+        self.lblNotify.setText("The license is correct. One minutes...")
         expire_dt = None
+
         ### getting validate date                 
         try:
             # NIST = 'pool.ntp.org'
@@ -67,13 +68,15 @@ class LicenseBoxPage(QMainWindow):
 
         ### getting processor batch number(FPO) and partial serial number(ATPO) date   
         fpo_value = ""
+        atpo_value = ""
         c = wmi.WMI()
         for s in c.Win32_Processor():
             fpo_value = s.ProcessorId
+            atpo_value = s.Description
 
-        write_infomation_db(True, expire_dt.strftime('%d/%m/%Y'), fpo_value, fpo_value) 
+        write_infomation_db(True, expire_dt.strftime('%d/%m/%Y'), fpo_value, atpo_value) 
 
         ## Goto homepage  
-        self.continue_app()
-        
+        self.lblNotify.setText("Let's go to home page")
+        self.continue_app_signal.emit()
         
