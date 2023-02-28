@@ -16,9 +16,8 @@ class FaceAI:
         self.DETECT_ONNX_MODEL = "scrfd_10g_bnkps.onnx"
         self.RECOG_ONNX_MODEL = "glintr100.onnx"
         self.THRESHOLDS = [0.7, 0.8, 0.9]
-
         self.onnxruntime = onnxruntime.set_default_logger_severity(3)
-        self.assets_dir = osp.expanduser(r'./models')
+        self.assets_dir = osp.expanduser(r"C:\\Users\\" + os.getlogin() + r"\\.secure\\.encfiles")
         self.detector = None
         self.rec = None
 
@@ -149,7 +148,9 @@ class FaceAI:
         return True
 
     def is_models_exist(self):
-        return os.path.isfile(os.path.join(self.assets_dir, self.DETECT_ONNX_MODEL)) & os.path.isfile(os.path.join(self.assets_dir, self.RECOG_ONNX_MODEL))
+        if (os.path.isfile(os.path.join(self.assets_dir, self.DETECT_ONNX_MODEL))) & (os.path.isfile(os.path.join(self.assets_dir, self.RECOG_ONNX_MODEL))):            
+            return (os.stat(os.path.join(self.assets_dir, self.DETECT_ONNX_MODEL)).st_size > 10000000) & (os.stat(os.path.join(self.assets_dir, self.RECOG_ONNX_MODEL)).st_size > 10000000)
+        return False
 
     def initialize(self):
         self.detector = SCRFD(os.path.join(self.assets_dir, self.DETECT_ONNX_MODEL))
