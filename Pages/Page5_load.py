@@ -94,7 +94,7 @@ class LoaderProbeReportPreviewPage(QMainWindow):
                 self.lblMatchedDescription.setText("The subject photo has matched to the following target photos."
                                                    " Respective facial recognition similarity scores are attached herewith.")
             else:
-                self.lblMatchedDescription.setText("The subject photo hasn’t matched to any target photo.")
+                self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
             self.lblProbeResult.setText(matched)
             self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
             self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
