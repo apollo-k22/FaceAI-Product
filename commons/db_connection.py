@@ -112,6 +112,53 @@ class DBConnection:
                 self.connection.close()
         return results
 
+    def search_results(self, search_val):
+        query_string = "select " \
+                       "id,probe_id,matched," \
+                       "case_no,PS,examiner_no,examiner_name,remarks" \
+                       ",subject_url,json_result,created_date" \
+                       " from cases " \
+                       " where created_date like '%" + search_val + "%' " \
+                       " or case_no like '%" + search_val + "%' " \
+                       " or ps like '%" + search_val + "%' " \
+                       " or probe_id like '%" + search_val + "%' " \
+                       " or examiner_no like '%" + search_val + "%' " \
+                       " or examiner_name like '%" + search_val + "%' " \
+                       " order by created_date desc;"
+        results = []
+        print(query_string)
+        try:
+            self.connection = sqlite3.connect(self.connection_string)
+            cursor = self.connection.cursor()
+            cursor.execute(query_string)
+            rows = cursor.fetchall()
+            self.connection.commit()
+            for row in rows:
+                probe_result = ProbingResult()
+                case_info = CaseInfo()
+                probe_result.probe_id = row[1]
+                probe_result.matched = row[2]
+                case_info.case_number = row[3]
+                case_info.case_PS = row[4]
+                case_info.examiner_no = row[5]
+                case_info.examiner_name = row[6]
+                case_info.remarks = row[7]
+                case_info.subject_image_url = row[8]
+                json_data = row[9]
+                json_data = json.dumps(json_data)
+                json_data = json.loads(json_data)
+                probe_result.json_result = json_data
+                probe_result.created_date = row[10]
+                probe_result.case_info = case_info
+                results.append(probe_result)
+        except sqlite3.IntegrityError as e:
+            print('INTEGRITY ERROR\n')
+            print(traceback.print_exc())
+        finally:
+            if self.connection:
+                self.connection.close()
+        return results
+
     def get_last_inserted_id(self, table_name, id_field):
         try:
             query_string = "select " + id_field + " from " + table_name + " order by " + id_field + " desc;"
