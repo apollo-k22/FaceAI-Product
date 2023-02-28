@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QRegularExpression, pyqtSignal
 from PyQt5.QtCore import pyqtSlot
 from sympy import false, true
@@ -39,13 +38,14 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
         self.set_event_actions()
         self.set_regxs()
 
-        # init for testing
+        # # init for testing
         # self.leditCaseNumber.setText("1231")
         # self.leditPS.setText("ps1")
         # self.leditExaminerName.setText("examiner")
         # self.leditExaminerNo.setText("examiner no")
         # self.leditRemarks.setText("remarks")
         # self.subject_photo_url = "Architecture.png"
+        # self.btnSelectPhoto.setStyleSheet("border-image:url(Architecture.png);")
 
     # set slots to each widget
     def set_event_actions(self):
@@ -71,10 +71,21 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
     @pyqtSlot()
     # get subject photo from file dialog and set the gotten photo on button
     def get_subject_photo(self):
-        self.subject_photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', "Image files", Common.IMAGE_FILTER)
-        if self.subject_photo_url:
-            btn_style = "border-image:url(" + self.subject_photo_url + ");"
-            self.btnSelectPhoto.setStyleSheet(btn_style)
+        photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', "Image files", Common.IMAGE_FILTER)
+        if photo_url:
+            if not self.faceai.is_face(photo_url):
+                Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+                                    "Incorrect image selected.",
+                                    "")
+                self.subject_photo_url = ""
+                btn_style = "border-image:url("");"
+                self.btnSelectPhoto.setStyleSheet(btn_style)
+                self.get_subject_photo()
+            else:
+                Common.resize_image(photo_url)
+                self.subject_photo_url = photo_url
+                btn_style = "border-image:url(" + self.subject_photo_url + ");"
+                self.btnSelectPhoto.setStyleSheet(btn_style)
             # # create icon with selected file name
             # icon = QIcon(self.subject_photo_url)
             # # get button size

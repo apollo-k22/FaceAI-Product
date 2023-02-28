@@ -1,5 +1,7 @@
+import os.path
 import pathlib
 
+from PIL.Image import Image
 from PyQt5.QtCore import QFile
 from PyQt5.QtWidgets import QMessageBox
 import numpy as np
@@ -26,10 +28,11 @@ class Common:
     VALUE_MAX_HEIGHT_IN_ITEM = 30
     VALUE_MAX_WIDTH_IN_ITEM = 230
     CROSS_BUTTON_SIZE = 30
+    PAGINATION_BUTTON_SIZE = 60
+    NUMBER_PER_PAGE = 5
 
     @staticmethod
     def clear_layout(layout):
-        print(str(layout.count()))
         while layout.count():
             child = layout.takeAt(0)
             if child.widget():
@@ -44,6 +47,7 @@ class Common:
 
     @staticmethod
     def copy_file(from_path, to_directory):
+        Common.create_path(to_directory)
         to_path = to_directory + "/" + Common.get_file_name_from_path(from_path)
         if not QFile.exists(to_path):
             QFile.copy(from_path, to_path)
@@ -66,6 +70,22 @@ class Common:
         else:
             ret_list = removing_list
         return ret_list
+
+    @staticmethod
+    def resize_image(img_path):
+        img = Image.open(img_path)
+        if os.path.getsize(img_path)/(1000 * 1000) > 6:
+            wid = img.width
+            he = img.height
+            img.resize((wid, he), Image.ADAPTIVE)
+            img.save(img_path)
+        return img_path
+
+    @staticmethod
+    def is_empty(case_info):
+        if case_info.case_number:
+            return False
+        return True
 
     @staticmethod
     def show_message(icon, text, information_text, title, detailed_text):

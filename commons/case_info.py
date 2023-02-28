@@ -10,5 +10,6 @@ class CaseInfo(object):
         self.examiner_name = ''
         self.examiner_no = ''
         self.remarks = ''
+        self.is_used_old_cases = False
         self.subject_image_url = ''
         self.target_image_urls = []

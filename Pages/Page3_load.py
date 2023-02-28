@@ -3,7 +3,7 @@ import pathlib
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel
 
 from commons.case_info import CaseInfo
 from commons.common import Common
@@ -29,19 +29,23 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.rdobtnOldCasePhoto = self.findChild(QRadioButton, "rdobtnOldCasePhoto")
         self.btnSinglePhoto = self.findChild(QPushButton, "btnSinglePhoto")
         self.btnMultiPhoto = self.findChild(QPushButton, "btnMultiPhoto")
+        self.lblMultiPhotoResult = self.findChild(QLabel, "lblMultiResult")
         self.btnEntireFolder = self.findChild(QPushButton, "btnEntireFolder")
+        self.lblEntireFolder = self.findChild(QLabel, "lblEntireFolder")
+        self.lblEntireResult = self.findChild(QLabel, "lblEntireFolderResult")
+        self.lblOldCaseResult = self.findChild(QLabel, "lblOldCaseResult")
         self.stkwdtSelectPhotos = self.findChild(QStackedWidget, "stkwdtSelectPhotos")
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
         #
-        self.image_urls = ["Background.png",
-                           "book-1.jpg",
-                           "book-2.jpg",
-                           "book-3.jpg",
-                           "book-4.jpg",
-                           "pro4.jpg",
-                           "open.jpg",
-                           ]
+        # self.image_urls = ["Background.png",
+        #                    "book-1.jpg",
+        #                    "book-2.jpg",
+        #                    "book-3.jpg",
+        #                    "book-4.jpg",
+        #                    "pro4.jpg",
+        #                    "open.jpg",
+        #                    ]
 
     @pyqtSlot()
     def start_probe_slot(self):
@@ -76,36 +80,48 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.image_urls.clear()
         url, _ = QFileDialog.getOpenFileName(self, 'Open File', "Image files", Common.IMAGE_FILTER)
         if url:
-            # create icon with selected file name
-            icon = QIcon(url)
-            # get button size
-            btnSize = self.btnSinglePhoto.rect().size()
-            self.btnSinglePhoto.setIcon(icon)
-            # set image size to button size
-            self.btnSinglePhoto.setIconSize(btnSize)
+            btn_style = "border-image:url(" + url + ");"
+            self.btnSinglePhoto.setStyleSheet(btn_style)
+            # # create icon with selected file name
+            # icon = QIcon(url)
+            # # get button size
+            # btnSize = self.btnSinglePhoto.rect().size()
+            # self.btnSinglePhoto.setIcon(icon)
+            # # set image size to button size
+            # self.btnSinglePhoto.setIconSize(btnSize)
             self.image_urls.append(url)
 
     @pyqtSlot()
     def select_multi_photo_slot(self):
         self.image_urls.clear()
-        self.image_urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', "Image files", Common.IMAGE_FILTER)
+        urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', "Image files", Common.IMAGE_FILTER)
+        for url in urls:
+            url_buff = Common.resize_image(url)
+            self.image_urls.append(url_buff)
 
     @pyqtSlot()
     def select_entire_folder_slot(self):
         self.image_urls.clear()
         direct = QFileDialog.getExistingDirectory(self, 'Entire Folder')
         desktop = pathlib.Path(direct)
-        for path in desktop.glob(r'**/*'):
-            if Common.EXTENSIONS.count(path.suffix):
-                self.image_urls.append(path)
+        self.lblEntireFolder.setText(direct)
+        for url in desktop.glob(r'**/*'):
+            if Common.EXTENSIONS.count(url.suffix):
+                url = Common.resize_image(url)
+                self.image_urls.append(url)
+        if not len(self.image_urls):
+            self.lblEntireResult.setText("There are no raster images in this folder.")
 
     # get all images from old cases
     def select_from_old_cases(self):
         self.image_urls.clear()
-        desktop = pathlib.Path(Common.MEDIA_PATH)
-        for path in desktop.glob(r'**/*'):
-            if path.suffix in Common.EXTENSIONS:
-                self.image_urls.append(path)
+        self.case_info.is_used_old_cases = True
+        desktop = pathlib.Path(Common.MEDIA_PATH + "/targets")
+        for url in desktop.glob(r'**/*'):
+            if url.suffix in Common.EXTENSIONS:
+                self.image_urls.append(url)
+        if not len(self.image_urls):
+            self.lblOldCaseResult.setText("There are no old cases images. Please select manually on other tab.")
 
     # make file filter for QFileDialog from Common.EXTENSIONS
     def make_file_filter(self):

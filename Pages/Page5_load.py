@@ -36,6 +36,7 @@ class LoaderProbeReportPreviewPage(QMainWindow):
         self.lbeSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.leditRemainingPhotoNumber = self.findChild(QLineEdit, "leditRemainingPhotoNumber")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
+        self.lblMatchedDescription = self.findChild(QLabel, "lblMatchedDescription")
         self.etextJsonResult = self.findChild(QTextEdit, "teditJsonResult")
         self.vlyReportResultLayout = self.findChild(QVBoxLayout, "vlyTargetResults")
         self.glyReportBuff = QGridLayout()
@@ -78,47 +79,59 @@ class LoaderProbeReportPreviewPage(QMainWindow):
         self.btnGoRemaining.clicked.connect(self.on_clicked_go_remaining)
 
     def init_input_values(self):
-        probe_id = Common.generate_probe_id()
-        # check whether probe id exist on database
-        db = DBConnection()
-        while db.is_exist_value("cases", "probe_id", probe_id):
+        if not self.probe_result:
+            return
+        if not Common.is_empty(self.probe_result.case_info):
             probe_id = Common.generate_probe_id()
-        self.probe_result.probe_id = probe_id
-        self.lblProbeId.setText(probe_id)
-        self.lblProbeResult.setText(self.probe_result.is_matched())
-        self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
-        self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
-        self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
-        self.lblRemarks.setText(self.probe_result.case_info.remarks)
-        self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
-        subject_pixmap = QPixmap(self.probe_result.case_info.subject_image_url)
-        self.lblSubjectImage.setPixmap(subject_pixmap)
-        self.lblSubjectImage.setScaledContents(True)
-        self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        subject_pixmap.scaled(self.lblSubjectImage.rect().x(), self.lblSubjectImage.rect().y(), Qt.KeepAspectRatio,
-                              Qt.FastTransformation)
+            # check whether probe id exist on database
+            db = DBConnection()
+            while db.is_exist_value("cases", "probe_id", probe_id):
+                probe_id = Common.generate_probe_id()
+            self.probe_result.probe_id = probe_id
+            self.lblProbeId.setText(probe_id)
+            matched = self.probe_result.is_matched()
+            if matched == 'Matched':
+                self.lblMatchedDescription.setText("The subject photo has matched to the following target photos."
+                                                   " Respective facial recognition similarity scores are attached herewith.")
+            else:
+                self.lblMatchedDescription.setText("The subject photo hasn’t matched to any target photo.")
+            self.lblProbeResult.setText(matched)
+            self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
+            self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
+            self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
+            self.lblRemarks.setText(self.probe_result.case_info.remarks)
+            self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
+            subject_pixmap = QPixmap(self.probe_result.case_info.subject_image_url)
+            self.lblSubjectImage.setPixmap(subject_pixmap)
+            self.lblSubjectImage.setScaledContents(True)
+            self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+            subject_pixmap.scaled(self.lblSubjectImage.rect().x(), self.lblSubjectImage.rect().y(), Qt.KeepAspectRatio,
+                                  Qt.FastTransformation)
 
-        js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-        self.etextJsonResult.setPlainText(js_result)
+            js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            self.etextJsonResult.setPlainText(js_result)
 
     def init_target_images_view(self):
-        # clear all child on result container layout
-        self.clear_result_list()
-        print(str(self.vlyReportResultLayout.count()))
-        # add items to result container layout
-        self.glyReportBuff = QGridLayout(self)
-        # if there is one matched image
-        results = self.probe_result.json_result['results']
-        # hly_result = QHBoxLayout()
-        index = 0
-        for result in results:
-            # show the cross button on image
-            result_view_item = ProbeResultItemWidget(result, True)
-            # connect delete signal from delete button on target image.
-            result_view_item.delete_item_signal.connect(self.delete_result_item)
-            self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
-            index += 1
-        self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+        if not self.probe_result:
+            return
+        if not Common.is_empty(self.probe_result.case_info):
+            # clear all child on result container layout
+            self.clear_result_list()
+            print(str(self.vlyReportResultLayout.count()))
+            # add items to result container layout
+            self.glyReportBuff = QGridLayout(self)
+            # if there is one matched image
+            results = self.probe_result.json_result['results']
+            # hly_result = QHBoxLayout()
+            index = 0
+            for result in results:
+                # show the cross button on image
+                result_view_item = ProbeResultItemWidget(result, True, self.probe_result.case_info.is_used_old_cases)
+                # connect delete signal from delete button on target image.
+                result_view_item.delete_item_signal.connect(self.delete_result_item)
+                self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+                index += 1
+            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
 
     @pyqtSlot(object)
     def delete_result_item(self, item):
