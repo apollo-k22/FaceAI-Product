@@ -1,7 +1,6 @@
 from io import BytesIO
 from reportlab.lib.pagesizes import letter, A4, LETTER
-from reportlab.platypus import BaseDocTemplate, SimpleDocTemplate, Paragraph, PageTemplate, Frame, TableStyle, Table, \
-    Image
+from reportlab.platypus import BaseDocTemplate, SimpleDocTemplate, Paragraph, PageTemplate, Frame, TableStyle, Table, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
 from reportlab.lib.units import inch, mm
@@ -11,11 +10,9 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from datetime import datetime
 import json
-
-
+ 
 class GenReport:
     _probid_ = "0"
-
     def __init__(self, buffer, probid):
         self.buffer = buffer
         self.pagesize = (8.5 * inch, 14 * inch)
@@ -29,27 +26,23 @@ class GenReport:
         # Save the state of our canvas so we can draw on it
         canvas.saveState()
         styles = getSampleStyleSheet()
-
+ 
         # Header
-        header = Paragraph('FaceAI Probe Report',
-                           ParagraphStyle(name="style", fontName="Arial", fontSize=14, alignment=TA_CENTER,
-                                          textColor=HexColor(0x0070C0)))
+        header = Paragraph('FaceAI Probe Report', ParagraphStyle(name="style", fontName="Arial", fontSize=14, alignment=TA_CENTER, textColor=HexColor(0x0070C0)))
         w, h = header.wrap(doc.width, doc.topMargin)
         header.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
-        header = Paragraph('Probe ID: ',
-                           ParagraphStyle(name="style", fontName="Arial", fontSize=12, alignment=TA_CENTER,
-                                          textColor=black))
+        header = Paragraph('Probe ID: ', ParagraphStyle(name="style", fontName="Arial", fontSize=12, alignment=TA_CENTER, textColor=black))
         w, h = header.wrap(doc.width, doc.topMargin)
         header.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h * 2.9)
-
+ 
         # Footer
-        footer = Paragraph('', ParagraphStyle(name="style", fontName="Arial", fontSize=12, alignment=TA_RIGHT,
-                                              textColor=black))
+        footer = Paragraph('', ParagraphStyle(name="style", fontName="Arial", fontSize=12, alignment=TA_RIGHT, textColor=black))
         w, h = footer.wrap(doc.width, doc.bottomMargin)
         footer.drawOn(canvas, doc.leftMargin, h)
-
+ 
         # Release the canvas
         canvas.restoreState()
+
 
     def print_reports(self, reportinfo):
         buffer = self.buffer
@@ -59,108 +52,77 @@ class GenReport:
                                 topMargin=self.margin * 2.4,
                                 bottomMargin=self.margin,
                                 pagesize=self.pagesize)
-
+ 
         # Our container for 'Flowable' objects
         elements = []
-
+ 
         # A large collection of style sheets pre-made for us
         styles = getSampleStyleSheet()
         styles.add(ParagraphStyle(name='centered', alignment=TA_CENTER))
-
+ 
         # Draw things on the PDF. Here's where the PDF generation happens.
         # See the ReportLab documentation for the full list of functionality.
         textsize = 12
         leading = 14
         spacing = 6
         # elements.append(Paragraph('''<para align=center leading=18 fontName='Arial'><font size=12 color=0xff0000><b>''' + 'Probe result: ' + reportinfo["result"] + '''</b></font></para>'''))
-        elements.append(Paragraph('Probe result: ' + reportinfo["result"],
-                                  ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER,
-                                                 textColor=red, leading=20)))
+        elements.append(Paragraph('Probe result: ' + reportinfo["result"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=red, leading=20)))
 
-        tablestyle = TableStyle([('GRID', (0, 0), (-1, -1), 1.0, white), ])
+        tablestyle = TableStyle([('GRID', (0,0), (-1,-1), 1.0, white),])
         nested1 = [
-            Paragraph('Time of report generation: ' + reportinfo["created"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('Case no.:' + reportinfo["casenum"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('PS: ' + reportinfo["ps"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('Examiner’s name: ' + reportinfo["examname"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('BP no.: ' + reportinfo["bpnum"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('Remarks: ' + reportinfo["remarks"] * 5,
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading))
-        ]
+            Paragraph('Time of report generation: ' + reportinfo["created"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('Case no.:' + reportinfo["casenum"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('PS: ' + reportinfo["ps"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('Examiner’s name: ' + reportinfo["examname"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('BP no.: ' + reportinfo["bpnum"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('Remarks: ' + reportinfo["remarks"] * 5, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+        ]   
         img = Image(r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png', kind='proportional')
-        img.drawHeight = 3.0 * inch
-        img.drawWidth = 3.6 * inch
+        img.drawHeight = 3.0*inch
+        img.drawWidth = 3.6*inch
         img.hAlign = TA_CENTER
         img.vAlign = TA_CENTER
         nested2 = [
             img,
-            Paragraph('Subject photo',
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER,
-                                     textColor=black, leading=leading))
+            Paragraph('Subject photo', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=leading))
         ]
         table1 = Table([[nested1, nested2]],
-                       colWidths=('50%', '50%'),
-                       rowHeights=None,
-                       style=tablestyle)
+                  colWidths=('50%', '50%'),
+                  rowHeights=None,
+                  style=tablestyle)
         elements.append(table1)
 
-        elements.append(Paragraph(
-            'The subject photo has matched to the following old case photos. Respective similarity scores and case details are attached herewith.',
-            ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black,
-                           leading=leading, spaceBefore=spacing, spaceAfter=spacing)))
+        elements.append(Paragraph('The subject photo has matched to the following old case photos. Respective similarity scores and case details are attached herewith.', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceBefore=spacing, spaceAfter=spacing)))
 
         nested = {}
-        for index, target in enumerate(reportinfo["targets"]):
+        for index, target in enumerate(reportinfo["targets"]):            
             img = Image(target['path'], kind='proportional')
-            img.drawHeight = 3.0 * inch
-            img.drawWidth = 3.6 * inch
+            img.drawHeight = 3.0*inch
+            img.drawWidth = 3.6*inch
             img.hAlign = TA_CENTER
             img.vAlign = TA_CENTER
             nested[index % 2] = [
                 img,
-                Paragraph('Similarity score: %.2f%%(%s)' % (target['sim'] * 100, "High match"),
-                          ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                         textColor=black, leading=leading)),
-                Paragraph('Case no.: %s' % target['caseno'],
-                          ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                         textColor=black, leading=leading)),
-                Paragraph('PS: %s' % target['ps'],
-                          ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                         textColor=black, leading=leading))
+                Paragraph('Similarity score: %.2f%%(%s)'%(target['sim']*100, "High match"), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
             ]
             if index % 2 == 0:
                 continue
             table = Table([[nested[0], nested[1]]],
-                          colWidths=('50%', '50%'),
-                          rowHeights=None,
-                          style=tablestyle)
+                    colWidths=('50%', '50%'),
+                    rowHeights=None,
+                    style=tablestyle)
             elements.append(table)
 
-        elements.append(Paragraph('JSON results',
-                                  ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER,
-                                                 textColor=black, leading=20, spaceBefore=spacing * 2,
-                                                 spaceAfter=spacing)))
-
+        elements.append(Paragraph('JSON results', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
+        
         jsondata = json.dumps(reportinfo["json"], indent=4)
         print(jsondata)
-        elements.append(Paragraph(jsondata,
-                                  ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                                 textColor=black, leading=leading)))
+        elements.append(Paragraph(jsondata, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
 
         doc.build(elements, onFirstPage=self._header_footer, onLaterPages=self._header_footer,
-                  canvasmaker=NumberedCanvas)
-
+                  canvasmaker=NumberedCanvas)        
 
 class NumberedCanvas(canvas.Canvas):
     def __init__(self, *args, **kwargs):
@@ -171,10 +133,12 @@ class NumberedCanvas(canvas.Canvas):
         self.width, self.height = self.pagesize
         self.margin = 0.5 * inch
         self._saved_page_states = []
+ 
 
     def showPage(self):
         self._saved_page_states.append(dict(self.__dict__))
         self._startPage()
+ 
 
     def save(self):
         """add page info to each page (page x of y)"""
@@ -184,7 +148,7 @@ class NumberedCanvas(canvas.Canvas):
             self.draw_page_number(num_pages)
             canvas.Canvas.showPage(self)
         canvas.Canvas.save(self)
-
+ 
     def draw_page_number(self, page_count):
         # self.drawImage(self.logo, 30, self.height - 100, width=70, height=50, mask='auto')
         page = "Page %s of %s" % (self._pageNumber, page_count)
@@ -202,14 +166,6 @@ class NumberedCanvas(canvas.Canvas):
 def create_pdf(probe_id, probe_result, export_path):
     buffer = BytesIO()
 
-def create_pdf(probe_id, probe_result, export_path):
-    return True
-
-
-if __name__ == '__main__':
-    buffer = BytesIO()
-
-    probe_id = "523598675"
     reportinfo = {
         "result": "Matched",
         "created": datetime.strftime(datetime.now(), "%d/%m/%Y %I:%M %p"),
@@ -226,30 +182,17 @@ if __name__ == '__main__':
                 "ps": "wwwwwwwwwwwwwwww"
             }
         ],
-        "json": {
-            "faces": {
-                'image_path': "path",
-                'face_token': "token",
-                'face_rectangle': {
-                    'left': -1,
-                    'top': -1,
-                    'width': -1,
-                    'height': -1,
-                },
-                'face_angle': -1
-            },
-            "results": {
-                'image_path': "path",
-                'face_token': "token",
-                'confidence': -1,
-                'user_id': "",
-            }
-        },
         "json": {}
     }
 
     report = GenReport(buffer, probe_id)
     pdf = report.print_reports(reportinfo)
     buffer.seek(0)
-    with open('sample.pdf', 'wb') as f:
+ 
+    with open('%s/report_%s.pdf'%(export_path, probe_id), 'wb') as f:
         f.write(buffer.read())
+
+    return True
+    
+
+    

@@ -37,19 +37,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.stkwdtSelectPhotos = self.findChild(QStackedWidget, "stkwdtSelectPhotos")
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
-<<<<<<< HEAD
-        #
-        # self.image_urls = ["Background.png",
-        #                    "book-1.jpg",
-        #                    "book-2.jpg",
-        #                    "book-3.jpg",
-        #                    "book-4.jpg",
-        #                    "pro4.jpg",
-        #                    "open.jpg",
-        #                    ]
-=======
      
->>>>>>> d5647ec796e9e4f22a9e87591628b326422d92d9
 
     @pyqtSlot()
     def start_probe_slot(self):
@@ -86,16 +74,6 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         if url:
             btn_style = "border-image:url(" + url + ");"
             self.btnSinglePhoto.setStyleSheet(btn_style)
-<<<<<<< HEAD
-            # # create icon with selected file name
-            # icon = QIcon(url)
-            # # get button size
-            # btnSize = self.btnSinglePhoto.rect().size()
-            # self.btnSinglePhoto.setIcon(icon)
-            # # set image size to button size
-            # self.btnSinglePhoto.setIconSize(btnSize)
-=======
->>>>>>> d5647ec796e9e4f22a9e87591628b326422d92d9
             self.image_urls.append(url)
 
     @pyqtSlot()
