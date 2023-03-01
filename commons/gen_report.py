@@ -165,7 +165,7 @@ class NumberedCanvas(canvas.Canvas):
 
 def create_pdf(probe_id, probe_result, export_path):
     buffer = BytesIO()
-
+    print(probe_id)
     reportinfo = {
         "result": "Matched",
         "created": datetime.strftime(datetime.now(), "%d/%m/%Y %I:%M %p"),
