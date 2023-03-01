@@ -97,7 +97,8 @@ class GenReport:
         nested = {}
         targets_len = len(reportinfo["targets"])
         for index, target in enumerate(reportinfo["targets"]):  
-            img = Image(".\\%s"%target['path'], kind='proportional')
+            # img = Image(".\\%s"%target['path'], kind='proportional')
+            img = Image(%target['path'], kind='proportional')
             img.drawHeight = 3.0*inch
             img.drawWidth = 3.6*inch
             img.hAlign = TA_CENTER
