@@ -1,5 +1,6 @@
 import os.path
 import pathlib
+import winreg
 
 import PIL.Image
 from PyQt5.QtCore import QFile
@@ -8,8 +9,10 @@ import numpy as np
 
 
 class Common:
+    REG_PATH = r"Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\FaceAI\main.exe"
     DATABASE_PATH = "FaceAI Media"
     REPORTS_PATH = "FaceAI Probe Reports"
+    REG_KEY = "MediaFolder"
     MATCH_LEVEL = 0.7
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
@@ -124,3 +127,27 @@ class Common:
     @staticmethod
     def get_folder_path(absolute_file_path):
         return os.path.dirname(os.path.abspath(absolute_file_path))
+    
+    @staticmethod
+    def get_reg(name):
+        try:
+            registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, Common.REG_PATH, 0,
+                                          winreg.KEY_READ)
+            value, regtype = winreg.QueryValueEx(registry_key, name)
+            value = value.replace("\\", "/")
+            winreg.CloseKey(registry_key)
+            return value
+        except WindowsError:
+            return None
+
+    @staticmethod
+    def set_reg(name, value):
+        try:
+            winreg.CreateKey(winreg.HKEY_CURRENT_USER, Common.REG_PATH)
+            registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, Common.REG_PATH, 0,
+                                          winreg.KEY_WRITE)
+            winreg.SetValueEx(registry_key, name, 0, winreg.REG_SZ, value)
+            winreg.CloseKey(registry_key)
+            return True
+        except WindowsError:
+            return False

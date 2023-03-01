@@ -98,7 +98,7 @@ class DBConnection:
                 case_info.remarks = row[7]
                 case_info.subject_image_url = row[8]
                 json_data = row[9]
-                json_data = json.dumps(json_data)
+                # json_data = json.dumps(json_data)
                 json_data = json.loads(json_data)
                 probe_result.json_result = json_data
                 probe_result.created_date = row[10]
@@ -172,7 +172,7 @@ class DBConnection:
                 case_info.remarks = row[7]
                 case_info.subject_image_url = row[8]
                 json_data = row[9]
-                json_data = json.dumps(json_data)
+                # json_data = json.dumps(json_data)
                 json_data = json.loads(json_data)
                 probe_result.json_result = json_data
                 probe_result.created_date = row[10]
@@ -340,7 +340,7 @@ class DBConnection:
                 case_info.remarks = row[7]
                 case_info.subject_image_url = row[8]
                 json_data = row[9]
-                json_data = json.dumps(json_data)
+                # json_data = json.dumps(json_data)
                 json_data = json.loads(json_data)
                 probe_result.json_result = json_data
                 probe_result.created_date = row[10]

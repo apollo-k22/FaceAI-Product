@@ -108,15 +108,16 @@ class LoaderProbeReportPage(QMainWindow):
     def update_json_data(self):
         # create path "FaceAI Media" if not exists
         # so that subject and target images will be saved to that directory
-        Common.create_path(Common.MEDIA_PATH)
+        media_path = Common.get_reg(Common.REG_KEY)
+        Common.create_path(media_path)
 
         # copy subject and target images to media directory, after that, replace urls with urls in media folder
         self.probe_result.case_info.subject_image_url = Common.copy_file(self.probe_result.case_info.subject_image_url,
-                                                                         Common.MEDIA_PATH + "/subjects")
+                                                                         media_path + "/subjects")
         target_images = []
         index = 0
         for target in self.probe_result.case_info.target_image_urls:
-            modified_target = Common.copy_file(target, Common.MEDIA_PATH + "/targets")
+            modified_target = Common.copy_file(target, media_path + "/targets")
             target_images.append(modified_target)
             self.probe_result.json_result["results"][index]["image_path"] = modified_target
             self.probe_result.json_result["faces"][index]["image_path"] = modified_target

@@ -3,7 +3,7 @@ import string
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractScrollArea, \
-    QVBoxLayout, QHBoxLayout, QFileDialog, QComboBox, QLineEdit
+    QVBoxLayout, QHBoxLayout, QFileDialog, QComboBox, QLineEdit, QMessageBox
 
 from commons.common import Common
 from commons.db_connection import DBConnection
@@ -124,5 +124,9 @@ class LoaderProbeReportListPage(QMainWindow):
     @pyqtSlot(ProbingResult)
     def export_pdf(self, probe_result):
         export_path = QFileDialog.getExistingDirectory(self, "The path to be saved pdf file.")
-        create_pdf(probe_result.probe_id, probe_result, export_path)
+        printed = create_pdf(probe_result.probe_id, probe_result, export_path)
+        if printed:
+            Common.show_message(QMessageBox.Information, "Pdf report was created.", "Report Generation", "Notice", "")
+        else:
+            Common.show_message(QMessageBox.Information, "Pdf report was not created.", "Report Generation", "Notice", "")
 
