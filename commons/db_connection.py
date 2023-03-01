@@ -112,19 +112,46 @@ class DBConnection:
                 self.connection.close()
         return results
 
-    def search_results(self, search_val):
-        query_string = "select " \
-                       "id,probe_id,matched," \
-                       "case_no,PS,examiner_no,examiner_name,remarks" \
-                       ",subject_url,json_result,created_date" \
-                       " from cases " \
-                       " where created_date like '%" + search_val + "%' " \
-                       " or case_no like '%" + search_val + "%' " \
-                       " or ps like '%" + search_val + "%' " \
-                       " or probe_id like '%" + search_val + "%' " \
-                       " or examiner_no like '%" + search_val + "%' " \
-                       " or examiner_name like '%" + search_val + "%' " \
-                       " order by created_date desc;"
+    def search_results(self, search_val, current_page, number_per_page):
+        last_index = current_page * number_per_page
+        query_string = ""
+        if last_index == 0:
+            query_string = "select id,probe_id,matched," \
+                           "case_no,PS,examiner_no,examiner_name,remarks" \
+                           ",subject_url,json_result,created_date" \
+                           " from cases" \
+                           " where created_date like '%" + search_val + "%' " \
+                                                                        " or case_no like '%" + search_val + "%' " \
+                                                                                                             " or ps like '%" + search_val + "%' " \
+                                                                                                                                             " or probe_id like '%" + search_val + "%' " \
+                                                                                                                                                                                   " or examiner_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                            " or examiner_name like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                       " order by created_date desc limit " \
+                           + str(number_per_page)
+        else:
+            query_string = "select id,probe_id,matched," \
+                           "case_no,PS,examiner_no,examiner_name,remarks" \
+                           ",subject_url,json_result,created_date" \
+                           " from " \
+                           " (select * from cases where created_date like '%" + search_val + "%' " \
+                                                                                             " or case_no like '%" + search_val + "%' " \
+                                                                                                                                  " or ps like '%" + search_val + "%' " \
+                                                                                                                                                                  " or probe_id like '%" + search_val + "%' " \
+                                                                                                                                                                                                        " or examiner_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                 " or examiner_name like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                            " order by created_date desc) as a " \
+                                                                                                                                                                                                                                                                                            " where a.id < " \
+                                                                                                                                                                                                                                                                                            "(select min(id) from " \
+                                                                                                                                                                                                                                                                                            " (select * from cases" \
+                                                                                                                                                                                                                                                                                            " where created_date like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                         " or case_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                              " or ps like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                                              " or probe_id like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    " or examiner_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             " or examiner_name like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        " order by created_date desc limit " \
+                           + str(last_index) + "))" \
+                                               " limit " + str(number_per_page)
         results = []
         print(query_string)
         try:
@@ -158,6 +185,32 @@ class DBConnection:
             if self.connection:
                 self.connection.close()
         return results
+
+    def count_search_results(self, search_val):
+        query_string = query_string = "select count(id) from cases" \
+                                        " where created_date like '%" + search_val + "%' " \
+                                        " or case_no like '%" + search_val + "%' " \
+                                        " or ps like '%" + search_val + "%' " \
+                                        " or probe_id like '%" + search_val + "%' " \
+                                        " or examiner_no like '%" + search_val + "%' " \
+                                        " or examiner_name like '%" + search_val + "%' " \
+                                        " order by created_date desc "
+        print(query_string)
+        try:
+            self.connection = sqlite3.connect(self.connection_string)
+            cursor = self.connection.cursor()
+            cursor.execute(query_string)
+            rows = cursor.fetchone()
+            self.connection.commit()
+            return rows[0]
+
+        except sqlite3.IntegrityError as e:
+            print('INTEGRITY ERROR\n')
+            print(traceback.print_exc())
+        finally:
+            if self.connection:
+                self.connection.close()
+        return 0
 
     def get_last_inserted_id(self, table_name, id_field):
         try:
@@ -261,13 +314,14 @@ class DBConnection:
                            " from " \
                            " (select * from cases order by created_date DESC) as a " \
                            " where a.id < (select min(id) from (select * from cases order by created_date DESC limit " \
-                           + str(last_index) + "))"
+                           + str(last_index) + "))" \
+                                               " limit " + str(number_per_page)
         else:
             query_string = "select id,probe_id,matched," \
                            "case_no,PS,examiner_no,examiner_name,remarks" \
                            ",subject_url,json_result,created_date" \
                            " from cases order by created_date DESC limit " + str(number_per_page)
-
+        print(query_string)
         try:
             self.connection = sqlite3.connect(self.connection_string)
             cursor = self.connection.cursor()

@@ -50,18 +50,42 @@
     </string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>10</number>
+    </property>
+    <property name="topMargin">
+     <number>10</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <item row="3" column="1">
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
-         <number>10</number>
+         <number>0</number>
         </property>
         <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>10</number>
         </property>
         <item>
          <widget class="QLabel" name="lblLogo">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>200</width>
@@ -85,6 +109,9 @@
           </property>
           <property name="scaledContents">
            <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
          </widget>
         </item>
@@ -203,6 +230,9 @@ background:none</string>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="topMargin">
+         <number>10</number>
+        </property>
         <property name="bottomMargin">
          <number>20</number>
         </property>
@@ -214,10 +244,22 @@ background:none</string>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>60</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
             <width>250</width>
             <height>60</height>
+           </size>
+          </property>
+          <property name="baseSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
            </size>
           </property>
           <property name="cursor">
@@ -226,20 +268,11 @@ background:none</string>
           <property name="styleSheet">
            <string notr="true">border-radius: 30px;
 background:transparent;
+image: url(:/newPrefix/btn1create.png);
 </string>
           </property>
           <property name="text">
            <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../images/btn1create.png</normaloff>../images/btn1create.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>275</width>
-            <height>65</height>
-           </size>
           </property>
          </widget>
         </item>

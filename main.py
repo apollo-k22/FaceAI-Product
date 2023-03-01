@@ -33,7 +33,7 @@ class StartHome(QMainWindow):
     def __init__(self):
         super().__init__()
         self.faceai = FaceAI()
-
+        #
         self.dec_thread = DecThread()
         self.dec_thread.finished_decrypting_signal.connect(self.finished_decrypting_slot)
         self.dec_thread.start()
@@ -59,14 +59,14 @@ class StartHome(QMainWindow):
         # self.showMaximized()
         app_unlocked = False
         app_expire = 0
-        app_expire_date = ""        
+        app_expire_date = ""
         app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
         print(app_unlocked, app_expire_date)
-        
+
         if app_unlocked == False:
             self.show_p0_license()
-        else:      
-            fpo_info, atpo_info = get_cpu_info()      
+        else:
+            fpo_info, atpo_info = get_cpu_info()
             if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
                 quit()
             # try:
@@ -76,7 +76,7 @@ class StartHome(QMainWindow):
             #     # print(ntpResponse.tx_time)
             # except:
             #     print("ntp error")
-        
+
             app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
             if app_expire.total_seconds() > 0:
                 self.showMaximized()
