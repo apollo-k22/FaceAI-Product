@@ -171,36 +171,39 @@ class NumberedCanvas(canvas.Canvas):
                              "Page %d of %d" % (self._pageNumber, page_count))
 
 def create_pdf(probe_id, probe_result, export_path):
-    buffer = BytesIO()
-    reportinfo = {
-        "subject": probe_result.case_info.subject_image_url,
-        "result": probe_result.matched,
-        "created": datetime.strftime(datetime.now(), "%d/%m/%Y %I:%M %p"),
-        "casenum": probe_result.case_info.case_number,
-        "ps": probe_result.case_info.case_PS,
-        "examname": probe_result.case_info.examiner_name,
-        "bpnum": "wwwwwwwwwwwwwwwwwwwwww",
-        "remarks": probe_result.case_info.remarks,
-        "json": probe_result.json_result
-    }
+    try:
+        buffer = BytesIO()
+        reportinfo = {
+            "subject": probe_result.case_info.subject_image_url,
+            "result": probe_result.matched,
+            "created": datetime.strftime(datetime.now(), "%d/%m/%Y %I:%M %p"),
+            "casenum": probe_result.case_info.case_number,
+            "ps": probe_result.case_info.case_PS,
+            "examname": probe_result.case_info.examiner_name,
+            "bpnum": "bpnum",
+            "remarks": probe_result.case_info.remarks,
+            "json": probe_result.json_result
+        }
 
-    reportinfo["targets"] = []
-    for result in probe_result.json_result['results']:
-        reportinfo["targets"].append({
-            "path": result["image_path"],
-            "sim": float(result["confidence"]),
-            "caseno": probe_result.case_info.case_number,
-            "ps": probe_result.case_info.case_PS
-        })
+        reportinfo["targets"] = []
+        for result in probe_result.json_result['results']:
+            reportinfo["targets"].append({
+                "path": result["image_path"],
+                "sim": float(result["confidence"]),
+                "caseno": probe_result.case_info.case_number,
+                "ps": probe_result.case_info.case_PS
+            })
 
-    report = GenReport(buffer, probe_id)
-    pdf = report.print_reports(reportinfo)
-    buffer.seek(0)
- 
-    with open('%s/report_%s.pdf'%(export_path, probe_id), 'wb') as f:
-        f.write(buffer.read())
+        report = GenReport(buffer, probe_id)
+        pdf = report.print_reports(reportinfo)
+        buffer.seek(0)
+    
+        with open('%s/report_%s.pdf'%(export_path, probe_id), 'wb') as f:
+            f.write(buffer.read())
 
-    return True
+        return True
+    except:
+        return False
     
 
     
