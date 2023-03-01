@@ -73,15 +73,15 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
     def get_subject_photo(self):
         photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', "Image files", Common.IMAGE_FILTER)
         if photo_url:
-            # if not self.faceai.is_face(photo_url):
-            #     Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
-            #                         "Incorrect image selected.",
-            #                         "")
-            #     self.subject_photo_url = ""
-            #     btn_style = "border-image:url("");"
-            #     self.btnSelectPhoto.setStyleSheet(btn_style)
-            #     self.get_subject_photo()
-            # else:
+            if not self.faceai.is_face(photo_url):
+                Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+                                    "Incorrect image selected.",
+                                    "")
+                self.subject_photo_url = ""
+                btn_style = "border-image:url("");"
+                self.btnSelectPhoto.setStyleSheet(btn_style)
+                self.get_subject_photo()
+            else:
                 Common.resize_image(photo_url)
                 self.subject_photo_url = photo_url
                 btn_style = "border-image:url(" + self.subject_photo_url + ");"
