@@ -83,6 +83,11 @@ class StartHome(QMainWindow):
         #     else:
         #         print("expire error")
         #         self.show_p0_license()
+        # self.showMaximized()
+        app_unlocked = False
+        app_expire = 0
+        app_expire_date = ""
+        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
 
     # @pyqtSlot()
     # def finished_decrypting_slot(self):

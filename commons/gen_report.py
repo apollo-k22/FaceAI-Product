@@ -77,7 +77,7 @@ class GenReport:
             Paragraph('BP no.: ' + reportinfo["bpnum"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
             Paragraph('Remarks: ' + reportinfo["remarks"] * 5, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
         ]   
-        img = Image(r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png', kind='proportional')
+        img = Image(reportinfo["subject"], kind='proportional')
         img.drawHeight = 3.0*inch
         img.drawWidth = 3.6*inch
         img.hAlign = TA_CENTER
@@ -95,8 +95,9 @@ class GenReport:
         elements.append(Paragraph('The subject photo has matched to the following old case photos. Respective similarity scores and case details are attached herewith.', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceBefore=spacing, spaceAfter=spacing)))
 
         nested = {}
-        for index, target in enumerate(reportinfo["targets"]):            
-            img = Image(target['path'], kind='proportional')
+        targets_len = len(reportinfo["targets"])
+        for index, target in enumerate(reportinfo["targets"]):  
+            img = Image(".\\%s"%target['path'], kind='proportional')
             img.drawHeight = 3.0*inch
             img.drawWidth = 3.6*inch
             img.hAlign = TA_CENTER
@@ -107,6 +108,13 @@ class GenReport:
                 Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                 Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
             ]
+            if ((targets_len % 2 != 0) & (index == targets_len - 1)):
+                table = Table([[nested[0]]],
+                    colWidths=('50%'),
+                    rowHeights=None,
+                    style=tablestyle)
+                elements.append(table)
+                
             if index % 2 == 0:
                 continue
             table = Table([[nested[0], nested[1]]],
@@ -118,7 +126,6 @@ class GenReport:
         elements.append(Paragraph('JSON results', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
         
         jsondata = json.dumps(reportinfo["json"], indent=4)
-        print(jsondata)
         elements.append(Paragraph(jsondata, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
 
         doc.build(elements, onFirstPage=self._header_footer, onLaterPages=self._header_footer,
@@ -165,25 +172,26 @@ class NumberedCanvas(canvas.Canvas):
 
 def create_pdf(probe_id, probe_result, export_path):
     buffer = BytesIO()
-
     reportinfo = {
-        "result": "Matched",
+        "subject": probe_result.case_info.subject_image_url,
+        "result": probe_result.matched,
         "created": datetime.strftime(datetime.now(), "%d/%m/%Y %I:%M %p"),
-        "casenum": "111",
-        "ps": "wwwwwwwwwwwwww",
-        "examname": "wwwwwwwwwwwwwwwwww",
+        "casenum": probe_result.case_info.case_number,
+        "ps": probe_result.case_info.case_PS,
+        "examname": probe_result.case_info.examiner_name,
         "bpnum": "wwwwwwwwwwwwwwwwwwwwww",
-        "remarks": "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
-        "targets": [
-            {
-                "path": r'C:\Users\marko\Documents\Work\20230211\03_Work\test_images\ttt3.png',
-                "sim": 0.8,
-                "caseno": "wwwwwww",
-                "ps": "wwwwwwwwwwwwwwww"
-            }
-        ],
-        "json": {}
+        "remarks": probe_result.case_info.remarks,
+        "json": probe_result.json_result
     }
+
+    reportinfo["targets"] = []
+    for result in probe_result.json_result['results']:
+        reportinfo["targets"].append({
+            "path": result["image_path"],
+            "sim": float(result["confidence"]),
+            "caseno": probe_result.case_info.case_number,
+            "ps": probe_result.case_info.case_PS
+        })
 
     report = GenReport(buffer, probe_id)
     pdf = report.print_reports(reportinfo)

@@ -72,7 +72,6 @@ def decrypt(folder_path):
     try: 
         for root, dirs, files in os.walk(folder_path):
             for filename in files:
-                print(filename)
                 decfiles.append({"encfile": os.path.join(root, filename), "decfile": os.path.join("\\", filename)})
         for decfile in decfiles:
             try:
