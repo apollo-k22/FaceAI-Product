@@ -61,7 +61,6 @@ class StartHome(QMainWindow):
         app_expire = 0
         app_expire_date = ""
         app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
-        print(app_unlocked, app_expire_date)
 
         if app_unlocked == False:
             self.show_p0_license()
