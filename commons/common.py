@@ -9,7 +9,7 @@ import numpy as np
 
 
 class Common:
-    REG_PATH = r"Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\FaceAI\main.exe"
+    REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\FaceAI\main.exe"
     DATABASE_PATH = "FaceAI Media"
     REPORTS_PATH = "FaceAI Probe Reports"
     REG_KEY = "MediaFolder"
