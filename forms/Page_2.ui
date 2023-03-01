@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1310</width>
-    <height>816</height>
+    <height>818</height>
    </rect>
   </property>
   <property name="font">
@@ -26,12 +26,21 @@
     <string notr="true"/>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
+    <property name="leftMargin">
+     <number>10</number>
+    </property>
+    <property name="topMargin">
+     <number>10</number>
+    </property>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="leftMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>10</number>
       </property>
       <item>
@@ -533,7 +542,6 @@ background: none;</string>
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
   <include location="../images/images.qrc"/>

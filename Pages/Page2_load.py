@@ -73,45 +73,38 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
     def get_subject_photo(self):
         photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', "Image files", Common.IMAGE_FILTER)
         if photo_url:
-            if not self.faceai.is_face(photo_url):
-                Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
-                                    "Incorrect image selected.",
-                                    "")
-                self.subject_photo_url = ""
-                btn_style = "border-image:url("");"
-                self.btnSelectPhoto.setStyleSheet(btn_style)
-                self.get_subject_photo()
-            else:
+            # if not self.faceai.is_face(photo_url):
+            #     Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+            #                         "Incorrect image selected.",
+            #                         "")
+            #     self.subject_photo_url = ""
+            #     btn_style = "border-image:url("");"
+            #     self.btnSelectPhoto.setStyleSheet(btn_style)
+            #     self.get_subject_photo()
+            # else:
                 Common.resize_image(photo_url)
                 self.subject_photo_url = photo_url
                 btn_style = "border-image:url(" + self.subject_photo_url + ");"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
-            # # create icon with selected file name
-            # icon = QIcon(self.subject_photo_url)
-            # # get button size
-            # btn_size = self.btnSelectPhoto.rect().size()
-            # self.btnSelectPhoto.setIcon(icon)
-            # # set image size to button size
-            # self.btnSelectPhoto.setIconSize(btn_size)
 
     # a slot to call whenever move cursor on line edit.
     @pyqtSlot(int, int)
-    def check_value_validation(self, lineEdit, pos, regx, strLength):
+    def check_value_validation(self, line_edit, pos, regx, str_len):
         regx = QRegularExpression(regx)
         # set regx option to use unicode printable characters
         regx.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
-        text = lineEdit.text()
+        text = line_edit.text()
         if pos != 0:
             match = regx.match(text[pos - 1])
             # check whether valid the latest input character
             if not match.hasMatch():
                 text = text[:pos - 1] + text[pos:]
-            # check whether length of text of line edit is over strLength or not
+            # check whether length of text of line edit is over str_len or not
             # if over, remove the fulfill characters
-            if len(text) > strLength:
-                text = text[:strLength - 1]
+            if len(text) > str_len:
+                text = text[:str_len - 1]
             # set string to line edit
-            lineEdit.setText(text)
+            line_edit.setText(text)
 
     @pyqtSlot()
     def return_home(self):
