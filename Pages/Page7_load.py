@@ -1,7 +1,9 @@
+import string
+
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractScrollArea, \
-    QVBoxLayout, QHBoxLayout, QFileDialog
+    QVBoxLayout, QHBoxLayout, QFileDialog, QComboBox, QLineEdit
 
 from commons.common import Common
 from commons.db_connection import DBConnection
@@ -20,6 +22,9 @@ class LoaderProbeReportListPage(QMainWindow):
         super().__init__()
         self.probe_result = ProbingResult()
         self.current_page = 0
+        self.number_per_page = 5
+        self.search_string = '%'
+        self.is_searching_result = False
 
         self.window = uic.loadUi("./forms/Page_7.ui", self)
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
@@ -32,7 +37,10 @@ class LoaderProbeReportListPage(QMainWindow):
         self.setStyleSheet(style)
         self.resultTable.setMinimumHeight(0)
         self.hlyPaginationContainer = self.findChild(QHBoxLayout, "hlyPaginationContainer")
-        # self.resultTable.horizontalHeader().resizeSections(QHeaderView.ResizeMode.ResizeToContents)
+        self.combEntriesNumber = self.findChild(QComboBox, "combEntriesNumber")
+        self.combEntriesNumber.setCurrentIndex(0)
+
+        self.leditSearchString = self.findChild(QLineEdit, "leditSearchString")
         self.init_actions()
 
     @pyqtSlot()
@@ -46,24 +54,45 @@ class LoaderProbeReportListPage(QMainWindow):
     def on_clicked_return_home(self):
         self.return_home_signal.emit()
 
+    @pyqtSlot(int)
+    def changed_entries_number(self, current_index):
+        self.number_per_page = int(self.combEntriesNumber.currentText())
+        self.init_views()
+
+    @pyqtSlot(str)
+    def changed_search_string(self, search_string):
+        if not search_string == '':
+            self.search_string = search_string
+            self.is_searching_result = True
+        else:
+            self.is_searching_result = False
+        self.init_views()
+
     def init_actions(self):
         self.btnGoBack.clicked.connect(self.on_clicked_go_back)
         self.btnReturnHome.clicked.connect(self.on_clicked_return_home)
+        self.combEntriesNumber.currentIndexChanged.connect(self.changed_entries_number)
+        self.leditSearchString.textChanged.connect(self.changed_search_string)
 
     def init_views(self):
-        self.init_table()
-
-    def init_table(self):
         Common.clear_layout(self.hlyPaginationContainer)
         db = DBConnection()
-        report_len = db.count_row_number("cases")
-        reports = db.get_pagination_results("cases", self.current_page, Common.NUMBER_PER_PAGE)
+        reports = []
+        report_len = 0
+        if self.is_searching_result:
+            reports = db.search_results(self.search_string)
+            report_len = len(reports)
+        else:
+            report_len = db.count_row_number("cases")
+            reports = db.get_pagination_results("cases", self.current_page, self.number_per_page)
         if report_len:
-            hly_pagination = PaginationLayout(report_len, Common.NUMBER_PER_PAGE, self.current_page)
+            hly_pagination = PaginationLayout(report_len, self.number_per_page, self.current_page)
             # connect signals
             hly_pagination.changed_page_signal.connect(self.refresh_table)
             self.hlyPaginationContainer.addLayout(hly_pagination)
+        self.init_table(reports)
 
+    def init_table(self, reports):
             row_index = 0
             # set table row and column num
             self.resultTable.setRowCount(len(reports))

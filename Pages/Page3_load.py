@@ -37,7 +37,6 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.stkwdtSelectPhotos = self.findChild(QStackedWidget, "stkwdtSelectPhotos")
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
-     
 
     @pyqtSlot()
     def start_probe_slot(self):

@@ -122,8 +122,8 @@
          <widget class="QPushButton" name="btnGo2ProbeReport">
           <property name="maximumSize">
            <size>
-            <width>170</width>
-            <height>50</height>
+            <width>230</width>
+            <height>80</height>
            </size>
           </property>
           <property name="cursor">
@@ -142,8 +142,8 @@ background:none</string>
           </property>
           <property name="iconSize">
            <size>
-            <width>170</width>
-            <height>70</height>
+            <width>220</width>
+            <height>80</height>
            </size>
           </property>
          </widget>
@@ -225,7 +225,8 @@ background:none</string>
           </property>
           <property name="styleSheet">
            <string notr="true">border-radius: 30px;
-background:transparent;</string>
+background:transparent;
+</string>
           </property>
           <property name="text">
            <string/>
