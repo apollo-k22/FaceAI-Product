@@ -75,20 +75,19 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
         photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', self.current_work_folder, Common.IMAGE_FILTER)
         if photo_url:
             self.current_work_folder = Common.get_folder_path(photo_url)
-            # if not self.faceai.is_face(photo_url):
-            #     Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
-            #                         "Incorrect image selected.",
-            #                         "")
-            #     self.subject_photo_url = ""
-            #     btn_style = "border-image:url("");"
-            #     self.btnSelectPhoto.setStyleSheet(btn_style)
-            #     self.get_subject_photo()
-            # else:
-
-            Common.resize_image(photo_url)
-            self.subject_photo_url = photo_url
-            btn_style = "border-image:url(" + self.subject_photo_url + ");"
-            self.btnSelectPhoto.setStyleSheet(btn_style)
+            if not self.faceai.is_face(photo_url):
+                Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+                                    "Incorrect image selected.",
+                                    "")
+                self.subject_photo_url = ""
+                # btn_style = "border-image:url("");"
+                # self.btnSelectPhoto.setStyleSheet(btn_style)
+                self.get_subject_photo()
+            else:
+                Common.resize_image(photo_url)
+                self.subject_photo_url = photo_url
+                btn_style = "image:url(" + self.subject_photo_url + ");"
+                self.btnSelectPhoto.setStyleSheet(btn_style)
 
     # a slot to call whenever move cursor on line edit.
     @pyqtSlot(int, int)

@@ -1,7 +1,7 @@
 import os.path
 import pathlib
 
-from PIL.Image import Image
+import PIL.Image
 from PyQt5.QtCore import QFile
 from PyQt5.QtWidgets import QMessageBox
 import numpy as np
@@ -73,11 +73,11 @@ class Common:
 
     @staticmethod
     def resize_image(img_path):
-        img = Image.open(img_path)
+        img = PIL.Image.open(img_path)
         if os.path.getsize(img_path)/(1000 * 1000) > 6:
             wid = img.width
             he = img.height
-            img.resize((wid, he), Image.ADAPTIVE)
+            img.resize((wid, he), PIL.Image.ADAPTIVE)
             img.save(img_path)
         return img_path
 
@@ -98,10 +98,6 @@ class Common:
         msg.setDetailedText(detailed_text)
         msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         msg.exec_()
-
-    @staticmethod
-    def resize_image(url):
-        print("")
 
     # this method make one integer with the number of integers,
     # each digit is between start and end

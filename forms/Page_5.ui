@@ -743,8 +743,9 @@ background:transparent;</string>
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">border-radius: 10px;
-background:transparent;</string>
+                 <string notr="true">background:transparent;
+border: 1px solid rgb(53, 132, 228);
+color: white;</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>

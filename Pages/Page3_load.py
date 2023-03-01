@@ -73,7 +73,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         url, _ = QFileDialog.getOpenFileName(self, 'Open File', self.current_work_folder, Common.IMAGE_FILTER)
         if url:
             self.current_work_folder = Common.get_folder_path(url)
-            btn_style = "border-image:url(" + url + ");"
+            btn_style = "image:url(" + url + ");"
             self.btnSinglePhoto.setStyleSheet(btn_style)
             self.image_urls.append(url)
 
