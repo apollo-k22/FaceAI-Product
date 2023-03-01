@@ -97,7 +97,8 @@ class GenReport:
         nested = {}
         targets_len = len(reportinfo["targets"])
         for index, target in enumerate(reportinfo["targets"]):  
-            img = Image(".\\%s"%target['path'], kind='proportional')
+            # img = Image(".\\%s"%target['path'], kind='proportional')
+            img = Image(target['path'], kind='proportional')
             img.drawHeight = 3.0*inch
             img.drawWidth = 3.6*inch
             img.hAlign = TA_CENTER
@@ -187,6 +188,7 @@ def create_pdf(probe_id, probe_result, export_path):
 
         reportinfo["targets"] = []
         for result in probe_result.json_result['results']:
+            print(float(result["confidence"]))
             reportinfo["targets"].append({
                 "path": result["image_path"],
                 "sim": float(result["confidence"]),
@@ -197,12 +199,13 @@ def create_pdf(probe_id, probe_result, export_path):
         report = GenReport(buffer, probe_id)
         pdf = report.print_reports(reportinfo)
         buffer.seek(0)
-    
+
         with open('%s/report_%s.pdf'%(export_path, probe_id), 'wb') as f:
             f.write(buffer.read())
 
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
     
 
