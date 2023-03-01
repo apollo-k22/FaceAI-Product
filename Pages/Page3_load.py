@@ -20,6 +20,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.window = uic.loadUi("./forms/Page_3.ui", self)
         self.case_info = CaseInfo()
         self.image_urls = []
+        self.current_work_folder = ""
         self.cmdbtnGoBack = self.findChild(QPushButton, "cmdbtnGoBack")
         self.btnStartProbe = self.findChild(QPushButton, "btnStartProbe")
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
@@ -69,8 +70,9 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
     @pyqtSlot()
     def select_single_photo_slot(self):
         self.image_urls.clear()
-        url, _ = QFileDialog.getOpenFileName(self, 'Open File', "Image files", Common.IMAGE_FILTER)
+        url, _ = QFileDialog.getOpenFileName(self, 'Open File', self.current_work_folder, Common.IMAGE_FILTER)
         if url:
+            self.current_work_folder = Common.get_folder_path(url)
             btn_style = "border-image:url(" + url + ");"
             self.btnSinglePhoto.setStyleSheet(btn_style)
             self.image_urls.append(url)
@@ -78,7 +80,9 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
     @pyqtSlot()
     def select_multi_photo_slot(self):
         self.image_urls.clear()
-        urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', "Image files", Common.IMAGE_FILTER)
+        urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', self.current_work_folder, Common.IMAGE_FILTER)
+        if len(urls):
+            self.current_work_folder = Common.get_folder_path(urls[0])
         for url in urls:
             url_buff = Common.resize_image(url)
             self.image_urls.append(url_buff)
@@ -87,6 +91,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
     def select_entire_folder_slot(self):
         self.image_urls.clear()
         direct = QFileDialog.getExistingDirectory(self, 'Entire Folder')
+        self.current_work_folder = direct
         desktop = pathlib.Path(direct)
         self.lblEntireFolder.setText(direct)
         for url in desktop.glob(r'**/*'):

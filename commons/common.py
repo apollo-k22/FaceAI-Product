@@ -124,3 +124,7 @@ class Common:
     @staticmethod
     def verify_probe_id(probe_id):
         return True
+
+    @staticmethod
+    def get_folder_path(absolute_file_path):
+        return os.path.dirname(os.path.abspath(absolute_file_path))

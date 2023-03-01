@@ -69,6 +69,8 @@ class LoaderProbeReportPage(QMainWindow):
 
     @pyqtSlot()
     def on_clicked_go_remaining(self):
+        if self.leditRemainingPhotoNumber.text() == '':
+            return
         remaining_number = int(self.leditRemainingPhotoNumber.text())
         if remaining_number > 0:
             # remove some items from json results except remaining number
@@ -148,9 +150,9 @@ class LoaderProbeReportPage(QMainWindow):
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
             self.lblRemarks.setText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
-            subject_pixmap = QPixmap(self.probe_result.case_info.subject_image_url)
+            subject_pixmap = QPixmap(self.probe_result.case_info.subject_image_url, Qt.KeepAspectRatio)
             self.lblSubjectImage.setPixmap(subject_pixmap)
-            self.lblSubjectImage.setScaledContents(True)
+            # self.lblSubjectImage.setScaledContents(True)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
             subject_pixmap.scaled(self.lblSubjectImage.rect().x(), self.lblSubjectImage.rect().y(), Qt.KeepAspectRatio,
                                   Qt.FastTransformation)

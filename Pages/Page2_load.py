@@ -23,6 +23,7 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
         self.window = uic.loadUi("./forms/Page_2.ui", self)
         # instance CaseInfo to save the case information
         self.case_info = CaseInfo()
+        self.current_work_folder = ""
         # set button and line edit
         self.btnSelectPhoto = self.findChild(QPushButton, 'btnSelectTargetPhoto')
         self.btnReturnHome = self.findChild(QPushButton, 'btnReturnHome')
@@ -71,21 +72,23 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
     @pyqtSlot()
     # get subject photo from file dialog and set the gotten photo on button
     def get_subject_photo(self):
-        photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', "Image files", Common.IMAGE_FILTER)
+        photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', self.current_work_folder, Common.IMAGE_FILTER)
         if photo_url:
-            if not self.faceai.is_face(photo_url):
-                Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
-                                    "Incorrect image selected.",
-                                    "")
-                self.subject_photo_url = ""
-                btn_style = "border-image:url("");"
-                self.btnSelectPhoto.setStyleSheet(btn_style)
-                self.get_subject_photo()
-            else:
-                Common.resize_image(photo_url)
-                self.subject_photo_url = photo_url
-                btn_style = "border-image:url(" + self.subject_photo_url + ");"
-                self.btnSelectPhoto.setStyleSheet(btn_style)
+            self.current_work_folder = Common.get_folder_path(photo_url)
+            # if not self.faceai.is_face(photo_url):
+            #     Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+            #                         "Incorrect image selected.",
+            #                         "")
+            #     self.subject_photo_url = ""
+            #     btn_style = "border-image:url("");"
+            #     self.btnSelectPhoto.setStyleSheet(btn_style)
+            #     self.get_subject_photo()
+            # else:
+
+            Common.resize_image(photo_url)
+            self.subject_photo_url = photo_url
+            btn_style = "border-image:url(" + self.subject_photo_url + ");"
+            self.btnSelectPhoto.setStyleSheet(btn_style)
 
     # a slot to call whenever move cursor on line edit.
     @pyqtSlot(int, int)
@@ -117,11 +120,11 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
             Common.show_message(QMessageBox.Warning, "Please fill all fields", "", "Empty Warning",
                                 ledit_name + " is empty")
         else:
-            if not self.faceai.is_face(self.subject_photo_url):
-                Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
-                                    "Incorrect image selected.",
-                                    "")
-                return
+            # if not self.faceai.is_face(self.subject_photo_url):
+            #     Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+            #                         "Incorrect image selected.",
+            #                         "")
+            #     return
             # init the case data for next probe step
             self.case_info.case_number = self.leditCaseNumber.text()
             self.case_info.case_PS = self.leditPS.text()

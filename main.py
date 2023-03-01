@@ -34,12 +34,12 @@ class StartHome(QMainWindow):
         super().__init__()
         self.faceai = FaceAI()
         #
-        self.dec_thread = DecThread()
-        self.dec_thread.finished_decrypting_signal.connect(self.finished_decrypting_slot)
-        self.dec_thread.start()
-
-        self.faceai_init_thread = FaceAIInitThread(self.faceai)
-        self.faceai_init_thread.finished_initializing_signal.connect(self.finished_initializing_slot)
+        # self.dec_thread = DecThread()
+        # self.dec_thread.finished_decrypting_signal.connect(self.finished_decrypting_slot)
+        # self.dec_thread.start()
+        #
+        # self.faceai_init_thread = FaceAIInitThread(self.faceai)
+        # self.faceai_init_thread.finished_initializing_signal.connect(self.finished_initializing_slot)
 
         self.window = uic.loadUi("./forms/Page_1.ui", self)
         self.ui_0_license = LicenseBoxPage()
@@ -56,43 +56,43 @@ class StartHome(QMainWindow):
         self.btnGo2ProbeReport.clicked.connect(self.show_p7_probe_report_list_without_param)
         # set the connection between signal and slot for page transitions
         self.set_page_transition()
-        # self.showMaximized()
-        app_unlocked = False
-        app_expire = 0
-        app_expire_date = ""
-        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
-        print(app_unlocked, app_expire_date)
+        self.showMaximized()
+        # app_unlocked = False
+        # app_expire = 0
+        # app_expire_date = ""
+        # app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
+        # print(app_unlocked, app_expire_date)
+        #
+        # if app_unlocked == False:
+        #     self.show_p0_license()
+        # else:
+        #     fpo_info, atpo_info = get_cpu_info()
+        #     if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
+        #         quit()
+        #     # try:
+        #     #     NIST = 'pool.ntp.org'
+        #     #     ntp = ntplib.NTPClient()
+        #     #     ntpResponse = time.time() #ntp.request(NIST)
+        #     #     # print(ntpResponse.tx_time)
+        #     # except:
+        #     #     print("ntp error")
+        #
+        #     app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
+        #     if app_expire.total_seconds() > 0:
+        #         self.showMaximized()
+        #     else:
+        #         print("expire error")
+        #         self.show_p0_license()
 
-        if app_unlocked == False:
-            self.show_p0_license()
-        else:
-            fpo_info, atpo_info = get_cpu_info()
-            if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
-                quit()
-            # try:
-            #     NIST = 'pool.ntp.org'
-            #     ntp = ntplib.NTPClient()
-            #     ntpResponse = time.time() #ntp.request(NIST)
-            #     # print(ntpResponse.tx_time)
-            # except:
-            #     print("ntp error")
-
-            app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
-            if app_expire.total_seconds() > 0:
-                self.showMaximized()
-            else:
-                print("expire error")
-                self.show_p0_license()
-
-    @pyqtSlot()
-    def finished_decrypting_slot(self):
-        self.dec_thread.quit()
-        self.faceai_init_thread.start()
-
-    @pyqtSlot()
-    def finished_initializing_slot(self):
-        print("faceai init ok")
-        self.faceai_init_thread.quit()
+    # @pyqtSlot()
+    # def finished_decrypting_slot(self):
+    #     self.dec_thread.quit()
+    #     self.faceai_init_thread.start()
+    #
+    # @pyqtSlot()
+    # def finished_initializing_slot(self):
+    #     print("faceai init ok")
+    #     self.faceai_init_thread.quit()
 
     # set the connection between signal and slot for page transitions
     def set_page_transition(self):
