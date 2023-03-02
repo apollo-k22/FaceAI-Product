@@ -103,12 +103,10 @@ class LoaderProbeReportPreviewPage(QMainWindow):
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
             self.lblRemarks.setText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
-            subject_pixmap = QPixmap(self.probe_result.case_info.subject_image_url)
-            self.lblSubjectImage.setPixmap(subject_pixmap)
-            self.lblSubjectImage.setScaledContents(True)
+            image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
+                          ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+            self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-            subject_pixmap.scaled(self.lblSubjectImage.rect().x(), self.lblSubjectImage.rect().y(), Qt.KeepAspectRatio,
-                                  Qt.FastTransformation)
 
             js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.etextJsonResult.setPlainText(js_result)
@@ -119,12 +117,10 @@ class LoaderProbeReportPreviewPage(QMainWindow):
         if not Common.is_empty(self.probe_result.case_info):
             # clear all child on result container layout
             self.clear_result_list()
-            print(str(self.vlyReportResultLayout.count()))
             # add items to result container layout
             self.glyReportBuff = QGridLayout(self)
             # if there is one matched image
             results = self.probe_result.json_result['results']
-            # hly_result = QHBoxLayout()
             index = 0
             for result in results:
                 # show the cross button on image

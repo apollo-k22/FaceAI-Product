@@ -18,17 +18,19 @@ from dateutil.relativedelta import relativedelta
 import cpuinfo, wmi
 from cryptophic.license import write_infomation_db, access_license_list
 
+
 class LicenseBoxPage(QMainWindow):
     continue_app_signal = pyqtSignal()
+
     def __init__(self):
         super().__init__()
 
         self.window = uic.loadUi("./forms/Page_0.ui", self)
-        self.btnConfirm.clicked.connect(self.procLicenseConfirm)   
+        self.btnConfirm.clicked.connect(self.procLicenseConfirm)
         self.lblNotify = self.findChild(QLabel, "labelNotify")
 
     # The function for license process confirm
-    def procLicenseConfirm(self):  
+    def procLicenseConfirm(self):
         # info = cpuinfo.get_cpu_info()
         # print(info)        
 
@@ -39,7 +41,7 @@ class LicenseBoxPage(QMainWindow):
             return
         # Read license list file
         ret, expire_flag = access_license_list(lic)
-        
+
         if not ret:
             self.lblNotify.setText("The license is not correct")
             return
@@ -74,9 +76,8 @@ class LicenseBoxPage(QMainWindow):
             fpo_value = s.ProcessorId
             atpo_value = s.Description
 
-        write_infomation_db(True, expire_dt.strftime('%d/%m/%Y'), fpo_value, atpo_value) 
+        write_infomation_db(True, expire_dt.strftime('%d/%m/%Y'), fpo_value, atpo_value)
 
         ## Goto homepage  
         self.lblNotify.setText("Let's go to home page")
         self.continue_app_signal.emit()
-        

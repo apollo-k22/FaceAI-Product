@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QSizePolicy
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QFileDialog
@@ -86,8 +86,10 @@ class LoaderCreateNewCasePage(QMainWindow, FaceAI):
             else:
                 Common.resize_image(photo_url)
                 self.subject_photo_url = photo_url
-                btn_style = "image:url(" + self.subject_photo_url + ");"
+                btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
+                                                                    "border: 1px solid rgb(53, 132, 228);"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
+                self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
 
     # a slot to call whenever move cursor on line edit.
     @pyqtSlot(int, int)

@@ -154,12 +154,10 @@ class LoaderProbeReportPage(QMainWindow):
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
             self.lblRemarks.setText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
-            subject_pixmap = QPixmap(self.probe_result.case_info.subject_image_url)
-            self.lblSubjectImage.setPixmap(subject_pixmap)
-            self.lblSubjectImage.setScaledContents(True)
+            image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
+                          ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+            self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-            subject_pixmap.scaled(self.lblSubjectImage.rect().x(), self.lblSubjectImage.rect().y(), Qt.KeepAspectRatio,
-                                  Qt.FastTransformation)
             js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.teditJsonResult.setPlainText(js_result)
 

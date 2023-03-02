@@ -57,14 +57,14 @@ class ProbeResultItemWidget(QWidget):
         self.wdt_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.wdt_image.setMinimumSize(330, 350)
         self.wdt_image.setMaximumSize(400, 500)
-        style = "color:rgb(255, 255, 255);border-image:url(" + self.result_item['image_path'] + ");"
+        style = ".QWidget{color:rgb(255, 255, 255);border-image:url(" + self.result_item['image_path'] + ");}"
         self.wdt_image.setStyleSheet(style)
 
         if self.is_showed_cross_button:
             image_geo = self.wdt_image.geometry()
             self.btn_delete.setGeometry(image_geo.width() - Common.CROSS_BUTTON_SIZE,
                                         0, Common.CROSS_BUTTON_SIZE, Common.CROSS_BUTTON_SIZE)
-            self.btn_delete.setStyleSheet("image: url(:/newPrefix/cross-icon.png);")
+            self.btn_delete.setStyleSheet("image: url(:/newPrefix/cross-icon.png);background:transparent;border:none")
             self.btn_delete.clicked.connect(self.on_clicked_delete)
 
         self.vly_img_container.addWidget(self.wdt_image)

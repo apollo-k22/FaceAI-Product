@@ -418,6 +418,12 @@ border-image:url(:/newPrefix/Group 67.png);</string>
                   <height>120</height>
                  </size>
                 </property>
+                <property name="baseSize">
+                 <size>
+                  <width>120</width>
+                  <height>120</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">border:none;
 image: url(:/newPrefix/icon-folder.png);
@@ -440,11 +446,14 @@ background:transparent;</string>
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_9">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
                 <property name="leftMargin">
                  <number>30</number>
                 </property>
                 <item alignment="Qt::AlignLeft|Qt::AlignBottom">
-                 <widget class="QLabel" name="label_10">
+                 <widget class="QLabel" name="lblMultiPhotos">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -511,6 +520,21 @@ background:transparent;</string>
           </widget>
           <widget class="QWidget" name="entireFolder">
            <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item>
              <spacer name="verticalSpacer_4">
               <property name="orientation">
