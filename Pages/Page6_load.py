@@ -109,7 +109,10 @@ class LoaderProbeReportPage(QMainWindow):
         # create path "FaceAI Media" if not exists
         # so that subject and target images will be saved to that directory
         media_path = Common.get_reg(Common.REG_KEY)
-        Common.create_path(media_path)
+        if media_path:
+            Common.create_path(media_path)
+        else:
+            Common.create_path(Common.DATABASE_PATH)
 
         # copy subject and target images to media directory, after that, replace urls with urls in media folder
         self.probe_result.case_info.subject_image_url = Common.copy_file(self.probe_result.case_info.subject_image_url,
