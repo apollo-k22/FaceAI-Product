@@ -11,6 +11,7 @@ from commons.export_pdf_button import ExportPdfButton
 from commons.gen_report import create_pdf
 from commons.pagination_layout import PaginationLayout
 from commons.probing_result import ProbingResult
+from commons.zip_thread import ZipThread, ThreadResult
 
 
 class LoaderProbeReportListPage(QMainWindow):
@@ -73,6 +74,7 @@ class LoaderProbeReportListPage(QMainWindow):
         self.btnReturnHome.clicked.connect(self.on_clicked_return_home)
         self.combEntriesNumber.currentIndexChanged.connect(self.changed_entries_number)
         self.leditSearchString.textChanged.connect(self.changed_search_string)
+        self.btnExportAllZip.clicked.connect(self.on_clicked_export_allzip)
 
     def init_views(self):
         Common.clear_layout(self.hlyPaginationContainer)
@@ -130,3 +132,20 @@ class LoaderProbeReportListPage(QMainWindow):
         else:
             Common.show_message(QMessageBox.Information, "Pdf report was not created.", "Report Generation", "Notice", "")
 
+    @pyqtSlot()
+    def on_clicked_export_allzip(self):
+        export_path = QFileDialog.getExistingDirectory(self, "The path to be saved pdf file.")
+        db = DBConnection()
+        reports = db.get_values()
+        
+        self.zip_thread = ZipThread(reports, export_path)
+        self.zip_thread.finished_zip_signal.connect(self.finished_zip_slot)
+        self.zip_thread.start()
+
+    @pyqtSlot(ThreadResult)
+    def finished_zip_slot(self, res):
+        self.zip_thread.quit()
+        if res.status:
+            Common.show_message(QMessageBox.Information, "Zip file included all pdfs was created.", "AllZip Generation", "Notice", "")
+        else:
+            Common.show_message(QMessageBox.Information, "Zip file included all pdfs was not created. Because %s"%res.message, "AllZip Generation", "Notice", "")
