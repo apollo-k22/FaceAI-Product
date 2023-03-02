@@ -80,11 +80,11 @@ class LoaderProbeReportListPage(QMainWindow):
         reports = []
         report_len = 0
         if self.is_searching_result:
-            reports = db.search_results(self.search_string, self.current_page, self.number_per_page)
             report_len = db.count_search_results(self.search_string)
+            reports = db.search_results(self.search_string, report_len, self.current_page, self.number_per_page)
         else:
             report_len = db.count_row_number("cases")
-            reports = db.get_pagination_results("cases", self.current_page, self.number_per_page)
+            reports = db.get_pagination_results("cases", report_len, self.current_page, self.number_per_page)
         if report_len:
             hly_pagination = PaginationLayout(report_len, self.number_per_page, self.current_page)
             # connect signals

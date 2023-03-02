@@ -30,6 +30,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.rdobtnOldCasePhoto = self.findChild(QRadioButton, "rdobtnOldCasePhoto")
         self.btnSinglePhoto = self.findChild(QPushButton, "btnSinglePhoto")
         self.btnMultiPhoto = self.findChild(QPushButton, "btnMultiPhoto")
+        self.lblMultiPhotos = self.findChild(QLabel, "lblMultiPhotos")
         self.lblMultiPhotoResult = self.findChild(QLabel, "lblMultiResult")
         self.btnEntireFolder = self.findChild(QPushButton, "btnEntireFolder")
         self.lblEntireFolder = self.findChild(QLabel, "lblEntireFolder")
@@ -73,7 +74,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         url, _ = QFileDialog.getOpenFileName(self, 'Open File', self.current_work_folder, Common.IMAGE_FILTER)
         if url:
             self.current_work_folder = Common.get_folder_path(url)
-            btn_style = "image:url(" + url + ");"
+            btn_style = "image:url(" + url + ");border: 1px solid rgb(53, 132, 228);"
             self.btnSinglePhoto.setStyleSheet(btn_style)
             self.image_urls.append(url)
 
@@ -83,6 +84,9 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', self.current_work_folder, Common.IMAGE_FILTER)
         if len(urls):
             self.current_work_folder = Common.get_folder_path(urls[0])
+            self.lblMultiPhotos.setText(self.current_work_folder + " was selected.")
+        else:
+            self.lblMultiPhotoResult.setText("There are no raster images in selected folder.")
         for url in urls:
             url_buff = Common.resize_image(url)
             self.image_urls.append(url_buff)
