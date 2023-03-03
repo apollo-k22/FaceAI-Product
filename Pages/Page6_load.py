@@ -51,7 +51,7 @@ class LoaderProbeReportPage(QMainWindow):
     def on_clicked_export_pdf(self):
         report_path = Common.get_reg(Common.REG_KEY)
         if report_path:
-            report_path = report_path + Common.REPORTS_PATH
+            report_path = report_path + "/" + Common.REPORTS_PATH
         else:
             report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
         Common.create_path(report_path)  
@@ -120,7 +120,7 @@ class LoaderProbeReportPage(QMainWindow):
         # so that subject and target images will be saved to that directory
         media_path = Common.get_reg(Common.REG_KEY)
         if media_path:
-            media_path = media_path + Common.MEDIA_PATH
+            media_path = media_path + "/" + Common.MEDIA_PATH
         else:
             media_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH            
         Common.create_path(media_path)

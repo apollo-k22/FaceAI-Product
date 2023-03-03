@@ -128,7 +128,7 @@ class LoaderProbeReportListPage(QMainWindow):
     def export_pdf(self, probe_result):
         report_path = Common.get_reg(Common.REG_KEY)
         if report_path:
-            report_path = report_path + Common.REPORTS_PATH
+            report_path = report_path + "/" + Common.REPORTS_PATH
         else:
             report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
         Common.create_path(report_path)                
@@ -147,7 +147,7 @@ class LoaderProbeReportListPage(QMainWindow):
     def on_clicked_export_allzip(self):
         report_path = Common.get_reg(Common.REG_KEY)
         if report_path:
-            report_path = report_path + Common.REPORTS_PATH
+            report_path = report_path + "/" + Common.REPORTS_PATH
         else:
             report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
         Common.create_path(report_path)    
