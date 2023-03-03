@@ -10,20 +10,19 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from datetime import datetime
 import json
- 
+from insightfaces.main import FaceAI
+
 class GenReport:
-    _probid_ = "0"
     def __init__(self, buffer, probid):
         self.buffer = buffer
         self.pagesize = (8.5 * inch, 14 * inch)
         self.width, self.height = self.pagesize
         self.margin_x = 0.4 * inch
         self.margin_y = 0.5 * inch
-        _probid_ = probid
+        self.probid = probid
         pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
 
-    @staticmethod
-    def _header_footer(canvas, doc):
+    def _header_footer(self, canvas, doc):
         # Save the state of our canvas so we can draw on it
         canvas.saveState()
         styles = getSampleStyleSheet()
@@ -32,7 +31,7 @@ class GenReport:
         header = Paragraph('FaceAI Probe Report', ParagraphStyle(name="style", fontName="Arial", fontSize=14, alignment=TA_CENTER, textColor=HexColor(0x0070C0)))
         w, h = header.wrap(doc.width, doc.topMargin)
         header.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h)
-        header = Paragraph('Probe ID: ', ParagraphStyle(name="style", fontName="Arial", fontSize=12, alignment=TA_CENTER, textColor=black))
+        header = Paragraph('Probe ID: %s'%self.probid, ParagraphStyle(name="style", fontName="Arial", fontSize=12, alignment=TA_CENTER, textColor=black))
         w, h = header.wrap(doc.width, doc.topMargin)
         header.drawOn(canvas, doc.leftMargin, doc.height + doc.topMargin - h * 2.9)
  
@@ -105,7 +104,7 @@ class GenReport:
             img.vAlign = TA_CENTER
             nested[index % 2] = [
                 img,
-                Paragraph('Similarity score: %.2f%%(%s)'%(target['sim']*100, "High match"), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                Paragraph('Similarity score: %.2f%%(%s)'%(target['sim']*100, FaceAI.get_similarity_str([], target['sim'], "")), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                 Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                 Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
             ]
@@ -169,7 +168,10 @@ class NumberedCanvas(canvas.Canvas):
         self.drawRightString(self.width / 2.0 + 10, 0.35 * inch,
                              "Page %d of %d" % (self._pageNumber, page_count))
 
-def create_pdf(probe_id, probe_result, export_path):
+def gen_pdf_filename(probe_id, case_num, ps):
+    return 'probe_report_%s_%s_%s'%(probe_id, case_num, ps)
+
+def create_pdf(probe_id, probe_result, file_location):
     try:
         buffer = BytesIO()
         reportinfo = {
@@ -196,8 +198,7 @@ def create_pdf(probe_id, probe_result, export_path):
         report = GenReport(buffer, probe_id)
         pdf = report.print_reports(reportinfo)
         buffer.seek(0)
-    
-        with open('%s/report_%s.pdf'%(export_path, probe_id), 'wb') as f:
+        with open(file_location, 'wb') as f:
             f.write(buffer.read())
 
         return True

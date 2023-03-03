@@ -10,8 +10,10 @@ import numpy as np
 
 class Common:
     REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\FaceAI\main.exe"
-    DATABASE_PATH = "FaceAI Media"
-    REPORTS_PATH = "FaceAI Probe Reports"
+    STORAGE_PATH = "Data Storage"
+    MEDIA_PATH = "Media"
+    REPORTS_PATH = "Probe Reports"
+    TEMP_PATH = "Temporary Data"
     REG_KEY = "MediaFolder"
     MATCH_LEVEL = 0.7
     CASE_NUMBER_LENGTH = 14

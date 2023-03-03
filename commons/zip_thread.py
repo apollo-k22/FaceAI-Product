@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 from commons.common import Common
 from commons.probing_result import ProbingResult
-from commons.gen_report import create_pdf
+from commons.gen_report import create_pdf, gen_pdf_filename
 
 import os, uuid
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -18,10 +18,10 @@ class ThreadResult(object):
 class ZipThread(QThread, ProbingResult):
     finished_zip_signal = pyqtSignal(ThreadResult)
 
-    def __init__(self, probe_result, export_path, parent=None):
+    def __init__(self, probe_result, zip_location, parent=None):
         QThread.__init__(self, parent)
         self.reports = probe_result
-        self.export_path = export_path 
+        self.zip_location = zip_location 
         self.res = ThreadResult()
 
     def run(self) -> None:
@@ -35,21 +35,27 @@ class ZipThread(QThread, ProbingResult):
 
     def zip_all_reports(self):
         try:  
-            zip_file = "%s/faceai_reports.zip"%self.export_path
-            temp_folder = "./tmp/" + str(uuid.uuid4()) + "/"
+            temp_path = Common.get_reg(Common.REG_KEY)
+            if temp_path:
+                temp_path = report_path + Common.TEMP_PATH
+            else:
+                temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH        
+            Common.create_path(temp_path) 
+            temp_folder = temp_path + "/" + str(uuid.uuid4()) + "/"
             Common.create_path(temp_folder)            
 
             for report in self.reports:  
-                create_pdf(report.probe_id, report, temp_folder) 
+                filename = gen_pdf_filename(report.probe_id, report.case_info.case_number, report.case_info.case_PS) + ".pdf"
+                create_pdf(report.probe_id, report, temp_folder + filename) 
             
-            with ZipFile(zip_file, 'w', ZIP_DEFLATED) as allzip:
+            with ZipFile(self.zip_location, 'w', ZIP_DEFLATED) as allzip:
                 for f in self._itertarget(Path(temp_folder)):                    
                     with f.open('rb') as b:
                         data = b.read()
                     filepath = str(f.relative_to(temp_folder))
                     allzip.writestr(filepath, data)  
                     os.remove(temp_folder + filepath)
-            os.removedirs(temp_folder)
+            os.rmdir(temp_folder)
             
             self.res.status = True
             self.res.message = ""

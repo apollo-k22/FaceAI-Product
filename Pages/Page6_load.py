@@ -1,4 +1,4 @@
-import json
+import json, os
 from datetime import date, datetime
 
 from PyQt5 import uic
@@ -10,7 +10,7 @@ from sympy import false
 
 from commons.common import Common
 from commons.db_connection import DBConnection
-from commons.gen_report import create_pdf
+from commons.gen_report import create_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 
@@ -52,9 +52,17 @@ class LoaderProbeReportPage(QMainWindow):
         if not (self.probe_result.case_info.subject_image_url == '') and \
                 not (len(self.probe_result.case_info.target_image_urls) == 0):
             self.write_probe_results_to_database()
-        export_path = QFileDialog.getExistingDirectory(self, "The path to be saved pdf")
-        if not export_path == "":
-            create_pdf(self.probe_result.probe_id, self.probe_result, export_path)
+        report_path = Common.get_reg(Common.REG_KEY)
+        if report_path:
+            report_path = report_path + Common.REPORTS_PATH
+        else:
+            report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
+        Common.create_path(report_path)  
+
+        filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
+        file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
+        if not file_location == "":
+            create_pdf(self.probe_result.probe_id, self.probe_result, file_location[0] + file_location[1])
             self.export_pdf_signal.emit(self.probe_result)
         else:
             return
@@ -110,9 +118,10 @@ class LoaderProbeReportPage(QMainWindow):
         # so that subject and target images will be saved to that directory
         media_path = Common.get_reg(Common.REG_KEY)
         if media_path:
-            Common.create_path(media_path)
+            media_path = media_path + Common.MEDIA_PATH
         else:
-            Common.create_path(Common.DATABASE_PATH)
+            media_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH            
+        Common.create_path(media_path)
 
         # copy subject and target images to media directory, after that, replace urls with urls in media folder
         self.probe_result.case_info.subject_image_url = Common.copy_file(self.probe_result.case_info.subject_image_url,
