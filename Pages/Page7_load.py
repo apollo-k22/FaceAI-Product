@@ -132,7 +132,7 @@ class LoaderProbeReportListPage(QMainWindow):
         else:
             report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
         Common.create_path(report_path)                
-        print(probe_result.json_result["faces"])
+        
         filename = gen_pdf_filename(probe_result.probe_id, probe_result.case_info.case_number, probe_result.case_info.case_PS)
         file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
         if file_location[0] == "":
