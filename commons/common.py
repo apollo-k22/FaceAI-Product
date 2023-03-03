@@ -14,7 +14,7 @@ class Common:
     MEDIA_PATH = "Media"
     REPORTS_PATH = "Probe Reports"
     TEMP_PATH = "Temporary Data"
-    REG_KEY = "MediaFolder"
+    REG_KEY = "DataFolder"
     MATCH_LEVEL = 0.7
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
