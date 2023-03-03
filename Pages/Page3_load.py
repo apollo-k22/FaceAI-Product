@@ -3,7 +3,8 @@ import pathlib
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel, \
+    QSizePolicy
 
 from commons.case_info import CaseInfo
 from commons.common import Common
@@ -76,6 +77,7 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
             self.current_work_folder = Common.get_folder_path(url)
             btn_style = "image:url(" + url + ");border: 1px solid rgb(53, 132, 228);"
             self.btnSinglePhoto.setStyleSheet(btn_style)
+            self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
             self.image_urls.append(url)
 
     @pyqtSlot()
