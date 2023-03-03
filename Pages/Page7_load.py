@@ -1,4 +1,4 @@
-import string, os
+import string, os, time
 
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
@@ -43,6 +43,7 @@ class LoaderProbeReportListPage(QMainWindow):
         self.combEntriesNumber.setCurrentIndex(0)
 
         self.leditSearchString = self.findChild(QLineEdit, "leditSearchString")
+        self.zip_time = time.time()
         self.init_actions()
 
     @pyqtSlot()
@@ -145,6 +146,9 @@ class LoaderProbeReportListPage(QMainWindow):
 
     @pyqtSlot()
     def on_clicked_export_allzip(self):
+        zip_call_interval = time.time() - self.zip_time
+        if zip_call_interval < 3: return
+
         report_path = Common.get_reg(Common.REG_KEY)
         if report_path:
             report_path = report_path + "/" + Common.REPORTS_PATH
@@ -155,7 +159,7 @@ class LoaderProbeReportListPage(QMainWindow):
         datestr = datetime.strftime(datetime.now(), "%d_%m_%Y")
         zip_file = "%s/probe_reports_%s"%(report_path, datestr)
         zip_location = QFileDialog.getSaveFileName(self, "Save report zip file", zip_file, ".zip")
-        print("end")
+        self.zip_time = time.time()
 
         if zip_location[0] == '':
             return
