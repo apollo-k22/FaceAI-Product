@@ -37,7 +37,7 @@ class ZipThread(QThread, ProbingResult):
         try:  
             temp_path = Common.get_reg(Common.REG_KEY)
             if temp_path:
-                temp_path = report_path + Common.TEMP_PATH
+                temp_path = temp_path + Common.TEMP_PATH
             else:
                 temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH        
             Common.create_path(temp_path) 
