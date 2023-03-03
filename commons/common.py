@@ -27,7 +27,6 @@ class Common:
                    " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
                    " *.tif *.tiff *.wbmp" \
                    " *.webp *.xbm *.xpm)"
-    MEDIA_PATH = "FaceAI Media"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
     LABEL_MAX_WIDTH_IN_ITEM = 170
     VALUE_MAX_HEIGHT_IN_ITEM = 30
