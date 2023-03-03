@@ -49,9 +49,6 @@ class LoaderProbeReportPage(QMainWindow):
 
     @pyqtSlot()
     def on_clicked_export_pdf(self):
-        if not (self.probe_result.case_info.subject_image_url == '') and \
-                not (len(self.probe_result.case_info.target_image_urls) == 0):
-            self.write_probe_results_to_database()
         report_path = Common.get_reg(Common.REG_KEY)
         if report_path:
             report_path = report_path + Common.REPORTS_PATH
@@ -61,11 +58,16 @@ class LoaderProbeReportPage(QMainWindow):
 
         filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
         file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
-        if not file_location == "":
-            create_pdf(self.probe_result.probe_id, self.probe_result, file_location[0] + file_location[1])
-            self.export_pdf_signal.emit(self.probe_result)
-        else:
+
+        if file_location[0] == "":
             return
+
+        if not (self.probe_result.case_info.subject_image_url == '') and \
+                not (len(self.probe_result.case_info.target_image_urls) == 0):
+            self.write_probe_results_to_database()
+        
+        create_pdf(self.probe_result.probe_id, self.probe_result, file_location[0] + file_location[1])
+        self.export_pdf_signal.emit(self.probe_result)
 
     @pyqtSlot()
     def on_clicked_return_home(self):
@@ -128,6 +130,7 @@ class LoaderProbeReportPage(QMainWindow):
                                                                          media_path + "/subjects")
         target_images = []
         index = 0
+        print(self.probe_result.case_info.target_image_urls)
         for target in self.probe_result.case_info.target_image_urls:
             modified_target = Common.copy_file(target, media_path + "/targets")
             target_images.append(modified_target)

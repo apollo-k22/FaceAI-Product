@@ -132,9 +132,11 @@ class LoaderProbeReportListPage(QMainWindow):
         else:
             report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
         Common.create_path(report_path)                
-
+        print(probe_result.json_result["faces"])
         filename = gen_pdf_filename(probe_result.probe_id, probe_result.case_info.case_number, probe_result.case_info.case_PS)
         file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
+        if file_location[0] == "":
+            return
         printed = create_pdf(probe_result.probe_id, probe_result, file_location[0] + file_location[1])
         if printed:
             Common.show_message(QMessageBox.Information, "Pdf report was created.", "Report Generation", "Notice", "")
@@ -152,9 +154,11 @@ class LoaderProbeReportListPage(QMainWindow):
 
         datestr = datetime.strftime(datetime.now(), "%d_%m_%Y")
         zip_file = "%s/probe_reports_%s"%(report_path, datestr)
-        print("start")
         zip_location = QFileDialog.getSaveFileName(self, "Save report zip file", zip_file, ".zip")
         print("end")
+
+        if zip_location[0] == '':
+            return
 
         db = DBConnection()
         reports = db.get_values()
