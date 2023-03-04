@@ -1,12 +1,8 @@
 import json
-from datetime import date, datetime
-
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt, QDateTime
-from PyQt5.QtGui import QIntValidator, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGridLayout, QTextEdit, \
-    QSizePolicy, QFileDialog
-from sympy import false
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QDateTime
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QVBoxLayout, QGridLayout, QTextEdit, \
+    QSizePolicy, QFileDialog, QWidget
 
 from commons.common import Common
 from commons.db_connection import DBConnection
@@ -15,7 +11,7 @@ from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 
 
-class LoaderProbeReportPage(QMainWindow):
+class LoaderProbeReportPage(QWidget):
     return_home_signal = pyqtSignal()
     go_back_signal = pyqtSignal(object)
     export_pdf_signal = pyqtSignal(object)
@@ -43,7 +39,6 @@ class LoaderProbeReportPage(QMainWindow):
         self.glyReportBuff = QGridLayout()
 
         self.init_actions()
-        self.set_validate_input_data()
 
     @pyqtSlot()
     def on_clicked_export_pdf(self):
@@ -64,21 +59,6 @@ class LoaderProbeReportPage(QMainWindow):
     @pyqtSlot()
     def on_clicked_go_back(self):
         self.go_back_signal.emit(self.probe_result)
-
-    # @pyqtSlot()
-    # def on_clicked_go_remaining(self):
-    #     if self.leditRemainingPhotoNumber.text() == '':
-    #         return
-    #     remaining_number = int(self.leditRemainingPhotoNumber.text())
-    #     if remaining_number > 0:
-    #         # remove some items from json results except remaining number
-    #         self.probe_result.json_result['results'] = \
-    #             Common.remove_elements_from_list_tail(self.probe_result.json_result['results'], remaining_number)
-    #         self.probe_result.json_result['faces'] = \
-    #             Common.remove_elements_from_list_tail(self.probe_result.json_result["faces"], remaining_number)
-    #         # repaint target images view
-    #         self.init_target_images_view()
-    #         self.init_input_values()
 
     def write_probe_results_to_database(self):
         self.update_json_data()
@@ -124,16 +104,14 @@ class LoaderProbeReportPage(QMainWindow):
             self.probe_result.json_result["faces"][index]["image_path"] = modified_target
         self.probe_result.case_info.target_image_urls = target_images
 
-    # set validator to input box
-    def set_validate_input_data(self):
-        pass
-        # remaining_number_validator = QIntValidator(self.leditRemainingPhotoNumber)
-        # self.leditRemainingPhotoNumber.setValidator(remaining_number_validator)
-
     def init_actions(self):
         self.btnExportPdf.clicked.connect(self.on_clicked_export_pdf)
         self.btnGoBack.clicked.connect(self.on_clicked_go_back)
         self.btnReturnHome.clicked.connect(self.on_clicked_return_home)
+
+    def refresh_views(self):
+        self.init_input_values()
+        self.init_target_images_view()
 
     def init_input_values(self):
         if not self.probe_result:
@@ -179,5 +157,5 @@ class LoaderProbeReportPage(QMainWindow):
 
     def clear_result_list(self):
         Common.clear_layout(self.vlyReportResult)
-        self.repaint()
-        self.showMaximized()
+        # self.repaint()
+        # self.showMaximized()

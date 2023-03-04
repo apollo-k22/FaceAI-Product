@@ -25,33 +25,23 @@ class SplashThread(QThread):
 
     def __init__(self, parent=None):
         QThread.__init__(self, parent)
-        # self.splash_screen = QSplashScreen()
-        # # splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
-        # self.splash_screen.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
-        # self.splash_screen.setEnabled(False)
-        # splash_pixmap = QPixmap(':/newPrefix/splash/splash_0.png')
-        # self.splash_screen.setPixmap(splash_pixmap)
         self.splash_screen = QSplashScreen()
-        self.mysignal.connect(self.stop_splash)
         self.timer = QTimer()
         self.splash_type = "widget"  # the splash whether while loading widget or data.
-        self.window = QMainWindow()
         self.start()
 
-    def start_splash(self, window):
+    def start_splash(self):
         global splash_i_widget, splash_i_data, max_i_data, max_i_widget, splash_stop, max_i, splash_i, splash_i_buff
-        self.splash_screen = QSplashScreen(window)
         # splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
         self.splash_screen.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
         self.splash_screen.setEnabled(False)
-        splash_pixmap = QPixmap(':/newPrefix/Background.jpg')
+        splash_pixmap = QPixmap(':/newPrefix/splash/splash_0.png')
         self.splash_screen.setStyleSheet("background-image:url(:/newPrefix/Background.png)")
         self.splash_screen.setPixmap(splash_pixmap)
-        self.window = window
-        self.timer = QTimer()
         self.timer.setInterval(50)
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.update_splash_screen)
+        self.mysignal.connect(self.stop_splash)
         self.splash_screen.show()
         if self.splash_type == "widget":
             print("start splash with widget")
@@ -64,8 +54,6 @@ class SplashThread(QThread):
             splash_i_buff = splash_i_data
             max_i = max_i_data
         self.timer.start()
-        print("started timer")
-        self.started_signal.emit()
 
     # Update SplashScreen animation
     def update_splash_screen(self):
@@ -80,8 +68,8 @@ class SplashThread(QThread):
                 splash_i = splash_i + 1
             else:
                 splash_i = splash_i_buff
-        # pixmap = QPixmap(':/newPrefix/splash/splash_' + str(splash_i) + '.png')
-        pixmap = QPixmap(':/newPrefix/Background.png')
+        pixmap = QPixmap(':/newPrefix/splash/splash_' + str(splash_i) + '.png')
+        # pixmap = QPixmap(':/newPrefix/Background.png')
         self.splash_screen.setPixmap(pixmap)
 
     def run(self):
@@ -151,15 +139,15 @@ class SplashThread(QThread):
 
     # Function to stop the timer and close the SplashScreen window
     @pyqtSlot()
-    def stop_splash(self):
+    def stop_splash(self, wdt):
         global splash_i, max_i, splash_i_buff
         print("stop splash")
         splash_i = 0
         max_i = 0
         splash_i_buff = 0
         # self.timer.stop()  # stop the timer
-        # Form.show()  # show form
-
+        wdt.showMaximized()  # show form
+        wdt.setFocus()
         self.splash_screen.hide()  # close SplashScreen
 
 #

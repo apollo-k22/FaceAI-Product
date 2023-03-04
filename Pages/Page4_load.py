@@ -1,8 +1,8 @@
 from random import random
 
 from PyQt5 import uic
-from PyQt5.QtCore import QTimer, pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QLabel
 
@@ -12,7 +12,7 @@ from commons.probing_thread import ProbingThread
 from insightfaces.main import FaceAI
 
 
-class LoaderProbingPage(QMainWindow, FaceAI):
+class LoaderProbingPage(QWidget, FaceAI):
     completed_probing_signal = pyqtSignal(ProbingResult)
     start_splash_signal = pyqtSignal()
 

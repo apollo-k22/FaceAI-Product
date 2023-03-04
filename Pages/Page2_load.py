@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QSizePolicy
+from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QFileDialog
@@ -11,7 +11,7 @@ from commons.case_info import CaseInfo
 from insightfaces.main import FaceAI
 
 
-class LoaderCreateNewCasePage(QMainWindow, FaceAI):
+class LoaderCreateNewCasePage(QWidget, FaceAI):
     # when clicked 'return home' button, this will be emitted
     return_home_signal = pyqtSignal()
     # when clicked 'continue to probe' button, this will be emitted

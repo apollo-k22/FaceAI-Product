@@ -2,18 +2,16 @@ import pathlib
 
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel, \
-    QSizePolicy
+from PyQt5.QtWidgets import QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel, \
+    QSizePolicy, QWidget
 
 from commons.case_info import CaseInfo
 from commons.common import Common
 
 
-class LoaderSelectTargetPhotoPage(QMainWindow):
+class LoaderSelectTargetPhotoPage(QWidget):
     go_back_signal = pyqtSignal()
     start_probe_signal = pyqtSignal(object)
-    start_splash_signal = pyqtSignal()
     return_home_signal = pyqtSignal()
 
     def __init__(self):
