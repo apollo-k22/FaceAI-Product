@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>FaceAI Create Case</string>
+   <string>Create Case</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-image: url(:/newPrefix/Background.png);</string>

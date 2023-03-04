@@ -14,6 +14,7 @@ from insightfaces.main import FaceAI
 
 class LoaderProbingPage(QMainWindow, FaceAI):
     completed_probing_signal = pyqtSignal(ProbingResult)
+    start_splash_signal = pyqtSignal()
 
     def __init__(self, faceai):
         super().__init__()

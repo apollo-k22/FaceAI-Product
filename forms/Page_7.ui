@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FaceAI Probe Reports</string>
+   <string>Probe Reports</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>

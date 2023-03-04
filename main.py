@@ -1,7 +1,7 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QTimer, pyqtSlot
+from PyQt5.QtCore import QTimer, pyqtSlot, pyqtSignal
 from Pages.Page0_load import LicenseBoxPage
 from Pages.Page2_load import LoaderCreateNewCasePage
 from Pages.Page3_load import LoaderSelectTargetPhotoPage
@@ -16,6 +16,7 @@ import ntplib
 import time
 from time import ctime
 import datetime
+from commons.splash_screen import SplashThread
 from cryptophic.license import read_information_db, get_cpu_info
 
 # start home page for probing
@@ -30,10 +31,14 @@ from insightfaces.main import FaceAI
 
 
 class StartHome(QMainWindow):
-    def __init__(self):
+    finished_loading_signal = pyqtSignal()
+    update_progress_signal = pyqtSignal(int)
+    start_splash_signal = pyqtSignal(QMainWindow)
+
+    def __init__(self, splash):
         super().__init__()
         self.faceai = FaceAI()
-        #
+        self.splash = splash
         self.dec_thread = DecThread()
         self.dec_thread.finished_decrypting_signal.connect(self.finished_decrypting_slot)
         self.dec_thread.start()
@@ -49,14 +54,18 @@ class StartHome(QMainWindow):
         self.ui_5_probe_report_preview = LoaderProbeReportPreviewPage()
         self.ui_6_probe_report = LoaderProbeReportPage()
         self.ui_7_prove_report_list = LoaderProbeReportListPage()
+        # set the connection between signal and slot for page transitions
+        self.set_page_transition()
+        self.set_splash_signal_slot()
 
+    def start_home(self):
         # Click to go page2 from page 1 button
         self.btnCreateCase.clicked.connect(self.show_p2_create_new_case)
         # Click to go to page 7 from page 1 button
         self.btnGo2ProbeReport.clicked.connect(self.show_p7_probe_report_list_without_param)
-        # set the connection between signal and slot for page transitions
-        self.set_page_transition()
-        self.showMaximized()
+
+        # self.showMaximized()
+
         app_unlocked = False
         app_expire = 0
         app_expire_date = ""
@@ -83,11 +92,15 @@ class StartHome(QMainWindow):
             else:
                 print("expire error")
                 self.show_p0_license()
+
         # self.showMaximized()
         app_unlocked = False
         app_expire = 0
         app_expire_date = ""
         app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
+        # self.finished_loading_signal.emit()
+        self.splash.splash_screen.hide()
+        print("hide from main init")
 
     @pyqtSlot()
     def finished_decrypting_slot(self):
@@ -98,6 +111,28 @@ class StartHome(QMainWindow):
     def finished_initializing_slot(self):
         print("faceai init ok")
         self.faceai_init_thread.quit()
+
+    @pyqtSlot()
+    def start_splash_for_5(self):
+        # start splash
+        # self.splash.start_splash()
+        print("show from page 4 start_splash_signal")
+        self.splash.splash_screen.show()
+        # self.splash.start_splash(self.ui_5_probe_report_preview)
+        self.ui_5_probe_report_preview.showMaximized()
+
+    def load_data_to_page5(self):
+        self.ui_5_probe_report_preview.init_input_values()
+        print("finished input values loading")
+        self.ui_5_probe_report_preview.init_target_images_view()
+        print("finished loading target images view")
+        self.ui_5_probe_report_preview.repaint()
+
+    def set_splash_signal_slot(self):
+        self.ui_4_probing.probing_thread.start_splash_signal.connect(self.start_splash_for_5)
+        # self.ui_5_probe_report_preview.finished_loading_items_signal.connect(self.splash.stop_splash)
+        # self.splash.started_signal.connect(self.load_data_to_page5)
+        # self.ui_5_probe_report_preview.show_window_signal.connect(self.load_data_to_page5)
 
     # set the connection between signal and slot for page transitions
     def set_page_transition(self):
@@ -176,22 +211,48 @@ class StartHome(QMainWindow):
         self.ui_4_probing.showMaximized()
         self.ui_4_probing.start_probing(case_info)
 
+    def init_input_values(self):
+        pass
+
+    def init_target_images_view(self):
+        pass
+
     @pyqtSlot(ProbingResult)
     def show_p5_probe_report_preview(self, probe_result):
+        # start splashing
+        self.splash.splash_screen.show()
+
+        # init views
         self.ui_4_probing.hide()
         self.ui_6_probe_report.hide()
+        # show probe report preview page
         self.ui_5_probe_report_preview.probe_result = probe_result
-        self.ui_5_probe_report_preview.init_input_values()
-        self.ui_5_probe_report_preview.init_target_images_view()
-        self.ui_5_probe_report_preview.showMaximized()
+        # self.ui_5_probe_report_preview.showMaximized()
+        self.load_data_to_page5()
+        self.splash.splash_screen.hide()
+        # self.ui_5_probe_report_preview.init_input_values()
+        # print("finished input values loading")
+        # self.ui_5_probe_report_preview.init_target_images_view()
+        # print("finished target images loading")
+        # self.finished_loading_signal.emit(1)
+        # stop splashing
+        # self.splash.stop_splash(1)
+        # self.finished_loading_signal.emit(1)
 
     @pyqtSlot(ProbingResult)
     def show_p6_probe_report(self, probe_result):
+        # start splashing
+        self.splash.start_splash()
+        # init views
         self.ui_5_probe_report_preview.hide()
         self.ui_7_prove_report_list.hide()
         self.ui_6_probe_report.probe_result = probe_result
         self.ui_6_probe_report.init_input_values()
         self.ui_6_probe_report.init_target_images_view()
+        # stop splashing
+        # self.finished_loading_signal.emit(1)
+        # self.splash.stop_splash()
+        # show probe report page
         self.ui_6_probe_report.showMaximized()
 
     @pyqtSlot()
@@ -204,18 +265,30 @@ class StartHome(QMainWindow):
 
     @pyqtSlot(ProbingResult)
     def show_p7_probe_report_list(self, probe_result):
+        # start splashing
+        self.splash.start_splash()
+        # init views
         self.hide()
         self.ui_6_probe_report.hide()
         self.ui_7_prove_report_list.probe_result = probe_result
         self.ui_7_prove_report_list.init_actions()
         self.ui_7_prove_report_list.init_views()
+        # stop splashing
+        self.splash.stop_splash()
+        # show probe report list page
         self.ui_7_prove_report_list.showMaximized()
 
     @pyqtSlot()
     def show_p7_probe_report_list_without_param(self):
+        # start splashing
+        # self.splash.start_splash()
+        # init views
         self.hide()
         self.ui_4_probing.hide()
         self.ui_7_prove_report_list.init_views()
+        # stop splashing
+        self.splash.stop_splash()
+        # show probe report list page
         self.ui_7_prove_report_list.showMaximized()
 
 
@@ -223,7 +296,16 @@ if __name__ == '__main__':
     try:
         app = QApplication(sys.argv)
         app.setStyleSheet(QSS)
-        window = StartHome()
+        # start splash screen
+        # global for splash
+        global_splash = SplashThread()
+        global_splash.splash_type = "widget"
+
+        window = StartHome(global_splash)
+        window.finished_loading_signal.connect(global_splash.stop_splash)
+        window.start_splash_signal.connect(global_splash.start_splash)
+        global_splash.start_splash(window)
+        window.start_home()
         app.exec_()
     finally:
         exit_process()

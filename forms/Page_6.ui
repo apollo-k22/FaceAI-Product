@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FaceAI Probe Report</string>
+   <string>Probe Report</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -41,8 +41,8 @@ border:none;</string>
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1299</width>
-         <height>1529</height>
+         <width>1316</width>
+         <height>1525</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
@@ -767,117 +767,6 @@ color: rgb(255, 255, 255);</string>
                </layout>
               </item>
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <spacer name="horizontalSpacer_5">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_19">
-                  <property name="font">
-                   <font>
-                    <pointsize>13</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background:transparent;
-color: rgb(255, 255, 255)</string>
-                  </property>
-                  <property name="text">
-                   <string>Keep First</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="leditRemainingPhotoNumber">
-                  <property name="minimumSize">
-                   <size>
-                    <width>50</width>
-                    <height>50</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>50</width>
-                    <height>50</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background:transparent;
-border-radius: 10px;
-border: 1px solid rgb(53, 132, 228);</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_20">
-                  <property name="font">
-                   <font>
-                    <pointsize>13</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background:transparent;
-color: rgb(255, 255, 255)</string>
-                  </property>
-                  <property name="text">
-                   <string>matched photos</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btnGoRemaining">
-                  <property name="minimumSize">
-                   <size>
-                    <width>50</width>
-                    <height>50</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>70</width>
-                    <height>100</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>12</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background:transparent;
-background-color: #005ae2;
-border-radius: 10px;
-color: white;</string>
-                  </property>
-                  <property name="text">
-                   <string>Go</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
                <widget class="QScrollArea" name="scrollArea_2">
                 <property name="minimumSize">
                  <size>
@@ -903,7 +792,7 @@ border: 1px solid rgb(53, 132, 228);</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>1263</width>
+                   <width>1280</width>
                    <height>448</height>
                   </rect>
                  </property>
@@ -985,7 +874,7 @@ color: rgb(255, 255, 255);</string>
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>1263</width>
+                     <width>1280</width>
                      <height>300</height>
                     </rect>
                    </property>

@@ -20,7 +20,7 @@ class Common:
     CASE_EXAMINER_NO_LENGTH = 20
     CASE_REMARKS_LENGTH = 139
     CREATE_CASE_REGX = "\w"
-    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.bmp', '.tif', '.gif', '.jpeg', '.bmp', '.gif', '.ico']
+    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg', '.ico']
     IMAGE_FILTER = "Image Files (*.bmp *.cur *.gif *.icns *.ico *.jpeg" \
                    " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
                    " *.tif *.tiff *.wbmp" \

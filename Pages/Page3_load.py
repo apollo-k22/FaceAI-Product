@@ -13,6 +13,7 @@ from commons.common import Common
 class LoaderSelectTargetPhotoPage(QMainWindow):
     go_back_signal = pyqtSignal()
     start_probe_signal = pyqtSignal(object)
+    start_splash_signal = pyqtSignal()
     return_home_signal = pyqtSignal()
 
     def __init__(self):
@@ -40,6 +41,14 @@ class LoaderSelectTargetPhotoPage(QMainWindow):
         self.stkwdtSelectPhotos = self.findChild(QStackedWidget, "stkwdtSelectPhotos")
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
+
+        self.image_urls = ["E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/1.jpg",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/2.jpg",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/3.jpg",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/4.jpg",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge2.png",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge3.jpg"
+                           ]
 
     @pyqtSlot()
     def start_probe_slot(self):
