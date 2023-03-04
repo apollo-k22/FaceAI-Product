@@ -10,9 +10,11 @@ import numpy as np
 
 class Common:
     REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\FaceAI\main.exe"
-    DATABASE_PATH = "FaceAI Media"
-    REPORTS_PATH = "FaceAI Probe Reports"
-    REG_KEY = "MediaFolder"
+    STORAGE_PATH = "Data Storage"
+    MEDIA_PATH = "Media"
+    REPORTS_PATH = "Probe Reports"
+    TEMP_PATH = "Temporary Data"
+    REG_KEY = "DataFolder"
     MATCH_LEVEL = 0.7
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
@@ -25,7 +27,6 @@ class Common:
                    " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
                    " *.tif *.tiff *.wbmp" \
                    " *.webp *.xbm *.xpm)"
-    MEDIA_PATH = "FaceAI Media"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
     LABEL_MAX_WIDTH_IN_ITEM = 170
     VALUE_MAX_HEIGHT_IN_ITEM = 30

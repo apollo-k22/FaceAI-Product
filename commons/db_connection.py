@@ -12,13 +12,13 @@ from commons.probing_result import ProbingResult
 
 class DBConnection:
     def __init__(self):
-        self.connection_string = "./" + Common.DATABASE_PATH + "/reports.db"
+        self.connection_string = "./" + Common.STORAGE_PATH + "/reports.db"
         self.connection = None
         self.create_table()
 
     def create_table(self):
         try:
-            Common.create_path("./" + Common.DATABASE_PATH)
+            Common.create_path("./" + Common.STORAGE_PATH)
         except Union[FileExistsError, FileNotFoundError] as ex:
             print(ex)
 

@@ -11,11 +11,11 @@ import math, time, json
 from pathlib import Path
 from cryptophic.main import generate_token
 
+THRESHOLDS = [0.7, 0.8, 0.9]
 class FaceAI:
     def __init__(self):
         self.DETECT_ONNX_MODEL = "scrfd_10g_bnkps.onnx"
         self.RECOG_ONNX_MODEL = "glintr100.onnx"
-        self.THRESHOLDS = [0.7, 0.8, 0.9]
         self.onnxruntime = onnxruntime.set_default_logger_severity(3)
         self.assets_dir = osp.expanduser(r"C:\\Users\\" + os.getlogin() + r"\\.secure\\.encfiles")
         self.detector = None
@@ -38,14 +38,15 @@ class FaceAI:
 
         return data
 
-    def get_similarity_str(self, data, similarity, path):
+    @staticmethod
+    def get_similarity_str(data, similarity, path):
         conclu = ""
 
-        if similarity < self.THRESHOLDS[0]:
+        if similarity < THRESHOLDS[0]:
             conclu = 'NOT SIMILAR PERSON'
-        elif similarity >= self.THRESHOLDS[0] and similarity < self.THRESHOLDS[1]:
+        elif similarity >= THRESHOLDS[0] and similarity < THRESHOLDS[1]:
             conclu = 'Low match'
-        elif similarity >= self.THRESHOLDS[1] and similarity < self.THRESHOLDS[2]:
+        elif similarity >= THRESHOLDS[1] and similarity < THRESHOLDS[2]:
             conclu = 'High match'
         else:
             conclu = 'Highest match'
@@ -111,9 +112,9 @@ class FaceAI:
     def build_json_data(self, data, time):
         data['time_used'] = int(time)
         data['thresholds'] = {
-            'Low match': int(self.THRESHOLDS[0] * 100),
-            'High match': int(self.THRESHOLDS[1] * 100),
-            'Highest match': int(self.THRESHOLDS[2] * 100),
+            'Low match': "%d%%"%int(THRESHOLDS[0] * 100),
+            'High match': "%d%%"%int(THRESHOLDS[1] * 100),
+            'Highest match': "%d%%"%int(THRESHOLDS[2] * 100),
         }
         data['request_id'] = "request"
         # data = json.dumps(data, indent=4)
