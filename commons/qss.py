@@ -1,6 +1,6 @@
 QSS = """
 QLabel {
-    background-color: transparent; 
+    background: transparent; 
     color: rgb(255,255,255);
     font: bold;
     font-size: 14pt;
@@ -10,11 +10,17 @@ QLineEdit {
     color: rgb(255, 255, 255);
     font-size: 12pt;
     font-family: Arial;
+    background-color: #3E536A;
+    background:transparent;
+    border: 1px solid rgb(53, 132, 228);
 }
-QPlainTextEdit{
+QTextEdit{
     color: rgb(255, 255, 255);
     font-size: 12pt;
     font-family: Arial;
+    background-color: #3E536A;
+    background:transparent;
+    border: 1px solid rgb(53, 132, 228);
 }
 QPushButton {
     color: rgb(255, 255, 255);
@@ -47,7 +53,8 @@ QScrollArea  QWidget  QTextEdit
     font: 12pt "Arial";
 }
 QMessageBox{
-    background-color: rgb(98, 136, 178)
+    background-color: rgb(98, 136, 178);
+    background:transparent;
 }
 QTableWidget::item{
     max-height:50px;

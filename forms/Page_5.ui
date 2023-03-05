@@ -39,9 +39,9 @@ border:none;</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-722</y>
+        <y>0</y>
         <width>1274</width>
-        <height>1592</height>
+        <height>1609</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -324,6 +324,18 @@ background:transparent;</string>
                  <property name="rowWrapPolicy">
                   <enum>QFormLayout::DontWrapRows</enum>
                  </property>
+                 <property name="leftMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>10</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>5</number>
+                 </property>
                  <item row="0" column="0">
                   <widget class="QLabel" name="label">
                    <property name="sizePolicy">
@@ -557,24 +569,6 @@ background:none;</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="1">
-                  <widget class="QLabel" name="lblRemarks">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>60</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background:transparent;
-border: 1px solid rgb(53, 132, 228);
-color: white;</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="1" column="1">
                   <widget class="QLabel" name="lblProbeResult">
                    <property name="sizePolicy">
@@ -596,6 +590,13 @@ color: white;</string>
                    </property>
                    <property name="text">
                     <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="1">
+                  <widget class="QTextEdit" name="teditRemarks">
+                   <property name="styleSheet">
+                    <string notr="true"/>
                    </property>
                   </widget>
                  </item>

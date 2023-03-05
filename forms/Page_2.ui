@@ -288,7 +288,7 @@ background: none;</string>
            <property name="styleSheet">
             <string notr="true">background-color: #3E536A;
 color: rgb(255, 255, 255);
-background:transparent;</string>
+background:transparent;border: 1px solid rgb(53, 132, 228);</string>
            </property>
           </widget>
          </item>
@@ -333,7 +333,7 @@ background: none;</string>
            <property name="styleSheet">
             <string notr="true">background-color: #3E536A;
 color: rgb(255, 255, 255);
-background:transparent;</string>
+background:transparent;border: 1px solid rgb(53, 132, 228);</string>
            </property>
           </widget>
          </item>
@@ -361,22 +361,6 @@ background: none;</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
-          <widget class="QPlainTextEdit" name="leditRemarks">
-           <property name="minimumSize">
-            <size>
-             <width>500</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: #3E536A;
-color: rgb(255, 255, 255);
-background:transparent;
-border: 1px solid rgb(53, 132, 228);</string>
-           </property>
-          </widget>
-         </item>
          <item row="5" column="1">
           <spacer name="verticalSpacer_2">
            <property name="orientation">
@@ -389,6 +373,9 @@ border: 1px solid rgb(53, 132, 228);</string>
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="4" column="1">
+          <widget class="QTextEdit" name="teditRemarks"/>
          </item>
         </layout>
        </item>

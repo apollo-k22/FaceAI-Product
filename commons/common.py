@@ -1,3 +1,6 @@
+import decimal
+import json
+import operator
 import os.path
 import pathlib
 import winreg
@@ -23,9 +26,10 @@ class Common:
     CASE_REMARKS_LENGTH = 139
     # CREATE_CASE_REGX = "\w"
     # CREATE_CASE_REGX = "[\u0020-\u007E]"
-    CREATE_CASE_REGX = "[a-zA-Z0-9]"
+    CREATE_CASE_REGX = r'[a-zA-Z0-9]+'
+    CREATE_CASE_REGX_FOR_REMOVE = r'[^a-zA-Z0-9]+'
     EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg', '.ico']
-    IMAGE_FILTER = "Image Files (*.bmp *.cur *.gif *.icns *.ico *.jpeg" \
+    IMAGE_FILTER = "Image Files (*.cur *.icns *.ico *.jpeg" \
                    " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
                    " *.tif *.tiff *.wbmp" \
                    " *.webp *.xbm *.xpm)"
@@ -80,7 +84,7 @@ class Common:
     @staticmethod
     def resize_image(img_path):
         img = PIL.Image.open(img_path)
-        if os.path.getsize(img_path)/(1000 * 1000) > 6:
+        if os.path.getsize(img_path) / (1000 * 1000) > 6:
             wid = img.width
             he = img.height
             img.resize((wid, he), PIL.Image.ADAPTIVE)
@@ -130,7 +134,7 @@ class Common:
     @staticmethod
     def get_folder_path(absolute_file_path):
         return os.path.dirname(os.path.abspath(absolute_file_path))
-    
+
     @staticmethod
     def get_reg(name):
         try:
@@ -154,3 +158,31 @@ class Common:
             return True
         except WindowsError:
             return False
+
+    # sort list by attr.
+    # if reverse is true, sorted by desc
+    # sorting_list: list to be sorted,
+    # attr: sort key
+    # attr_type: attr type
+    @staticmethod
+    def sort_list_by_float_attribute(sorting_list, attr, attr_type, reverse):
+        ret = []
+
+        if len(sorting_list):
+            if attr_type == 'string':
+                for item in sorting_list:
+                    item[attr] = float(item[attr])
+            ret = sorted(sorting_list, key=lambda x: x[attr], reverse=reverse)
+            for item in ret:
+                item[attr] = str(item[attr])
+        return ret
+
+    # round the float string up to 2 decimals
+    @staticmethod
+    def round_float_string(float_string):
+        sim = abs(float(float_string)) * 100
+        decimal_value = decimal.Decimal(sim)
+        # rounding the number upto 2 digits after the decimal point
+        rounded = decimal_value.quantize(decimal.Decimal('0.00'))
+        # return str(rounded)
+        return rounded

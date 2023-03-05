@@ -42,13 +42,13 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
         #
-        # self.image_urls = ["E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/1.jpg",
-        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/2.jpg",
-        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/3.jpg",
-        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/4.jpg",
-        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge2.png",
-        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge3.jpg"
-        #                    ]
+        self.image_urls = ["E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/1.jpg",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/2.jpg",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/3.jpg",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/4.jpg",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge2.png",
+                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge3.jpg"
+                           ]
 
     @pyqtSlot()
     def start_probe_slot(self):
@@ -110,8 +110,10 @@ class LoaderSelectTargetPhotoPage(QWidget):
         else:
             self.lblMultiPhotoResult.setText("There are no raster images in selected folder.")
         for url in urls:
-            url_buff = Common.resize_image(url)
-            self.image_urls.append(url_buff)
+            if self.faceai.is_face(url):
+                self.image_urls.append(url)
+                url_buff = Common.resize_image(url)
+                self.image_urls.append(url_buff)
 
     @pyqtSlot()
     def select_entire_folder_slot(self):
@@ -121,10 +123,12 @@ class LoaderSelectTargetPhotoPage(QWidget):
         desktop = pathlib.Path(direct)
         self.lblEntireFolder.setText(direct)
         for url in desktop.glob(r'**/*'):
+            # url = url.__str__()
             if Common.EXTENSIONS.count(url.suffix):
-                url = Common.resize_image(url)
-                self.image_urls.append(url)
-        if not len(self.image_urls):
+                if self.faceai.is_face(url):
+                    url = Common.resize_image(url)
+                    self.image_urls.append(url)
+        if len(self.image_urls) == 0:
             self.lblEntireResult.setText("There are no raster images in this folder.")
 
     # get all images from old cases
