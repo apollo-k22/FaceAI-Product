@@ -86,6 +86,7 @@ class LoaderProbeReportPreviewPage(QWidget):
     def refresh_views(self):
         self.init_input_values()
         self.init_target_images_view()
+        self.repaint()
 
     def init_input_values(self):
         print("page 5 init_input_values")
@@ -121,10 +122,10 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.etextJsonResult.setPlainText(js_result)
 
     def init_target_images_view(self):
-
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
+            print("probing result is not empty")
             # clear all child on result container layout
             self.clear_result_list()
             # add items to result container layout

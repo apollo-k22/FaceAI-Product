@@ -39,26 +39,30 @@ border:none;</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-722</y>
         <width>1274</width>
-        <height>1555</height>
+        <height>1592</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background:transparent;
+</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
        <property name="spacing">
         <number>0</number>
        </property>
        <property name="leftMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -353,7 +357,7 @@ background:none;
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>400</width>
+                     <width>594</width>
                      <height>40</height>
                     </size>
                    </property>
@@ -581,7 +585,7 @@ color: white;</string>
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>0</width>
+                     <width>594</width>
                      <height>40</height>
                     </size>
                    </property>
@@ -611,8 +615,8 @@ color: white;</string>
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>500</width>
-                   <height>0</height>
+                   <width>350</width>
+                   <height>350</height>
                   </size>
                  </property>
                  <property name="maximumSize">
@@ -826,7 +830,7 @@ border: 1px solid rgb(53, 132, 228);</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>1270</width>
+              <width>1252</width>
               <height>398</height>
              </rect>
             </property>
@@ -868,6 +872,9 @@ border: 1px solid rgb(53, 132, 228);</string>
           <layout class="QVBoxLayout" name="JsonResp_layout" stretch="0,0">
            <property name="spacing">
             <number>10</number>
+           </property>
+           <property name="topMargin">
+            <number>20</number>
            </property>
            <item>
             <widget class="QLabel" name="label_49">
@@ -924,7 +931,7 @@ background:transparent;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1270</width>
+                <width>1252</width>
                 <height>300</height>
                </rect>
               </property>

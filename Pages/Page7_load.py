@@ -2,7 +2,8 @@ import string, os, time
 
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
-    QVBoxLayout, QHBoxLayout, QFileDialog, QComboBox, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QTableWidget, QHBoxLayout, QLineEdit, QComboBox, QTableWidgetItem, \
+    QFileDialog, QMessageBox, QWidget
 
 from commons.common import Common
 from commons.db_connection import DBConnection

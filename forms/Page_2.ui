@@ -197,7 +197,7 @@ color: rgb(255, 255, 255);
 background:transparent;</string>
            </property>
            <property name="inputMethodHints">
-            <set>Qt::ImhNone</set>
+            <set>Qt::ImhLatinOnly</set>
            </property>
           </widget>
          </item>
@@ -362,13 +362,7 @@ background: none;</string>
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="leditRemarks">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+          <widget class="QPlainTextEdit" name="leditRemarks">
            <property name="minimumSize">
             <size>
              <width>500</width>
@@ -378,7 +372,8 @@ background: none;</string>
            <property name="styleSheet">
             <string notr="true">background-color: #3E536A;
 color: rgb(255, 255, 255);
-background:transparent;</string>
+background:transparent;
+border: 1px solid rgb(53, 132, 228);</string>
            </property>
           </widget>
          </item>

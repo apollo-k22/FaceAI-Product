@@ -46,6 +46,7 @@ class LoaderProbingPage(QWidget, FaceAI):
     def finished_probing_slot(self, probing_result):
         self.stop_gif()
         self.probing_thread.quit()
+        self.start_splash_signal.emit()
         self.completed_probing_signal.emit(probing_result)
 
     @pyqtSlot()

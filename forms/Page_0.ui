@@ -17,10 +17,6 @@
       background-size: contain;
     </string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
-   <property name="spacing">
-    <number>0</number>
-   </property>
    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
     <property name="spacing">
      <number>0</number>

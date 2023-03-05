@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtGui import QShowEvent, QCloseEvent
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QStatusBar
 from PyQt5.QtCore import QTimer, pyqtSlot, pyqtSignal
 from Pages.Page0_load import LicenseBoxPage
 from Pages.Page1_load import StartHome
@@ -46,11 +46,12 @@ class StartMain(QMainWindow):
         self.ui_0_license = LicenseBoxPage()
         self.ui_1_home = StartHome()
         self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai)
-        self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage()
+        self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage(self.faceai)
         self.ui_4_probing = LoaderProbingPage(self.faceai)
         self.ui_5_probe_report_preview = LoaderProbeReportPreviewPage()
         self.ui_6_probe_report = LoaderProbeReportPage()
         self.ui_7_prove_report_list = LoaderProbeReportListPage()
+        self.status_bar = self.findChild(QStatusBar, "statusBar")
         self.refresh_views_thread = RefreshWidgetThread()  # the thread to be used to refresh some page
         self.refresh_views_thread.finished_refreshing_widget.connect(
             lambda wdt: self.finished_refreshing_slot(wdt)
@@ -67,6 +68,7 @@ class StartMain(QMainWindow):
         app_expire_date = ""
         app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
         print(app_unlocked, app_expire_date)
+        self.status_bar.showMessage("The license will be expired by " + app_expire_date)
 
         if app_unlocked == False:
             self.show_p0_license()
@@ -89,12 +91,6 @@ class StartMain(QMainWindow):
                 print("expire error")
                 self.show_p0_license()
 
-        # self.showMaximized()
-        app_unlocked = False
-        app_expire = 0
-        app_expire_date = ""
-        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
-
     @pyqtSlot()
     def finished_decrypting_slot(self):
         self.dec_thread.quit()
@@ -107,12 +103,13 @@ class StartMain(QMainWindow):
         print("faceai init ok")
         self.faceai_init_thread.quit()
         self.finished_initiating_widget_signal.emit(self)
+        self.showMaximized()
+        self.start_main()
 
     # when some widget finished to be initiated or refreshed, the widget emit finished signal.
     # then, this slot will be called.
     @pyqtSlot(object)
     def finished_refreshing_slot(self, wdt):
-        self.refresh_views_thread.stop()
         self.finished_initiating_widget_signal.emit(wdt)
 
     @pyqtSlot()
@@ -120,8 +117,9 @@ class StartMain(QMainWindow):
         self.start_splash_signal.emit()
 
     def set_splash_signal_slot(self):
+        pass
         #  when finished probing, the signal emitted so that let the system knows to start probe report preview page.
-        self.ui_4_probing.probing_thread.start_splash_signal.connect(self.start_splash_for_subwidgets)
+        # self.ui_4_probing.probing_thread.start_splash_signal.connect(self.start_splash_for_subwidgets)
         #  when go to probe report page, the signal emitted
         #  so that let the system knows to start probe report page.
 
@@ -181,10 +179,12 @@ class StartMain(QMainWindow):
 
     def show_p0_license(self):
         # self.hide()
+        self.setWindowTitle("License")
         self.ui_0_license.showMaximized()
 
     @pyqtSlot()
     def show_p1_home(self):
+        self.setWindowTitle("Home")
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
@@ -192,17 +192,19 @@ class StartMain(QMainWindow):
         self.ui_7_prove_report_list.hide()
         self.ui_5_probe_report_preview.hide()
         self.ui_1_home.showMaximized()
+        self.ui_1_home.setFocus()
         # self.splash.stop_splash()
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
-        # self.hide()
+        self.setWindowTitle("Create Case")
         self.ui_1_home.hide()
         self.ui_3_select_target_photo.hide()
         self.ui_2_create_new_case.showMaximized()
 
     @pyqtSlot(CaseInfo)
     def show_p4_probing(self, case_info):
+        self.setWindowTitle("Probing...")
         self.ui_3_select_target_photo.hide()
         # start probing
         self.ui_4_probing.showMaximized()
@@ -210,25 +212,33 @@ class StartMain(QMainWindow):
 
     @pyqtSlot(ProbingResult)
     def show_p5_probe_report_preview(self, probe_result):
+        self.setWindowTitle("Probe Report Preview")
         # init views
         self.ui_4_probing.hide()
         self.ui_6_probe_report.hide()
         # show probe report preview page
         self.ui_5_probe_report_preview.probe_result = probe_result
-        self.refresh_views_thread.set_widget(self.ui_5_probe_report_preview)
-        self.refresh_views_thread.start()
+        # self.refresh_views_thread.set_widget(self.ui_5_probe_report_preview)
+        # self.refresh_views_thread.start()
+        self.ui_5_probe_report_preview.refresh_views()
+        self.ui_5_probe_report_preview.showMaximized()
+        # self.ui_5_probe_report_preview.setEnabled(False)
 
     @pyqtSlot(ProbingResult)
     def show_p6_probe_report(self, probe_result):
+        self.setWindowTitle("Probe Report")
         # init views
         self.ui_5_probe_report_preview.hide()
         self.ui_7_prove_report_list.hide()
         self.ui_6_probe_report.probe_result = probe_result
-        self.refresh_views_thread.set_widget(self.ui_6_probe_report)
-        self.refresh_views_thread.start()
+        # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
+        # self.refresh_views_thread.start()
+        self.ui_6_probe_report.refresh_views()
+        self.ui_6_probe_report.showMaximized()
 
     @pyqtSlot()
     def show_p6_probe_report_without_param(self):
+        self.setWindowTitle("Probe Report")
         self.ui_7_prove_report_list.hide()
         self.ui_6_probe_report.probe_result = ProbingResult()
         # self.ui_6_probe_report.init_input_values()
@@ -237,16 +247,14 @@ class StartMain(QMainWindow):
 
     @pyqtSlot(ProbingResult)
     def show_p7_probe_report_list(self, probe_result):
-        # start splashing
-        self.splash.start_splash()
+        self.setWindowTitle("Probe Reports")
         # init views
-        self.hide()
         self.ui_6_probe_report.hide()
         self.ui_7_prove_report_list.probe_result = probe_result
         self.ui_7_prove_report_list.init_actions()
         self.ui_7_prove_report_list.init_views()
         # stop splashing
-        self.splash.stop_splash()
+        # self.splash.stop_splash()
         # show probe report list page
         self.ui_7_prove_report_list.showMaximized()
 
@@ -255,11 +263,10 @@ class StartMain(QMainWindow):
         # start splashing
         # self.splash.start_splash()
         # init views
-        self.hide()
+        # self.hide()
+        self.ui_1_home.hide()
         self.ui_4_probing.hide()
         self.ui_7_prove_report_list.init_views()
-        # stop splashing
-        self.splash.stop_splash()
         # show probe report list page
         self.ui_7_prove_report_list.showMaximized()
 
@@ -283,7 +290,8 @@ class StartMain(QMainWindow):
 
     def showEvent(self, a0: QShowEvent) -> None:
         super().showEvent(a0)
-        self.start_main()
+        # self.showMaximized()
+        # self.start_main()
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         super().closeEvent(a0)

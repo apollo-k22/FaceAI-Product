@@ -20,13 +20,13 @@
    <string>Home</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>../images/FaceAI-Logo.png</normaloff>../images/FaceAI-Logo.png</iconset>
+   <iconset resource="../images/images.qrc">
+    <normaloff>:/newPrefix/FaceAI-Logo.png</normaloff>:/newPrefix/FaceAI-Logo.png</iconset>
   </property>
   <property name="iconSize">
    <size>
-    <width>10</width>
-    <height>10</height>
+    <width>15</width>
+    <height>15</height>
    </size>
   </property>
   <widget class="QWidget" name="centralwidget">

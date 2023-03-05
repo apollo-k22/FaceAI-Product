@@ -146,7 +146,7 @@ class SplashThread(QThread):
         max_i = 0
         splash_i_buff = 0
         # self.timer.stop()  # stop the timer
-        wdt.showMaximized()  # show form
+        wdt.show()  # show form
         wdt.setFocus()
         self.splash_screen.hide()  # close SplashScreen
 

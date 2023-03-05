@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget
+from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QPlainTextEdit
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QFileDialog
@@ -32,7 +32,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditPS = self.findChild(QLineEdit, 'leditPS')
         self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
         self.leditExaminerNo = self.findChild(QLineEdit, 'leditExaminerNo')
-        self.leditRemarks = self.findChild(QLineEdit, 'leditRemarks')
+        self.leditRemarks = self.findChild(QPlainTextEdit, 'leditRemarks')
 
         # set image url
         self.subject_photo_url = ''
@@ -44,7 +44,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditPS.setText("ps1")
         self.leditExaminerName.setText("examiner")
         self.leditExaminerNo.setText("examiner no")
-        self.leditRemarks.setText("remarks")
+        self.leditRemarks.setPlainText("remarks")
         self.subject_photo_url = "Architecture.png"
         self.btnSelectPhoto.setStyleSheet("image:url(Architecture.png);")
 
@@ -60,7 +60,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.set_regx_line_edit(self.leditPS, Common.CREATE_CASE_REGX, Common.CASE_PS_LENGTH)
         self.set_regx_line_edit(self.leditExaminerName, Common.CREATE_CASE_REGX, Common.CASE_EXAMINER_NAME_LENGTH)
         self.set_regx_line_edit(self.leditExaminerNo, Common.CREATE_CASE_REGX, Common.CASE_EXAMINER_NO_LENGTH)
-        self.set_regx_line_edit(self.leditRemarks, Common.CREATE_CASE_REGX, Common.CASE_REMARKS_LENGTH)
+        # self.set_regx_line_edit(self.leditRemarks, Common.CREATE_CASE_REGX, Common.CASE_REMARKS_LENGTH)
 
     # set regular expression for checking on line edit
     def set_regx_line_edit(self, line_edit, regx, length):
@@ -86,8 +86,8 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
             else:
                 Common.resize_image(photo_url)
                 self.subject_photo_url = photo_url
-                btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
-                                                                    "border: 1px solid rgb(53, 132, 228);"
+                btn_style = "border-image:url(" + self.subject_photo_url + ");background:transparent;" \
+                                                                    "border: 1px solid rgb(53, 132, 228);background-size:cover;"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
 
@@ -131,7 +131,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
             self.case_info.case_PS = self.leditPS.text()
             self.case_info.examiner_no = self.leditExaminerNo.text()
             self.case_info.examiner_name = self.leditExaminerName.text()
-            self.case_info.remarks = self.leditRemarks.text()
+            self.case_info.remarks = self.leditRemarks.toPlainText()
             self.case_info.subject_image_url = self.subject_photo_url
             # emit continue probe signal
             self.continue_probe_signal.emit(self.case_info)
@@ -151,7 +151,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         if self.leditExaminerName.text() == '':
             self.leditExaminerName.setFocus()
             return true, "Examiner's Name"
-        if self.leditRemarks.text() == '':
+        if self.leditRemarks.toPlainText() == '':
             self.leditRemarks.setFocus()
             return true, "Remarks"
         if self.subject_photo_url == '':

@@ -17,7 +17,7 @@ class RefreshWidgetThread(QThread):
     def refresh_views(self):
         print("start refresh")
         self.widget.refresh_views()
-        print("stop refresh")
+        print("finish refresh")
         self.finished_refreshing_widget.emit(self.widget)
 
 

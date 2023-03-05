@@ -2,6 +2,7 @@ import pathlib
 
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel, \
     QSizePolicy, QWidget
 
@@ -14,11 +15,12 @@ class LoaderSelectTargetPhotoPage(QWidget):
     start_probe_signal = pyqtSignal(object)
     return_home_signal = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, faceai):
         super().__init__()
 
         self.window = uic.loadUi("./forms/Page_3.ui", self)
         self.case_info = CaseInfo()
+        self.faceai = faceai
         self.image_urls = []
         self.current_work_folder = ""
         self.cmdbtnGoBack = self.findChild(QPushButton, "cmdbtnGoBack")
@@ -39,14 +41,14 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.stkwdtSelectPhotos = self.findChild(QStackedWidget, "stkwdtSelectPhotos")
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
-
-        self.image_urls = ["E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/1.jpg",
-                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/2.jpg",
-                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/3.jpg",
-                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/4.jpg",
-                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge2.png",
-                           "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge3.jpg"
-                           ]
+        #
+        # self.image_urls = ["E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/1.jpg",
+        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/2.jpg",
+        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/3.jpg",
+        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/4.jpg",
+        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge2.png",
+        #                    "E:/freelancing/inpregress/faceAI-Team/New folder/FaceAI_App_Demo/student/huge3.jpg"
+        #                    ]
 
     @pyqtSlot()
     def start_probe_slot(self):
@@ -81,11 +83,22 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.image_urls.clear()
         url, _ = QFileDialog.getOpenFileName(self, 'Open File', self.current_work_folder, Common.IMAGE_FILTER)
         if url:
-            self.current_work_folder = Common.get_folder_path(url)
-            btn_style = "image:url(" + url + ");border: 1px solid rgb(53, 132, 228);"
-            self.btnSinglePhoto.setStyleSheet(btn_style)
-            self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-            self.image_urls.append(url)
+            if not self.faceai.is_face(url):
+                Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+                                    "Incorrect image selected.",
+                                    "")
+            else:
+                self.current_work_folder = Common.get_folder_path(url)
+                btn_style = "border-image:url(" + url + ");height: auto;border: 1px solid rgb(53, 132, 228);"
+                # self.btnSinglePhoto.setStyleSheet(btn_style)
+                # btn_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
+                self.btnSinglePhoto.setStyleSheet(btn_style)
+                # btn_icon = QIcon(url)
+                # btn_rect = self.btnSinglePhoto.size()
+                # self.btnSinglePhoto.setIcon(btn_icon)
+                # self.btnSinglePhoto.setIconSize(btn_rect)
+                self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+                self.image_urls.append(url)
 
     @pyqtSlot()
     def select_multi_photo_slot(self):
