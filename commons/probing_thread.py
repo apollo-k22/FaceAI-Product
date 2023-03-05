@@ -42,7 +42,7 @@ class ProbingThread(QThread, CaseInfo, FaceAI):
                 img_url = item['image_path']
                 img_url = img_url.replace("\\", "/")
                 item['image_path'] = img_url
-                item['confidence'] = Common.round_float_string(item['confidence']) + "%"
+                item['confidence'] = Common.round_float_string(item['confidence'])
                 targets_buff.append(img_url)
                 results_buff.append(item)
             # sort list by confidence desc

@@ -42,15 +42,6 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.set_event_actions()
         self.set_regxs()
 
-        # init for testing
-        self.leditCaseNumber.setText("1231")
-        self.leditPS.setText("ps1")
-        self.leditExaminerName.setText("examiner")
-        self.leditExaminerNo.setText("examiner no")
-        self.leditRemarks.setPlainText("remarks")
-        self.subject_photo_url = "Architecture.png"
-        self.btnSelectPhoto.setStyleSheet("image:url(Architecture.png);")
-
     # set slots to each widget
     def set_event_actions(self):
         self.btnSelectPhoto.clicked.connect(self.get_subject_photo)
