@@ -1,32 +1,13 @@
-from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QTimer, pyqtSlot
-from Pages.Page0_load import LicenseBoxPage
-from Pages.Page2_load import LoaderCreateNewCasePage
-from Pages.Page3_load import LoaderSelectTargetPhotoPage
-from Pages.Page4_load import LoaderProbingPage
-from Pages.Page5_load import LoaderProbeReportPreviewPage
-from Pages.Page6_load import LoaderProbeReportPage
-from Pages.Page7_load import LoaderProbeReportListPage
 import sys
+
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
-import sqlite3
-import ntplib
-import time
-from time import ctime
-import datetime
-from cryptophic.license import read_information_db, get_cpu_info
 
 # start home page for probing
-from commons.case_info import CaseInfo
-from commons.probing_result import ProbingResult
+from Pages.MainPage_load import StartMain
 from commons.qss import QSS
-import images
-from cryptophic.dec_thread import DecThread
+from commons.splash_screen import SplashThread
 from cryptophic.main import exit_process
-from insightfaces.faceai_init_thread import FaceAIInitThread
-from insightfaces.main import FaceAI
 
 
 class StartHome(QMainWindow):
@@ -223,7 +204,16 @@ if __name__ == '__main__':
     try:
         app = QApplication(sys.argv)
         app.setStyleSheet(QSS)
-        window = StartHome()
+        # start splash screen
+        # global for splash
+        global_splash = SplashThread()
+        global_splash.splash_type = "widget"
+
+        window = StartMain(global_splash)
+        window.finished_initiating_widget_signal.connect(
+            lambda wdt: global_splash.stop_splash(wdt))
+        window.start_splash_signal.connect(global_splash.start_splash)
+        global_splash.start_splash()
         app.exec_()
     finally:
         exit_process()

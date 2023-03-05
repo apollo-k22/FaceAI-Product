@@ -8,14 +8,25 @@ QLabel {
 }
 QLineEdit {
     color: rgb(255, 255, 255);
-    font-size: 12pt;    
+    font-size: 12pt;
+    font-family: Arial;
+}
+QPlainTextEdit{
+    color: rgb(255, 255, 255);
+    font-size: 12pt;
+    font-family: Arial;
 }
 QPushButton {
     color: rgb(255, 255, 255);
     font-size: 12pt;
     font: bold;
+    font-family: Arial;
 }
-
+QStatusBar{
+    color: rgb(255, 255, 255);
+    font-size: 10pt;
+    font-family: Arial;
+}
 * {
     # background-color: transparent; 
     font-family: "Arial";

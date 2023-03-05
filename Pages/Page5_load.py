@@ -1,21 +1,24 @@
 import json
 
-from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QRegExp, Qt
-from PyQt5.QtGui import QIntValidator, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout, QGridLayout, \
-    QSizePolicy, QTextEdit
+from PyQt5 import uic, QtGui
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QIntValidator
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGridLayout, \
+    QSizePolicy, QTextEdit, QWidget
 from commons.common import Common
 from commons.db_connection import DBConnection
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 
 
-class LoaderProbeReportPreviewPage(QMainWindow):
+class LoaderProbeReportPreviewPage(QWidget):
     return_home_signal = pyqtSignal()
     go_back_signal = pyqtSignal(object)
     generate_report_signal = pyqtSignal(object)
     go_remaining_signal = pyqtSignal()
+    start_splash_signal = pyqtSignal()
+    finished_loading_items_signal = pyqtSignal()
+    show_window_signal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -80,10 +83,17 @@ class LoaderProbeReportPreviewPage(QMainWindow):
         self.btnReturnHome.clicked.connect(self.on_clicked_return_home)
         self.btnGoRemaining.clicked.connect(self.on_clicked_go_remaining)
 
+    def refresh_views(self):
+        self.init_input_values()
+        self.init_target_images_view()
+        self.repaint()
+
     def init_input_values(self):
+        print("page 5 init_input_values")
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
+            print("page 5 data is not empty")
             probe_id = Common.generate_probe_id()
             # check whether probe id exist on database
             db = DBConnection()
@@ -115,6 +125,7 @@ class LoaderProbeReportPreviewPage(QMainWindow):
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
+            print("probing result is not empty")
             # clear all child on result container layout
             self.clear_result_list()
             # add items to result container layout
@@ -138,5 +149,7 @@ class LoaderProbeReportPreviewPage(QMainWindow):
 
     def clear_result_list(self):
         Common.clear_layout(self.vlyReportResultLayout)
-        self.repaint()
-        self.showMaximized()
+    def showEvent(self, a0: QtGui.QShowEvent) -> None:
+        super().showEvent(a0)
+        print("shown")
+        self.show_window_signal.emit()

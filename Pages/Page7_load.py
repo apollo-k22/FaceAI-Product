@@ -2,8 +2,8 @@ import string, os, time
 
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractScrollArea, \
-    QVBoxLayout, QHBoxLayout, QFileDialog, QComboBox, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QTableWidget, QHBoxLayout, QLineEdit, QComboBox, QTableWidgetItem, \
+    QFileDialog, QMessageBox, QWidget
 
 from commons.common import Common
 from commons.db_connection import DBConnection
@@ -15,7 +15,7 @@ from commons.zip_thread import ZipThread, ThreadResult
 from datetime import datetime
 
 
-class LoaderProbeReportListPage(QMainWindow):
+class LoaderProbeReportListPage(QWidget):
     return_home_signal = pyqtSignal()
     go_back_signal = pyqtSignal(object)
     go_back_empty_signal = pyqtSignal()

@@ -1,17 +1,19 @@
 import ast
 
 from PyQt5 import QtCore, QtWidgets, QtGui
-from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtCore import Qt, QEvent, QSize
+from PyQt5.QtGui import QPalette, QIcon
 from PyQt5.QtWidgets import QStyledItemDelegate, QCheckBox, QStyle, QApplication, QStyleOptionButton, \
-    QStyleOptionViewItem, QItemDelegate
+    QStyleOptionViewItem, QItemDelegate, QWidget
 from sympy.printing.numpy import const
 
 
 class DelegateCheckboxItem(QStyledItemDelegate):
     CHECK_ROLE = Qt.UserRole + 1
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.option = QtWidgets.QStyleOptionViewItem()
 
     def editorEvent(self, event, model, option, index):
         # if not int(index.flags() & QtCore.Qt.ItemIsEditable) > 0:
@@ -33,124 +35,102 @@ class DelegateCheckboxItem(QStyledItemDelegate):
         #
         # return False
         if event.type() == QEvent.MouseButtonRelease:
+            options = QtWidgets.QStyleOptionViewItem(option)
+            print("options checkstate", options.checkState)
             value = index.data(self.CHECK_ROLE)
-            print(event.button())
-            model.setData(index, False, self.CHECK_ROLE)
-
-            return True
-
-        return QStyledItemDelegate.editorEvent(self, event, model, option, index)
-
-    def paint(self, painter, option, index):
-        if index.column() == 1:
-
+            print("value:", value)
+            # editor = self.createEditor(None, option, index)
+            # self.setEditorData(editor, index)
+            # self.setModelData(editor, model, index)
             checkbox = QStyleOptionButton()
             checkbox.rect = option.rect
-
             checkbox.text = index.data()
-            checkbox.state |= QStyle.State_On
-            print(index.data())
-            print("row:", index.row())
-            print("column", index.column())
+            checkbox.state = QtWidgets.QStyle.State_On | QtWidgets.QStyle.State_Enabled
+            model.setData(index, checkbox.text, Qt.EditRole)
+            model.setData(index, checkbox.state, Qt.CheckStateRole)
+        return True
 
-        QApplication.style().drawControl(QStyle.CE_CheckBox, checkbox, painter, option.widget)
-        # self.drawCheck(self, painter, option, )
-    # is_checked = ast.literal_eval(index.data(DelegateCheckboxItem.CHECK_ROLE))
-    # if is_checked:
-    #     checkbox.state |= QStyle.State_On
-    # else:
-    #     checkbox.state |= QStyle.State_Off
-    # if index.column() == 1:
-    #
-    #     progress = index.data().toInt()
-    #
-    #     progressBarOption = QStyleOptionProgressBar()
-    #     progressBarOption.rect = option.rect
-    #     progressBarOption.minimum = 0
-    #     progressBarOption.maximum = 100
-    #     progressBarOption.progress = progress
-    #     progressBarOption.text = QString::number(progress) + "%"
-    #     progressBarOption.textVisible = True
-    #
-    #     QApplication.style().drawControl(QStyle.CE_CheckBox, progressBarOption, painter)
-    # else:
-    #     QStyledItemDelegate.paint(self, painter, option, index)
+    def createEditor(self, parent, option, index):
+        print("create editor")
+        editor = QStyleOptionButton()
+        return editor
 
+    def setEditorData(self, editor, index):
+        print("set editor")
+        editor.text = index.model().data(index, Qt.EditRole)
+        editor.state |= QStyle.State_Off
+        # color = index.model().data(index, Qt.BackgroundColorRole)
+        # palette = QPalette()
+        # palette.setBrush(QPalette.Base, color)
+        # editor.setPalette(palette)
+        # editor.repaint()
 
-class MyDelegate(QtWidgets.QStyledItemDelegate):
-    MARGINS = 10
-
-    def __init__(self, parent=None, *args):
-        QtWidgets.QStyledItemDelegate.__init__(self, parent, *args)
-
-    # overrides
-    def sizeHint(self, option, index):
+    def setModelData(self, editor, model, index):
         '''
-        Description:
-            Since labels are stacked we will take whichever is the widest
+        The user wanted to change the old state in the opposite.
         '''
+        print("set model data", editor)
+        if index.column() == 0:
+
+            print("model:", model.data(index, QtCore.Qt.DisplayRole))
+            print("checkable:", index.model().data(index, QtCore.Qt.CheckStateRole))
+            print("editor" , editor.text)
+            print("editor state", editor.state)
+            checkbox = QStyleOptionButton()
+            checkbox.text = index.data()
+            checkbox.state |= QStyle.State_Off
+            # if index.model().data(index, QtCore.Qt.DisplayRole) == 'True':
+            #     checkbox.state |= QStyle.State_Off
+            # else:
+            #     checkbox.state |= QStyle.State_On
+            che = model.itemData(index)
+
+            print("findchild:", che[1])
+            che[1] = checkbox
+            # model.setItemData(index, che)
+            # model.setData(index, checkbox, Qt.EditRole)
+            # model.setData(index, checkbox.state, Qt.CheckStateRole)
+            model.setData(index, checkbox, QtCore.Qt.DisplayRole)
+
+    def drawDisplay(self, painter, option, rect, text):
+        super().drawDisplay(painter, option, rect, "")
+
+    def paint(self, painter, option, index):
+        self.option = option
         options = QtWidgets.QStyleOptionViewItem(option)
         self.initStyleOption(options, index)
 
-        # draw rich text
-        doc = QtGui.QTextDocument()
-        doc.setHtml(index.data(QtCore.Qt.DisplayRole))
-        doc.setDocumentMargin(self.MARGINS)
-        doc.setDefaultFont(options.font)
-        doc.setTextWidth(option.rect.width())
-        return QtCore.QSize(doc.idealWidth(), doc.size().height())
-
-    # methods
-    def paint(self, painter, option, index):
-        painter.save()
-        painter.setClipping(True)
-        painter.setClipRect(option.rect)
-
-        opts = QtWidgets.QStyleOptionViewItem(option)
-        self.initStyleOption(opts, index)
-
-        style = QtGui.QApplication.style() if opts.widget is None else opts.widget.style()
-
-        # Draw background
-        if option.state & QtWidgets.QStyle.State_Selected:
-            painter.fillRect(option.rect, option.palette.highlight().color())
+        if options.widget:
+            style = option.widget.style()
         else:
-            painter.fillRect(option.rect, QtGui.QBrush(QtCore.Qt.NoBrush))
-
-        # Draw checkbox
-        if (index.flags() & QtCore.Qt.ItemIsUserCheckable):
-            cbStyleOption = QtWidgets.QStyleOptionButton()
-
-            if index.data(QtCore.Qt.CheckStateRole):
-                cbStyleOption.state |= QtWidgets.QStyle.State_On
+            style = QtWidgets.QApplication.style()
+        if index.column() == 0:
+            checkbox = QStyleOptionButton()
+            checkbox.rect = option.rect
+            checkbox.text = index.data()
+            if options.checkState == QtCore.Qt.Checked:
+                checkbox.state = (
+                        QtWidgets.QStyle.State_On | QtWidgets.QStyle.State_Enabled
+                )
+                options.state = QtWidgets.QStyle.State_Off | QtWidgets.QStyle.State_Enabled
             else:
-                cbStyleOption.state |= QtWidgets.QStyle.State_Off
+                checkbox.state = (
+                        QtWidgets.QStyle.State_Off | QtWidgets.QStyle.State_Enabled
+                )
+                options.state = QtWidgets.QStyle.State_On | QtWidgets.QStyle.State_Enabled
 
-            cbStyleOption.state |= QtWidgets.QStyle.State_Enabled
-            cbStyleOption.rect = option.rect.translated(self.MARGINS, 0)
-            style.drawControl(QtWidgets.QStyle.CE_CheckBox, cbStyleOption, painter, option.widget)
+            # checkbox.state |= QStyle.State_On
+            QApplication.style().drawControl(QStyle.CE_CheckBox, checkbox, painter, option.widget)
 
-        # Draw Title
-        doc = QtGui.QTextDocument()
-        doc.setHtml(index.data(QtCore.Qt.DisplayRole))
-        doc.setTextWidth(option.rect.width())
-        doc.setDocumentMargin(self.MARGINS)
-        doc.setDefaultFont(opts.font)
-
-        ctx = QtGui.QAbstractTextDocumentLayout.PaintContext()
-
-        # highlight text
-        if option.state & QtWidgets.QStyle.State_Selected:
-            ctx.palette.setColor(option.palette.Text,
-                                 option.palette.color(option.palette.Active, option.palette.HighlightedText))
         else:
-            ctx.palette.setColor(option.palette.Text, option.palette.color(option.palette.Active, option.palette.Text))
+            if index.data(QtCore.Qt.DisplayRole):
+                rect = style.subElementRect(QtWidgets.QStyle.SE_ItemViewItemText, options)
+                painter.drawText(
+                    rect,
+                    QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter,
+                    options.fontMetrics.elidedText(
+                        options.text, QtCore.Qt.ElideRight, rect.width()
+                    ),
+                )
 
-        textRect = style.subElementRect(QtWidgets.QStyle.SE_ItemViewItemText, option)
-        painter.translate(textRect.topLeft())
-        painter.setClipRect(textRect.translated(-textRect.topLeft()))
-        doc.documentLayout().draw(painter, ctx)
-
-        # end
-        painter.restore()
-
+    # def my_paint(self, painter, option, index):

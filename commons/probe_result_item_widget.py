@@ -72,18 +72,21 @@ class ProbeResultItemWidget(QWidget):
         self.lbl_similarity_score_label.setText("Similarity Score: ")
         self.lbl_similarity_score_label.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
         self.lbl_similarity_score.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
+        self.fly_info_container.addRow(self.lbl_similarity_score_label, self.lbl_similarity_score)
 
         self.lbl_case_number_label.setText("Case Number: ")
-        self.lbl_case_number.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
-        self.lbl_case_number_label.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
-
         self.lbl_ps_label.setText("PS: ")
-        self.lbl_ps.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
-        self.lbl_ps_label.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
+        if self.is_used_old_cases:
 
-        self.fly_info_container.addRow(self.lbl_similarity_score_label, self.lbl_similarity_score)
-        self.fly_info_container.addRow(self.lbl_case_number_label, self.lbl_case_number)
-        self.fly_info_container.addRow(self.lbl_ps_label, self.lbl_ps)
+            self.lbl_case_number.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
+            self.lbl_case_number_label.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
+
+            self.lbl_ps.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
+            self.lbl_ps_label.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
+
+            self.fly_info_container.addRow(self.lbl_case_number_label, self.lbl_case_number)
+            self.fly_info_container.addRow(self.lbl_ps_label, self.lbl_ps)
+
         self.vly_info_container.addLayout(self.fly_info_container)
 
         self.vly_item_container.addLayout(self.vly_img_container)
