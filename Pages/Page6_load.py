@@ -9,6 +9,7 @@ from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
+from cryptophic.main import encrypt_file_to
 
 class LoaderProbeReportPage(QWidget):
     return_home_signal = pyqtSignal()
@@ -49,16 +50,18 @@ class LoaderProbeReportPage(QWidget):
         Common.create_path(report_path)  
 
         filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
-        file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
+        # file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
 
-        if file_location[0] == "":
-            return
+        # if file_location[0] == "":
+            # return
 
         if not (self.probe_result.case_info.subject_image_url == '') and \
                 not (len(self.probe_result.case_info.target_image_urls) == 0):
             self.write_probe_results_to_database()
         
-        create_pdf(self.probe_result.probe_id, self.probe_result, file_location[0] + file_location[1])
+        # create_pdf(self.probe_result.probe_id, self.probe_result, file_location[0] + file_location[1])
+        create_pdf(self.probe_result.probe_id, self.probe_result, filename + ".pdf")
+        encrypt_file_to(filename + ".pdf", filename + "_.pdf")
         self.export_pdf_signal.emit(self.probe_result)
 
     @pyqtSlot()

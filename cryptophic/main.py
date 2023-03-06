@@ -61,6 +61,37 @@ def decrypt_file(file_name):
 
     return True
 
+def encrypt_file_to(_from, _to):
+    if not os.path.isdir(dec_secure_path): 
+        os.makedirs(dec_secure_path)
+
+    with open(keypath, 'rb') as f:
+        key = f.read()
+
+    try:
+        encryptFile(_from, _to, str(key), bufferSize)
+        os.remove(_from)
+    except Exception:
+        print("Encrypt File Error")
+        return False
+
+    return True
+
+def decrypt_file_to(_from, _to):
+    if not os.path.isdir(dec_secure_path): 
+        os.makedirs(dec_secure_path)
+    
+    with open(keypath, 'rb') as f:
+        key = f.read()
+
+    try:
+        decryptFile(_from, _to, str(key), bufferSize)
+    except Exception:
+        print("Decrypt File Error")
+        return False
+
+    return True
+
 def decrypt(folder_path):
     if not os.path.isdir(dec_secure_path): 
         os.makedirs(dec_secure_path)
