@@ -4,7 +4,7 @@ import os
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, QDateTime
 from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QGridLayout, QTextEdit, \
-    QSizePolicy, QFileDialog, QWidget
+    QSizePolicy, QFileDialog, QWidget, QMessageBox
 
 from commons.common import Common
 from commons.db_connection import DBConnection
@@ -45,9 +45,14 @@ class LoaderProbeReportPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_export_pdf(self):
-        self.probe_result = ProbingResult()
-        self.refresh_views()
-        self.export_pdf_signal.emit(self.probe_result)
+        if self.probe_result.probe_id == '':
+            Common.show_message(QMessageBox.Warning, "The data for generating report is empty. You will go home.",
+                                "", "Empty Data", "")
+            self.return_home_signal.emit()
+        else:
+            self.probe_result = ProbingResult()
+            self.refresh_views()
+            self.export_pdf_signal.emit(self.probe_result)
 
     @pyqtSlot()
     def on_clicked_return_home(self):

@@ -111,7 +111,6 @@ class LoaderSelectTargetPhotoPage(QWidget):
             self.lblMultiPhotoResult.setText("There are no raster images in selected folder.")
         for url in urls:
             if self.faceai.is_face(url):
-                self.image_urls.append(url)
                 url_buff = Common.resize_image(url)
                 self.image_urls.append(url_buff)
 

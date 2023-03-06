@@ -4,6 +4,7 @@ import operator
 import os.path
 import pathlib
 import winreg
+from typing import Union
 
 import PIL.Image
 from PyQt5.QtCore import QFile
@@ -52,8 +53,11 @@ class Common:
 
     @staticmethod
     def create_path(path_name):
-        path = pathlib.Path(path_name)
-        print(path.mkdir(parents=True, exist_ok=True))
+        try:
+            path = pathlib.Path(path_name)
+            print(path.mkdir(parents=True, exist_ok=True))
+        except Exception as ex:
+            print(ex)
 
     @staticmethod
     def copy_file(from_path, to_directory):
@@ -144,7 +148,8 @@ class Common:
             value = value.replace("\\", "/")
             winreg.CloseKey(registry_key)
             return value
-        except WindowsError:
+        except WindowsError as wr:
+            print(wr)
             return None
 
     @staticmethod

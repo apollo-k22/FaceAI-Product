@@ -5,7 +5,7 @@ from PyQt5 import uic, QtGui
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QDateTime
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGridLayout, \
-    QSizePolicy, QTextEdit, QWidget, QFileDialog
+    QSizePolicy, QTextEdit, QWidget, QFileDialog, QMessageBox
 from commons.common import Common
 from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
@@ -52,8 +52,13 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_generate_report(self):
-        self.generate_report()
-        self.generate_report_signal.emit(self.probe_result)
+        if self.probe_result.probe_id == '':
+            Common.show_message(QMessageBox.Warning, "The data for generating report is empty. You will go home.",
+                                "", "Empty Data", "")
+            self.return_home_signal.emit()
+        else:
+            self.generate_report()
+            self.generate_report_signal.emit(self.probe_result)
 
     # save probe result and make probe report file as pdf.
     def generate_report(self):
