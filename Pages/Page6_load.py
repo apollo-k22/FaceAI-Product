@@ -50,9 +50,23 @@ class LoaderProbeReportPage(QWidget):
                                 "", "Empty Data", "")
             self.return_home_signal.emit()
         else:
-            self.probe_result = ProbingResult()
-            self.refresh_views()
-            self.export_pdf_signal.emit(self.probe_result)
+            filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
+            file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(Common.EXPORT_PATH, filename), ".pdf")
+            if file_location[0] == "":
+                return
+            dirs = file_location[0].split("/")
+            file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
+            exported = export_report_pdf(file_path, filename)
+            if exported:
+                Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice", "")
+                self.probe_result = ProbingResult()
+                self.refresh_views()
+                self.export_pdf_signal.emit(self.probe_result)
+            else:
+                Common.show_message(QMessageBox.Information, "Exporting was failed.", "Report Generation", "Notice",
+                                    "")
+
+
 
     @pyqtSlot()
     def on_clicked_return_home(self):
