@@ -89,7 +89,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
                                     "")
             else:
                 self.current_work_folder = Common.get_folder_path(url)
-                btn_style = "border-image:url(" + url + ");height: auto;border: 1px solid rgb(53, 132, 228);"
+                btn_style = "image:url(" + url + ");height: auto;border: 1px solid rgb(53, 132, 228);"
                 # self.btnSinglePhoto.setStyleSheet(btn_style)
                 # btn_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
                 self.btnSinglePhoto.setStyleSheet(btn_style)

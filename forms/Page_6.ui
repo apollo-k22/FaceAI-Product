@@ -621,7 +621,23 @@ color: white;</string>
                   </widget>
                  </item>
                  <item row="6" column="1">
-                  <widget class="QTextEdit" name="teditRemarks"/>
+                  <widget class="QTextEdit" name="teditRemarks">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color: rgb(255, 255, 255);
+    font-size: 14pt;
+    font-family: Arial;
+    background-color: #3E536A;
+    background:transparent;
+    border: 1px solid rgb(53, 132, 228);
+</string>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
