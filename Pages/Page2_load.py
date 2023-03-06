@@ -63,12 +63,6 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
 
     # set regular expression for checking on line edit
     def set_regx_line_edit(self, line_edit, regx, length):
-        # line_edit.cursorPositionChanged[int, int].connect(
-        #     lambda oldPos, newPos:
-        #     self.check_ledit_value_validation(line_edit, newPos, regx, length)
-        # )
-        line_edit.textChanged[str].connect(
-            lambda txt: self.check_ledit_string_validation(line_edit, regx, txt, length))
 
     def set_regx_plain_text_edit(self, text_edit, regx, length):
         # text_edit.cursorPositionChanged.connect(lambda: self.check_ptedit_value_validation(text_edit, regx, length))
