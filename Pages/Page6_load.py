@@ -1,7 +1,9 @@
-import json, os
+import json
+import os
+
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, QDateTime
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QVBoxLayout, QGridLayout, QTextEdit, \
+from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QGridLayout, QTextEdit, \
     QSizePolicy, QFileDialog, QWidget
 
 from commons.common import Common
@@ -30,7 +32,7 @@ class LoaderProbeReportPage(QWidget):
         self.lblExaminerName = self.findChild(QLabel, "lblExaminerName")
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
         self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
-        self.lblRemarks = self.findChild(QLabel, "lblRemarks")
+        self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.lblMatchedDescription = self.findChild(QLabel, "lblMatchedDescription")
@@ -70,6 +72,7 @@ class LoaderProbeReportPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_go_back(self):
+        self.probe_result = ProbingResult()
         self.go_back_signal.emit(self.probe_result)
 
  
@@ -143,7 +146,7 @@ class LoaderProbeReportPage(QWidget):
             self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
             self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
-            self.lblRemarks.setText(self.probe_result.case_info.remarks)
+            self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
             image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
                           ");background:transparent;border: 1px solid rgb(53, 132, 228);"

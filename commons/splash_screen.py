@@ -4,7 +4,7 @@ import sys
 
 from PyQt5.QtCore import QThread, Qt, pyqtSignal, QTimer, pyqtSlot
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QSplashScreen, QApplication, QDialog, QWidget, QMainWindow
+from PyQt5.QtWidgets import QSplashScreen, QApplication, QDialog, QWidget, QMainWindow, QSizePolicy
 import images
 
 splash_i = 0
@@ -26,6 +26,8 @@ class SplashThread(QThread):
     def __init__(self, parent=None):
         QThread.__init__(self, parent)
         self.splash_screen = QSplashScreen()
+        self.splash_screen.setMinimumSize(0, 0)
+        self.splash_screen.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.timer = QTimer()
         self.splash_type = "widget"  # the splash whether while loading widget or data.
         self.start()

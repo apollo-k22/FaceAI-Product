@@ -1,3 +1,5 @@
+import decimal
+
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QPushButton, QFormLayout, QLabel
 from commons.common import Common
@@ -92,8 +94,12 @@ class ProbeResultItemWidget(QWidget):
         self.vly_item_container.addLayout(self.vly_img_container)
         self.vly_item_container.addLayout(self.vly_info_container)
 
-        if self.result_item['confidence']:
-            self.lbl_similarity_score.setText(str(self.result_item['confidence']))
+        if not (self.result_item['confidence'] is None):
+            # sim = abs(float(self.result_item['confidence'])) * 100
+            # decimal_value = decimal.Decimal(sim)
+            # # rounding the number upto 2 digits after the decimal point
+            # rounded = decimal_value.quantize(decimal.Decimal('0.00'))
+            self.lbl_similarity_score.setText(self.result_item['confidence'])
         if self.is_used_old_cases:
             db = DBConnection()
             case_no, ps = db.get_case_info(self.result_item['image_path'])

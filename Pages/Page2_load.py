@@ -1,5 +1,8 @@
+import re
+
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QPlainTextEdit
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QPlainTextEdit, QTextEdit
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QFileDialog
@@ -32,7 +35,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditPS = self.findChild(QLineEdit, 'leditPS')
         self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
         self.leditExaminerNo = self.findChild(QLineEdit, 'leditExaminerNo')
-        self.leditRemarks = self.findChild(QPlainTextEdit, 'leditRemarks')
+        self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
 
         # set image url
         self.subject_photo_url = ''
@@ -47,18 +50,21 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
 
     # set regular expression for checking input data
     def set_regxs(self):
-        self.set_regx_line_edit(self.leditCaseNumber, Common.CREATE_CASE_REGX, Common.CASE_NUMBER_LENGTH)
-        self.set_regx_line_edit(self.leditPS, Common.CREATE_CASE_REGX, Common.CASE_PS_LENGTH)
-        self.set_regx_line_edit(self.leditExaminerName, Common.CREATE_CASE_REGX, Common.CASE_EXAMINER_NAME_LENGTH)
-        self.set_regx_line_edit(self.leditExaminerNo, Common.CREATE_CASE_REGX, Common.CASE_EXAMINER_NO_LENGTH)
-        # self.set_regx_line_edit(self.leditRemarks, Common.CREATE_CASE_REGX, Common.CASE_REMARKS_LENGTH)
+        self.set_regx_line_edit(self.leditCaseNumber, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_NUMBER_LENGTH)
+        self.set_regx_line_edit(self.leditPS, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_PS_LENGTH)
+        self.set_regx_line_edit(self.leditExaminerName, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_EXAMINER_NAME_LENGTH)
+        self.set_regx_line_edit(self.leditExaminerNo, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_EXAMINER_NO_LENGTH)
+        self.set_regx_plain_text_edit(self.leditRemarks, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_REMARKS_LENGTH)
 
     # set regular expression for checking on line edit
     def set_regx_line_edit(self, line_edit, regx, length):
-        line_edit.cursorPositionChanged[int, int].connect(
-            lambda oldPos, newPos:
-            self.check_value_validation(line_edit, newPos, regx, length)
-        )
+        line_edit.textChanged[str].connect(
+            lambda txt: self.check_ledit_string_validation(line_edit, regx, txt, length))
+
+    def set_regx_plain_text_edit(self, text_edit, regx, length):
+        # text_edit.cursorPositionChanged.connect(lambda: self.check_ptedit_value_validation(text_edit, regx, length))
+        text_edit.textChanged.connect(
+            lambda: self.check_ptedit_string_validation(text_edit, regx, length))
 
     @pyqtSlot()
     # get subject photo from file dialog and set the gotten photo on button
@@ -78,28 +84,9 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                 Common.resize_image(photo_url)
                 self.subject_photo_url = photo_url
                 btn_style = "border-image:url(" + self.subject_photo_url + ");background:transparent;" \
-                                                                    "border: 1px solid rgb(53, 132, 228);background-size:cover;"
+                             "border: 1px solid rgb(53, 132, 228);background-size:cover;"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-
-    # a slot to call whenever move cursor on line edit.
-    @pyqtSlot(int, int)
-    def check_value_validation(self, line_edit, pos, regx, str_len):
-        regx = QRegularExpression(regx)
-        # set regx option to use unicode printable characters
-        regx.setPatternOptions(QRegularExpression.UseUnicodePropertiesOption)
-        text = line_edit.text()
-        if pos != 0:
-            match = regx.match(text[pos - 1])
-            # check whether valid the latest input character
-            if not match.hasMatch():
-                text = text[:pos - 1] + text[pos:]
-            # check whether length of text of line edit is over str_len or not
-            # if over, remove the fulfill characters
-            if len(text) > str_len:
-                text = text[:str_len - 1]
-            # set string to line edit
-            line_edit.setText(text)
 
     @pyqtSlot()
     def return_home(self):
@@ -112,12 +99,6 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
             Common.show_message(QMessageBox.Warning, "Please fill all fields", "", "Empty Warning",
                                 ledit_name + " is empty")
         else:
-            # if not self.faceai.is_face(self.subject_photo_url):
-            #     Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
-            #                         "Incorrect image selected.",
-            #                         "")
-            #     return
-            # init the case data for next probe step
             self.case_info.case_number = self.leditCaseNumber.text()
             self.case_info.case_PS = self.leditPS.text()
             self.case_info.examiner_no = self.leditExaminerNo.text()
@@ -149,3 +130,28 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
             self.btnSelectPhoto.setFocus()
             return true, "Subject Image Url"
         return false, "All Fields are filled."
+    # remove all invalid substring according to regx
+    # remove all invalid substring according to regx
+    @pyqtSlot(str)
+    def check_ledit_string_validation(self, line_edit, regx, txt, max_length):
+        sub_string = re.sub(regx, '', txt)
+        if not txt == sub_string:
+            txt = sub_string
+            line_edit.setText(txt)
+        if len(txt) > max_length:
+            txt = txt[:max_length - 1]
+            line_edit.setText(txt)
+
+    # remove all invalid substring according to regx
+    @pyqtSlot(str)
+    def check_ptedit_string_validation(self, text_edit, regx, max_length):
+        string = text_edit.toPlainText()
+        sub_string = re.sub(regx, '', string)
+        if not string == sub_string:
+            string = sub_string
+            text_edit.setPlainText(string)
+        if len(string) > max_length:
+            string = string[:max_length - 1]
+            text_edit.setPlainText(string)
+        cursor = text_edit.textCursor()
+        cursor.movePosition(QTextCursor.End)

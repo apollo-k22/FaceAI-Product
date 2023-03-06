@@ -33,7 +33,7 @@ border:none;</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-683</y>
+        <y>0</y>
         <width>1274</width>
         <height>1517</height>
        </rect>
@@ -621,22 +621,7 @@ color: white;</string>
                   </widget>
                  </item>
                  <item row="6" column="1">
-                  <widget class="QLabel" name="lblRemarks">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>60</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background:transparent;
-border: 1px solid rgb(53, 132, 228);
-color: white;</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
+                  <widget class="QTextEdit" name="teditRemarks"/>
                  </item>
                 </layout>
                </item>

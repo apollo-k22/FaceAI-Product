@@ -14,8 +14,8 @@ from cryptophic.main import generate_token
 THRESHOLDS = [0.7, 0.8, 0.9]
 class FaceAI:
     def __init__(self):
-        self.DETECT_ONNX_MODEL = "scrfd_10g_bnkps.onnx"
-        self.RECOG_ONNX_MODEL = "glintr100.onnx"
+        self.DETECT_ONNX_MODEL = "231658a02e26b60e629bfddd7067b3"
+        self.RECOG_ONNX_MODEL = "8e9068219eb663d67500912dd0ce1f"
         self.onnxruntime = onnxruntime.set_default_logger_severity(3)
         self.assets_dir = osp.expanduser(r"C:\\Users\\" + os.getlogin() + r"\\.secure\\.encfiles")
         self.detector = None
@@ -64,7 +64,7 @@ class FaceAI:
                 'width': int(x2-x1),
                 'height': int(y2-y1),
             },
-            'face_angle': int(angle)
+            'face_angle': "Roll: %d degree"%int(angle)
         }
         result = {
             'image_path': path,        

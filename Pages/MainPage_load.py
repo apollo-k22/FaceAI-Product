@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtGui import QShowEvent, QCloseEvent
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QStatusBar
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QStatusBar, QMessageBox
 from PyQt5.QtCore import QTimer, pyqtSlot, pyqtSignal
 from Pages.Page0_load import LicenseBoxPage
 from Pages.Page1_load import StartHome
@@ -12,6 +12,7 @@ from Pages.Page6_load import LoaderProbeReportPage
 from Pages.Page7_load import LoaderProbeReportListPage
 import datetime
 
+from commons.common import Common
 from commons.refresh_widget_thread import RefreshWidgetThread
 from cryptophic.license import read_information_db, get_cpu_info
 
@@ -62,34 +63,8 @@ class StartMain(QMainWindow):
         self.init_widgets()
 
     def start_main(self):
-        # set the connection between signal and slot for page transitions
-        app_unlocked = False
-        app_expire = 0
-        app_expire_date = ""
-        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
-        print(app_unlocked, app_expire_date)
-        self.status_bar.showMessage("The license will be expired by " + app_expire_date)
-
-        if app_unlocked == False:
-            self.show_p0_license()
-        else:
-            fpo_info, atpo_info = get_cpu_info()
-            if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
-                quit()
-            # try:
-            #     NIST = 'pool.ntp.org'
-            #     ntp = ntplib.NTPClient()
-            #     ntpResponse = time.time() #ntp.request(NIST)
-            #     # print(ntpResponse.tx_time)
-            # except:
-            #     print("ntp error")
-
-            app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
-            if app_expire.total_seconds() > 0:
-                self.show_p1_home()
-            else:
-                print("expire error")
-                self.show_p0_license()
+        self.check_device_info()
+        self.show_p1_home()
 
     @pyqtSlot()
     def finished_decrypting_slot(self):
@@ -178,97 +153,120 @@ class StartMain(QMainWindow):
         self.ui_3_select_target_photo.showMaximized()
 
     def show_p0_license(self):
-        # self.hide()
         self.setWindowTitle("License")
-        self.ui_0_license.showMaximized()
-
-    @pyqtSlot()
-    def show_p1_home(self):
-        self.setWindowTitle("Home")
-        self.ui_0_license.hide()
+        self.ui_1_home.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
         self.ui_6_probe_report.hide()
         self.ui_7_prove_report_list.hide()
         self.ui_5_probe_report_preview.hide()
-        self.ui_1_home.showMaximized()
-        self.ui_1_home.setFocus()
-        # self.splash.stop_splash()
+        self.ui_0_license.showMaximized()
+
+    @pyqtSlot()
+    def show_p1_home(self):
+        self.setWindowTitle("Home")
+        if self.check_license():
+            self.ui_0_license.hide()
+            self.ui_2_create_new_case.hide()
+            self.ui_3_select_target_photo.hide()
+            self.ui_6_probe_report.hide()
+            self.ui_7_prove_report_list.hide()
+            self.ui_5_probe_report_preview.hide()
+            self.ui_1_home.showMaximized()
+            self.ui_1_home.setFocus()
+        else:
+            self.show_p0_license()
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
         self.setWindowTitle("Create Case")
-        self.ui_1_home.hide()
-        self.ui_3_select_target_photo.hide()
-        self.ui_2_create_new_case.showMaximized()
+        if self.check_license():
+            self.ui_1_home.hide()
+            self.ui_3_select_target_photo.hide()
+            self.ui_2_create_new_case.showMaximized()
+        else:
+            self.show_p0_license()
 
     @pyqtSlot(CaseInfo)
     def show_p4_probing(self, case_info):
         self.setWindowTitle("Probing...")
-        self.ui_3_select_target_photo.hide()
-        # start probing
-        self.ui_4_probing.showMaximized()
-        self.ui_4_probing.start_probing(case_info)
+        if self.check_license():
+            self.ui_3_select_target_photo.hide()
+            # start probing
+            self.ui_4_probing.showMaximized()
+            self.ui_4_probing.start_probing(case_info)
+        else:
+            self.show_p0_license()
 
     @pyqtSlot(ProbingResult)
     def show_p5_probe_report_preview(self, probe_result):
         self.setWindowTitle("Probe Report Preview")
-        # init views
-        self.ui_4_probing.hide()
-        self.ui_6_probe_report.hide()
-        # show probe report preview page
-        self.ui_5_probe_report_preview.probe_result = probe_result
-        # self.refresh_views_thread.set_widget(self.ui_5_probe_report_preview)
-        # self.refresh_views_thread.start()
-        self.ui_5_probe_report_preview.refresh_views()
-        self.ui_5_probe_report_preview.showMaximized()
-        # self.ui_5_probe_report_preview.setEnabled(False)
+        if self.check_license():
+            # init views
+            self.ui_4_probing.hide()
+            self.ui_6_probe_report.hide()
+            # show probe report preview page
+            self.ui_5_probe_report_preview.probe_result = probe_result
+            # self.refresh_views_thread.set_widget(self.ui_5_probe_report_preview)
+            # self.refresh_views_thread.start()
+            self.ui_5_probe_report_preview.refresh_views()
+            self.ui_5_probe_report_preview.showMaximized()
+        else:
+            self.show_p0_license()
 
     @pyqtSlot(ProbingResult)
     def show_p6_probe_report(self, probe_result):
         self.setWindowTitle("Probe Report")
-        # init views
-        self.ui_5_probe_report_preview.hide()
-        self.ui_7_prove_report_list.hide()
-        self.ui_6_probe_report.probe_result = probe_result
-        # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
-        # self.refresh_views_thread.start()
-        self.ui_6_probe_report.refresh_views()
-        self.ui_6_probe_report.showMaximized()
+        if self.check_license():
+            # init views
+            self.ui_5_probe_report_preview.hide()
+            self.ui_7_prove_report_list.hide()
+            self.ui_6_probe_report.probe_result = probe_result
+            # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
+            # self.refresh_views_thread.start()
+            self.ui_6_probe_report.refresh_views()
+            self.ui_6_probe_report.showMaximized()
+        else:
+            self.show_p0_license()
 
     @pyqtSlot()
     def show_p6_probe_report_without_param(self):
         self.setWindowTitle("Probe Report")
-        self.ui_7_prove_report_list.hide()
-        self.ui_6_probe_report.probe_result = ProbingResult()
-        # self.ui_6_probe_report.init_input_values()
-        # self.ui_6_probe_report.init_target_images_view()
-        self.ui_6_probe_report.showMaximized()
+        if self.check_license():
+            self.ui_7_prove_report_list.hide()
+            self.ui_6_probe_report.probe_result = ProbingResult()
+            self.ui_6_probe_report.init_input_values()
+            self.ui_6_probe_report.init_target_images_view()
+            self.ui_6_probe_report.showMaximized()
+        else:
+            self.show_p0_license()
 
     @pyqtSlot(ProbingResult)
     def show_p7_probe_report_list(self, probe_result):
         self.setWindowTitle("Probe Reports")
-        # init views
-        self.ui_6_probe_report.hide()
-        self.ui_7_prove_report_list.probe_result = probe_result
-        self.ui_7_prove_report_list.init_actions()
-        self.ui_7_prove_report_list.init_views()
-        # stop splashing
-        # self.splash.stop_splash()
-        # show probe report list page
-        self.ui_7_prove_report_list.showMaximized()
+        if self.check_license():
+            # init views
+            self.ui_6_probe_report.hide()
+            self.ui_7_prove_report_list.probe_result = probe_result
+            self.ui_7_prove_report_list.init_actions()
+            self.ui_7_prove_report_list.init_views()
+            # stop splashing
+            # self.splash.stop_splash()
+            # show probe report list page
+            self.ui_7_prove_report_list.showMaximized()
+        else:
+            self.show_p0_license()
 
     @pyqtSlot()
     def show_p7_probe_report_list_without_param(self):
-        # start splashing
-        # self.splash.start_splash()
-        # init views
-        # self.hide()
-        self.ui_1_home.hide()
-        self.ui_4_probing.hide()
-        self.ui_7_prove_report_list.init_views()
-        # show probe report list page
-        self.ui_7_prove_report_list.showMaximized()
+        if self.check_license():
+            self.ui_1_home.hide()
+            self.ui_4_probing.hide()
+            self.ui_7_prove_report_list.init_views()
+            # show probe report list page
+            self.ui_7_prove_report_list.showMaximized()
+        else:
+            self.show_p0_license()
 
     def init_widgets(self):
         self.centralLayout.addWidget(self.ui_0_license)
@@ -297,3 +295,27 @@ class StartMain(QMainWindow):
         super().closeEvent(a0)
         self.refresh_views_thread.quit()
         self.splash.quit()
+
+    def check_license(self):
+        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
+
+        if not app_unlocked:
+            self.show_p0_license()
+        else:
+            app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
+            self.status_bar.showMessage("The license will be expired by "
+                                        + app_expire_date + ". You can use more this application for "
+                                        + str(app_expire) + ".")
+            if app_expire.total_seconds() > 0:
+                return True
+            else:
+                return False
+
+    def check_device_info(self):
+        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
+        fpo_info, atpo_info = get_cpu_info()
+        if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
+            Common.show_message(QMessageBox.Warning, "You are an invalid user.", "",
+                                "Invalid selected.",
+                                "")
+            quit()

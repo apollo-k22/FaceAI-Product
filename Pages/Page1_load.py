@@ -19,8 +19,6 @@ from commons.probing_result import ProbingResult
 from commons.qss import QSS
 from commons.splash_screen import SplashThread
 from cryptophic.dec_thread import DecThread
-from cryptophic.license import read_information_db, get_cpu_info
-from cryptophic.main import exit_process
 from insightfaces.faceai_init_thread import FaceAIInitThread
 from insightfaces.main import FaceAI
 
