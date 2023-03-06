@@ -1,4 +1,6 @@
 import sqlite3, os
+from sqlite3 import OperationalError
+
 from cryptophic.main import encrypt_file, decrypt_file, get_dec_file_path
 from pyutil import filereplace
 import cpuinfo, wmi
