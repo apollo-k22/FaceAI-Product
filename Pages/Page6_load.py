@@ -11,6 +11,7 @@ from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
+from cryptophic.main import encrypt_file_to
 
 
 class LoaderProbeReportPage(QWidget):

@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QApplication
 from Pages.MainPage_load import StartMain
 from commons.qss import QSS
 from commons.splash_screen import SplashThread
-from cryptophic.main import exit_process
 
 if __name__ == '__main__':
     try:
@@ -25,5 +24,4 @@ if __name__ == '__main__':
         global_splash.start_splash()
         app.exec_()
     finally:
-        exit_process()
         print("exit")
