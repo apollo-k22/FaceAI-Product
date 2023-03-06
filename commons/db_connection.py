@@ -19,22 +19,23 @@ class DBConnection:
         self.connection_string = None
         self.connection = None
         self.dec_db_file_path = ''
-        self.create_table()
         self.create_connection_string()
+        self.create_table()
 
     # create connection string from according register value and common value
     def create_connection_string(self):
         reg_value = Common.get_reg(Common.REG_KEY)
         connection_string_buff = ""
         if reg_value is not None:
-            connection_string_buff = reg_value + "/" + Common.STORAGE_PATH + '/reports.db'
+            connection_string_buff = reg_value + "/" + Common.STORAGE_PATH
         else:
             Common.show_message(QMessageBox.Warning, "You did not get data storage path. \n "
                                                      "The data storage path will be application root directory.",
                                 "Data Storage not found", "Data Storage not found", "")
-            connection_string_buff = Common.STORAGE_PATH + '/reports.db'
+            connection_string_buff = Common.STORAGE_PATH
         # create database path from created database path
         Common.create_path(connection_string_buff)
+        connection_string_buff += '/reports.db'
         self.connection_string = connection_string_buff
         # get the temporary path for enc/dec
         dec_root_path = get_dec_file_path()
@@ -44,6 +45,7 @@ class DBConnection:
         Common.create_path(dec_db_path)
 
     def create_table(self):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         try:
             query_string_cases = "create table if not exists cases (" \
                                  "id INTEGER PRIMARY KEY, " \
@@ -75,6 +77,7 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
 
     def count_row_number(self, table_name):
         decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)

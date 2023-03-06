@@ -104,9 +104,10 @@ class LoaderSelectTargetPhotoPage(QWidget):
     def select_multi_photo_slot(self):
         self.image_urls.clear()
         urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', self.current_work_folder, Common.IMAGE_FILTER)
-        if len(urls):
+        length = len(urls)
+        if length:
             self.current_work_folder = Common.get_folder_path(urls[0])
-            self.lblMultiPhotos.setText(self.current_work_folder + " was selected.")
+            self.lblMultiPhotos.setText(str(length) + " was selected.")
         else:
             self.lblMultiPhotoResult.setText("There are no raster images in selected folder.")
         for url in urls:
