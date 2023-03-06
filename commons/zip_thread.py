@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 from commons.common import Common
 from commons.probing_result import ProbingResult
-from commons.gen_report import create_pdf, gen_pdf_filename
+from commons.gen_report import export_report_pdf, gen_pdf_filename
 
 import os, uuid
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -45,8 +45,8 @@ class ZipThread(QThread, ProbingResult):
             Common.create_path(temp_folder)            
 
             for report in self.reports:  
-                filename = gen_pdf_filename(report.probe_id, report.case_info.case_number, report.case_info.case_PS) + ".pdf"
-                create_pdf(report.probe_id, report, temp_folder + filename) 
+                filename = gen_pdf_filename(report.probe_id, report.case_info.case_number, report.case_info.case_PS)
+                export_report_pdf(temp_folder, filename)                
             
             with ZipFile(self.zip_location, 'w', ZIP_DEFLATED) as allzip:
                 for f in self._itertarget(Path(temp_folder)):                    

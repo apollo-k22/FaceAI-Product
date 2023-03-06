@@ -11,6 +11,7 @@ from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
+from cryptophic.main import encrypt_file_to
 
 
 class LoaderProbeReportPreviewPage(QWidget):
@@ -68,20 +69,22 @@ class LoaderProbeReportPreviewPage(QWidget):
         else:
             report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH
         Common.create_path(report_path)
+        temp_path = Common.get_reg(Common.REG_KEY)
+        if temp_path:
+            temp_path = temp_path + "/" + Common.TEMP_PATH
+        else:
+            temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH        
+        Common.create_path(temp_path) 
 
         filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number,
                                     self.probe_result.case_info.case_PS)
-        os.path.join(report_path, filename)
-        file_location = os.path.join(report_path, filename, ".pdf")
-
-        if file_location == "":
-            return
 
         if not (self.probe_result.case_info.subject_image_url == '') and \
                 not (len(self.probe_result.case_info.target_image_urls) == 0):
             self.write_probe_results_to_database()
 
-        create_pdf(self.probe_result.probe_id, self.probe_result, file_location)
+        create_pdf(self.probe_result.probe_id, self.probe_result, os.path.join(temp_path, filename))
+        encrypt_file_to(os.path.join(temp_path, filename), os.path.join(report_path, filename))
 
     # write probe result to database
     def write_probe_results_to_database(self):

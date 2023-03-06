@@ -63,8 +63,6 @@ class StartMain(QMainWindow):
         self.init_widgets()
 
     def start_main(self):
-        self.check_device_info()
-        self.check_license()
         self.show_p1_home()
 
     @pyqtSlot()
@@ -77,6 +75,8 @@ class StartMain(QMainWindow):
     @pyqtSlot()
     def finished_initializing_slot(self):
         self.faceai_init_thread.quit()
+        self.check_device_info()
+        self.check_license()
         self.finished_initiating_widget_signal.emit(self)
         self.showMaximized()
         self.start_main()

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QGridLayout, QText
 
 from commons.common import Common
 from commons.db_connection import DBConnection
-from commons.gen_report import create_pdf, gen_pdf_filename
+from commons.gen_report import export_report_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 from cryptophic.main import encrypt_file_to
@@ -101,7 +101,6 @@ class LoaderProbeReportPage(QWidget):
                                                                          media_path + "/subjects")
         target_images = []
         index = 0
-        print(self.probe_result.case_info.target_image_urls)
         for target in self.probe_result.case_info.target_image_urls:
             modified_target = Common.copy_file(target, media_path + "/targets")
             target_images.append(modified_target)

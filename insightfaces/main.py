@@ -39,14 +39,14 @@ class FaceAI:
         return data
 
     @staticmethod
-    def get_similarity_str(data, similarity, path):
+    def get_similarity_str(data, similarity, path, unit = 1):
         conclu = ""
 
-        if similarity < THRESHOLDS[0]:
+        if similarity < THRESHOLDS[0] * unit:
             conclu = 'NOT SIMILAR PERSON'
-        elif similarity >= THRESHOLDS[0] and similarity < THRESHOLDS[1]:
+        elif similarity >= THRESHOLDS[0] * unit and similarity < THRESHOLDS[1] * unit:
             conclu = 'Low match'
-        elif similarity >= THRESHOLDS[1] and similarity < THRESHOLDS[2]:
+        elif similarity >= THRESHOLDS[1] * unit and similarity < THRESHOLDS[2] * unit:
             conclu = 'High match'
         else:
             conclu = 'Highest match'
