@@ -18,7 +18,8 @@ class Common:
     REPORTS_PATH = "Probe Reports"
     TEMP_PATH = "Temporary Data"
     REG_KEY = "DataFolder"
-    MATCH_LEVEL = 0.7
+    EXPORT_PATH = r"C:\\Users\\" + os.getlogin() + r"\\Documents"
+    MATCH_LEVEL = 70
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
     CASE_EXAMINER_NAME_LENGTH = 63
@@ -185,3 +186,4 @@ class Common:
         # rounding the number upto 2 digits after the decimal point
         rounded = decimal_value.quantize(decimal.Decimal('0.00'))
         return str(rounded)
+

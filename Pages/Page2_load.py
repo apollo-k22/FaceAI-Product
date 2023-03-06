@@ -83,7 +83,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
             else:
                 Common.resize_image(photo_url)
                 self.subject_photo_url = photo_url
-                btn_style = "border-image:url(" + self.subject_photo_url + ");background:transparent;" \
+                btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
                              "border: 1px solid rgb(53, 132, 228);background-size:cover;"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
@@ -150,8 +150,23 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         if not string == sub_string:
             string = sub_string
             text_edit.setPlainText(string)
+            return
         if len(string) > max_length:
             string = string[:max_length - 1]
             text_edit.setPlainText(string)
+            return
         cursor = text_edit.textCursor()
         cursor.movePosition(QTextCursor.End)
+        text_edit.setTextCursor(cursor)
+
+    # return page to initial status
+    def refresh_view(self):
+        btn_style = "content-aligne:left;border:none;background:transparent;" \
+                    "border-image:url(:/newPrefix/Group 68.png);border-radius: 30px;background:none;"
+        self.btnSelectPhoto.setStyleSheet(btn_style)
+        self.leditCaseNumber.setText("")
+        self.leditPS.setText("")
+        self.leditExaminerName.setText("")
+        self.leditExaminerNo.setText("")
+        self.leditRemarks.setText("")
+

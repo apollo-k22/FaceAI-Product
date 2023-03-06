@@ -148,6 +148,8 @@ class StartMain(QMainWindow):
         self.ui_1_home.hide()
         self.ui_2_create_new_case.hide()
         self.ui_5_probe_report_preview.hide()
+        # return page to initial status.
+        self.ui_3_select_target_photo.refresh_view()
         # set case information to page
         self.ui_3_select_target_photo.case_info = case_info
         self.ui_3_select_target_photo.showMaximized()
@@ -183,6 +185,8 @@ class StartMain(QMainWindow):
         if self.check_license():
             self.ui_1_home.hide()
             self.ui_3_select_target_photo.hide()
+            # return page to initial status
+            self.ui_2_create_new_case.refresh_view()
             self.ui_2_create_new_case.showMaximized()
         else:
             self.show_p0_license()

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QGridLayout, QText
 
 from commons.common import Common
 from commons.db_connection import DBConnection
-from commons.gen_report import create_pdf, gen_pdf_filename
+from commons.gen_report import export_report_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 from cryptophic.main import encrypt_file_to
@@ -44,26 +44,19 @@ class LoaderProbeReportPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_export_pdf(self):
-        report_path = Common.get_reg(Common.REG_KEY)
-        if report_path:
-            report_path = report_path + "/" + Common.REPORTS_PATH
-        else:
-            report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
-        Common.create_path(report_path)  
-
+        self.probe_result = ProbingResult()
+        self.refresh_views()
         filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
-        # file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
-
-        # if file_location[0] == "":
-            # return
-
-        if not (self.probe_result.case_info.subject_image_url == '') and \
-                not (len(self.probe_result.case_info.target_image_urls) == 0):
-            self.write_probe_results_to_database()
-        
-        # create_pdf(self.probe_result.probe_id, self.probe_result, file_location[0] + file_location[1])
-        create_pdf(self.probe_result.probe_id, self.probe_result, filename + ".pdf")
-        encrypt_file_to(filename + ".pdf", filename + "_.pdf")
+        file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(Common.EXPORT_PATH, filename), ".pdf")
+        if file_location[0] == "":
+            return
+        dirs = file_location[0].split("/")
+        file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
+        exported = export_report_pdf(file_path, filename)
+        if exported:
+            Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice", "")
+        else:
+            Common.show_message(QMessageBox.Information, "Pdf report was not exported.", "Report Generation", "Notice", "")
         self.export_pdf_signal.emit(self.probe_result)
 
     @pyqtSlot()
@@ -114,7 +107,6 @@ class LoaderProbeReportPage(QWidget):
                                                                          media_path + "/subjects")
         target_images = []
         index = 0
-        print(self.probe_result.case_info.target_image_urls)
         for target in self.probe_result.case_info.target_image_urls:
             modified_target = Common.copy_file(target, media_path + "/targets")
             target_images.append(modified_target)
@@ -154,16 +146,33 @@ class LoaderProbeReportPage(QWidget):
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
             js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.teditJsonResult.setPlainText(js_result)
+        else:
+            self.lblProbeId.setText("")
+            self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+            self.lblProbeResult.setText("")
+            self.lblCaseNumber.setText("")
+            self.lblExaminerNo.setText("")
+            self.lblExaminerName.setText("")
+            self.teditRemarks.setPlainText("")
+            self.lblTimeOfReportGeneration.setText("")
+            image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
+                          ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+            self.lblSubjectImage.setStyleSheet(image_style)
+            self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+            self.teditJsonResult.setPlainText("")
 
     def init_target_images_view(self):
+        # clear all child on result container layout
+        self.clear_result_list()
+        # add items to result container layout
+        self.glyReportBuff = QGridLayout(self)
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
             # clear all child on result container layout
-            self.clear_result_list()
-            print(str(self.vlyReportResult.count()))
+            # self.clear_result_list()
             # add items to result container layout
-            self.glyReportBuff = QGridLayout(self)
+            # self.glyReportBuff = QGridLayout(self)
             results = self.probe_result.json_result['results']
             index = 0
             for result in results:

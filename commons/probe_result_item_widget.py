@@ -59,7 +59,7 @@ class ProbeResultItemWidget(QWidget):
         self.wdt_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.wdt_image.setMinimumSize(330, 350)
         self.wdt_image.setMaximumSize(400, 500)
-        style = ".QWidget{color:rgb(255, 255, 255);border-image:url(" + self.result_item['image_path'] + ");}"
+        style = ".QWidget{color:rgb(255, 255, 255);image:url(" + self.result_item['image_path'] + ");}"
         self.wdt_image.setStyleSheet(style)
 
         if self.is_showed_cross_button:

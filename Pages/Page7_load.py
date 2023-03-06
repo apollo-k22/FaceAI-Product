@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QTableWidget, QHBoxLayout,
 from commons.common import Common
 from commons.db_connection import DBConnection
 from commons.export_pdf_button import ExportPdfButton
-from commons.gen_report import create_pdf, gen_pdf_filename
+from commons.gen_report import export_report_pdf, gen_pdf_filename
 from commons.pagination_layout import PaginationLayout
 from commons.probing_result import ProbingResult
 from commons.zip_thread import ZipThread, ThreadResult
@@ -126,23 +126,18 @@ class LoaderProbeReportListPage(QWidget):
         self.init_views()
 
     @pyqtSlot(ProbingResult)
-    def export_pdf(self, probe_result):
-        report_path = Common.get_reg(Common.REG_KEY)
-        if report_path:
-            report_path = report_path + "/" + Common.REPORTS_PATH
-        else:
-            report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
-        Common.create_path(report_path)                
-        
+    def export_pdf(self, probe_result):  
         filename = gen_pdf_filename(probe_result.probe_id, probe_result.case_info.case_number, probe_result.case_info.case_PS)
-        file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
+        file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(Common.EXPORT_PATH, filename), ".pdf")
         if file_location[0] == "":
             return
-        printed = create_pdf(probe_result.probe_id, probe_result, file_location[0] + file_location[1])
-        if printed:
-            Common.show_message(QMessageBox.Information, "Pdf report was created.", "Report Generation", "Notice", "")
+        dirs = file_location[0].split("/")
+        file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
+        exported = export_report_pdf(file_path, filename)
+        if exported:
+            Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice", "")
         else:
-            Common.show_message(QMessageBox.Information, "Pdf report was not created.", "Report Generation", "Notice", "")
+            Common.show_message(QMessageBox.Information, "Pdf report was not exported.", "Report Generation", "Notice", "")
 
     @pyqtSlot()
     def on_clicked_export_allzip(self):
@@ -157,7 +152,7 @@ class LoaderProbeReportListPage(QWidget):
         Common.create_path(report_path)    
 
         datestr = datetime.strftime(datetime.now(), "%d_%m_%Y")
-        zip_file = "%s/probe_reports_%s"%(report_path, datestr)
+        zip_file = "%s/probe_reports_%s"%(Common.EXPORT_PATH, datestr)
         zip_location = QFileDialog.getSaveFileName(self, "Save report zip file", zip_file, ".zip")
         self.zip_time = time.time()
 

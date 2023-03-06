@@ -10,6 +10,12 @@
     <height>800</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>850</width>
+    <height>670</height>
+   </size>
+  </property>
   <property name="styleSheet">
    <string notr="true">background-image: url(:/newPrefix/Background.png);
       background-repeat: no-repeat;
@@ -182,7 +188,7 @@ background: none;</string>
            </property>
            <property name="minimumSize">
             <size>
-             <width>500</width>
+             <width>200</width>
              <height>40</height>
             </size>
            </property>
@@ -236,7 +242,7 @@ background: none;</string>
            </property>
            <property name="minimumSize">
             <size>
-             <width>500</width>
+             <width>200</width>
              <height>40</height>
             </size>
            </property>
@@ -281,7 +287,7 @@ background: none;</string>
            </property>
            <property name="minimumSize">
             <size>
-             <width>500</width>
+             <width>200</width>
              <height>40</height>
             </size>
            </property>
@@ -326,7 +332,7 @@ background: none;</string>
            </property>
            <property name="minimumSize">
             <size>
-             <width>500</width>
+             <width>200</width>
              <height>40</height>
             </size>
            </property>
@@ -375,7 +381,14 @@ background: none;</string>
           </spacer>
          </item>
          <item row="4" column="1">
-          <widget class="QTextEdit" name="teditRemarks"/>
+          <widget class="QTextEdit" name="teditRemarks">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>100</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -400,8 +413,8 @@ background: none;</string>
            </property>
            <property name="maximumSize">
             <size>
-             <width>800</width>
-             <height>800</height>
+             <width>500</width>
+             <height>500</height>
             </size>
            </property>
            <property name="layoutDirection">

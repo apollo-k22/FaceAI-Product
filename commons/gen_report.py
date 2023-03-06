@@ -9,8 +9,10 @@ from reportlab.lib.colors import blue, black, red, white, HexColor
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from datetime import datetime
-import json
+import json, os
 from insightfaces.main import FaceAI
+from commons.common import Common
+from cryptophic.main import decrypt_file_to
 
 class GenReport:
     def __init__(self, buffer, probid):
@@ -104,9 +106,9 @@ class GenReport:
             img.vAlign = TA_CENTER
             nested[index % 2] = [
                 img,
-                Paragraph('Similarity score: %.2f%%(%s)'%(target['sim']*100, FaceAI.get_similarity_str([], target['sim'], "")), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
-                Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
-                Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+                Paragraph('Similarity score: %.2f%%(%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                # Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                # Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
             ]
             if ((targets_len % 2 != 0) & (index == targets_len - 1)):
                 table = Table([[nested[0]]],
@@ -188,9 +190,11 @@ def create_pdf(probe_id, probe_result, file_location):
 
         reportinfo["targets"] = []
         for result in probe_result.json_result['results']:
+            print(result)
+            conf_buff = result['confidence'][:len(result['confidence']) - 1]
             reportinfo["targets"].append({
                 "path": result["image_path"],
-                "sim": float(result["confidence"]),
+                "sim": float(conf_buff),
                 "caseno": probe_result.case_info.case_number,
                 "ps": probe_result.case_info.case_PS
             })
@@ -205,6 +209,22 @@ def create_pdf(probe_id, probe_result, file_location):
     except Exception as e:
         print(e)
         return False
+
+def export_report_pdf(file_path, file_name):    
+    report_path = Common.get_reg(Common.REG_KEY)
+    if report_path:
+        report_path = report_path + "/" + Common.REPORTS_PATH
+    else:
+        report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
+    Common.create_path(report_path)  
+
+    try:
+        decrypt_file_to(os.path.join(report_path, file_name), os.path.join(file_path, file_name+".pdf"))
+    except Exception as e:
+        print("export_report_pdf: ", e)
+        return False
+
+    return True
     
 
     

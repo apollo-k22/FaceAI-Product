@@ -81,7 +81,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
                                     "")
             else:
                 self.current_work_folder = Common.get_folder_path(url)
-                btn_style = "border-image:url(" + url + ");height: auto;border: 1px solid rgb(53, 132, 228);"
+                btn_style = "image:url(" + url + ");height: auto;border: 1px solid rgb(53, 132, 228);"
                 self.btnSinglePhoto.setStyleSheet(btn_style)
                 self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
                 self.image_urls.append(url)
@@ -160,3 +160,12 @@ class LoaderSelectTargetPhotoPage(QWidget):
             lambda checked:
             self.select_photo_mode_slot(checked, 3)
         )
+
+    def refresh_view(self):
+        btn_style = "background:transparent;border:0px;border-image:url(:/newPrefix/Group 67.png);"
+        self.btnSinglePhoto.setStyleSheet(btn_style)
+        self.lblMultiPhotos.setText("Select target photos")
+        self.lblMultiPhotoResult.setText("Raster image formats are accepted")
+        self.lblEntireFolder.setText("Select target folder")
+        self.lblEntireResult.setText("Raster image formats are accepted")
+        self.lblOldCaseResult.setText("Click on the \"Start probe\" button below to continue the further process.")

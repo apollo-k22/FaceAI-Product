@@ -8,7 +8,7 @@ QLabel {
 }
 QLineEdit {
     color: rgb(255, 255, 255);
-    font-size: 12pt;
+    font-size: 14pt;
     font-family: Arial;
     background-color: #3E536A;
     background:transparent;
@@ -16,7 +16,7 @@ QLineEdit {
 }
 QTextEdit{
     color: rgb(255, 255, 255);
-    font-size: 12pt;
+    font-size: 14pt;
     font-family: Arial;
     background-color: #3E536A;
     background:transparent;
