@@ -54,9 +54,9 @@ def decrypt_file(file_name):
 
     decfile = {"encfile": os.path.join(".", file_name), "decfile": os.path.join("\\", file_name)}
     try:
-        decryptFile(decfile["encfile"], dec_secure_path+decfile["decfile"], str(key), bufferSize)
-    except Exception:
-        print("Decrypt File Error")
+        decryptFile(decfile["encfile"], dec_secure_path + decfile["decfile"], str(key), bufferSize)
+    except Exception as e:
+        print("Decrypt File Error:", e)
         return False
 
     return True
@@ -71,8 +71,8 @@ def encrypt_file_to(_from, _to):
     try:
         encryptFile(_from, _to, str(key), bufferSize)
         os.remove(_from)
-    except Exception:
-        print("Encrypt File Error")
+    except Exception as e:
+        print("Encrypt File Error:", e)
         return False
 
     return True
@@ -86,8 +86,8 @@ def decrypt_file_to(_from, _to):
 
     try:
         decryptFile(_from, _to, str(key), bufferSize)
-    except Exception:
-        print("Decrypt File Error")
+    except Exception as e:
+        print("Decrypt File Error:", e)
         return False
 
     return True
@@ -106,18 +106,17 @@ def decrypt(folder_path):
                 decfiles.append({"encfile": os.path.join(root, filename), "decfile": os.path.join("\\", filename)})
         for decfile in decfiles:
             try:
-                decryptFile(decfile["encfile"], dec_secure_path+decfile["decfile"], str(key), bufferSize)
-            except Exception:
-                print("Decrypt Error1")
+                decryptFile(decfile["encfile"], dec_secure_path + decfile["decfile"], str(key), bufferSize)
+            except Exception as e:
+                print("Decrypt Error1:", e)
                 return False
-    except:
-        print("Decrypt Error2")
+    except Exception as e:
+        print("Decrypt Error2:", e)
         return False
 
     return True
 
 def exit_process():
     for root, dirs, files in os.walk(dec_secure_path):
-            for filename in files:
-                os.remove(os.path.join(root, filename))
-
+        for filename in files:
+            os.remove(os.path.join(root, filename))

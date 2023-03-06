@@ -63,7 +63,6 @@ class StartMain(QMainWindow):
         self.init_widgets()
 
     def start_main(self):
-        self.check_device_info()
         self.show_p1_home()
 
     @pyqtSlot()
@@ -75,8 +74,9 @@ class StartMain(QMainWindow):
     # then, this slot will be called.
     @pyqtSlot()
     def finished_initializing_slot(self):
-        print("faceai init ok")
         self.faceai_init_thread.quit()
+        self.check_device_info()
+        self.check_license()
         self.finished_initiating_widget_signal.emit(self)
         self.showMaximized()
         self.start_main()
@@ -167,110 +167,87 @@ class StartMain(QMainWindow):
     @pyqtSlot()
     def show_p1_home(self):
         self.setWindowTitle("Home")
-        if self.check_license():
-            self.ui_0_license.hide()
-            self.ui_2_create_new_case.hide()
-            self.ui_3_select_target_photo.hide()
-            self.ui_6_probe_report.hide()
-            self.ui_7_prove_report_list.hide()
-            self.ui_5_probe_report_preview.hide()
-            self.ui_1_home.showMaximized()
-            self.ui_1_home.setFocus()
-        else:
-            self.show_p0_license()
+        self.ui_0_license.hide()
+        self.ui_2_create_new_case.hide()
+        self.ui_3_select_target_photo.hide()
+        self.ui_6_probe_report.hide()
+        self.ui_7_prove_report_list.hide()
+        self.ui_5_probe_report_preview.hide()
+        self.ui_1_home.showMaximized()
+        self.ui_1_home.setFocus()
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
         self.setWindowTitle("Create Case")
-        if self.check_license():
-            self.ui_1_home.hide()
-            self.ui_3_select_target_photo.hide()
-            # return page to initial status
-            self.ui_2_create_new_case.refresh_view()
-            self.ui_2_create_new_case.showMaximized()
-        else:
-            self.show_p0_license()
+        self.ui_1_home.hide()
+        self.ui_3_select_target_photo.hide()
+        # return page to initial status
+        self.ui_2_create_new_case.refresh_view()
+        self.ui_2_create_new_case.showMaximized()
 
     @pyqtSlot(CaseInfo)
     def show_p4_probing(self, case_info):
         self.setWindowTitle("Probing...")
-        if self.check_license():
-            self.ui_3_select_target_photo.hide()
-            # start probing
-            self.ui_4_probing.showMaximized()
-            self.ui_4_probing.start_probing(case_info)
-        else:
-            self.show_p0_license()
+        self.ui_3_select_target_photo.hide()
+        # start probing
+        self.ui_4_probing.showMaximized()
+        self.ui_4_probing.start_probing(case_info)
 
     @pyqtSlot(ProbingResult)
     def show_p5_probe_report_preview(self, probe_result):
         self.setWindowTitle("Probe Report Preview")
-        if self.check_license():
-            # init views
-            self.ui_4_probing.hide()
-            self.ui_6_probe_report.hide()
-            # show probe report preview page
-            self.ui_5_probe_report_preview.probe_result = probe_result
-            # self.refresh_views_thread.set_widget(self.ui_5_probe_report_preview)
-            # self.refresh_views_thread.start()
-            self.ui_5_probe_report_preview.refresh_views()
-            self.ui_5_probe_report_preview.showMaximized()
-        else:
-            self.show_p0_license()
+        # init views
+        self.ui_4_probing.hide()
+        self.ui_6_probe_report.hide()
+        # show probe report preview page
+        self.ui_5_probe_report_preview.probe_result = probe_result
+        # self.refresh_views_thread.set_widget(self.ui_5_probe_report_preview)
+        # self.refresh_views_thread.start()
+        self.ui_5_probe_report_preview.refresh_views()
+        self.ui_5_probe_report_preview.showMaximized()
 
     @pyqtSlot(ProbingResult)
     def show_p6_probe_report(self, probe_result):
         self.setWindowTitle("Probe Report")
-        if self.check_license():
-            # init views
-            self.ui_5_probe_report_preview.hide()
-            self.ui_7_prove_report_list.hide()
-            self.ui_6_probe_report.probe_result = probe_result
-            # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
-            # self.refresh_views_thread.start()
-            self.ui_6_probe_report.refresh_views()
-            self.ui_6_probe_report.showMaximized()
-        else:
-            self.show_p0_license()
+        # init views
+        self.ui_5_probe_report_preview.hide()
+        self.ui_7_prove_report_list.hide()
+        self.ui_6_probe_report.probe_result = probe_result
+        # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
+        # self.refresh_views_thread.start()
+        self.ui_6_probe_report.refresh_views()
+        self.ui_6_probe_report.showMaximized()
 
     @pyqtSlot()
     def show_p6_probe_report_without_param(self):
         self.setWindowTitle("Probe Report")
-        if self.check_license():
-            self.ui_7_prove_report_list.hide()
-            self.ui_6_probe_report.probe_result = ProbingResult()
-            self.ui_6_probe_report.init_input_values()
-            self.ui_6_probe_report.init_target_images_view()
-            self.ui_6_probe_report.showMaximized()
-        else:
-            self.show_p0_license()
+        self.ui_7_prove_report_list.hide()
+        self.ui_6_probe_report.probe_result = ProbingResult()
+        self.ui_6_probe_report.init_input_values()
+        self.ui_6_probe_report.init_target_images_view()
+        self.ui_6_probe_report.showMaximized()
 
     @pyqtSlot(ProbingResult)
     def show_p7_probe_report_list(self, probe_result):
         self.setWindowTitle("Probe Reports")
-        if self.check_license():
-            # init views
-            self.ui_6_probe_report.hide()
-            self.ui_7_prove_report_list.probe_result = probe_result
-            self.ui_7_prove_report_list.init_actions()
-            self.ui_7_prove_report_list.init_views()
-            # stop splashing
-            # self.splash.stop_splash()
-            # show probe report list page
-            self.ui_7_prove_report_list.showMaximized()
-        else:
-            self.show_p0_license()
+        # init views
+        self.ui_6_probe_report.hide()
+        self.ui_7_prove_report_list.probe_result = probe_result
+        self.ui_7_prove_report_list.init_actions()
+        self.ui_7_prove_report_list.init_views()
+        # stop splashing
+        # self.splash.stop_splash()
+        # show probe report list page
+        self.ui_7_prove_report_list.showMaximized()
 
     @pyqtSlot()
     def show_p7_probe_report_list_without_param(self):
-        if self.check_license():
-            self.ui_1_home.hide()
-            self.ui_4_probing.hide()
-            self.ui_7_prove_report_list.init_views()
-            # show probe report list page
-            self.ui_7_prove_report_list.showMaximized()
-        else:
-            self.show_p0_license()
+        self.setWindowTitle("Probe Reports")
+        self.ui_1_home.hide()
+        self.ui_4_probing.hide()
+        self.ui_7_prove_report_list.init_views()
+        # show probe report list page
+        self.ui_7_prove_report_list.showMaximized()
 
     def init_widgets(self):
         self.centralLayout.addWidget(self.ui_0_license)
@@ -308,8 +285,7 @@ class StartMain(QMainWindow):
         else:
             app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
             self.status_bar.showMessage("The license will be expired by "
-                                        + app_expire_date + ". You can use more this application for "
-                                        + str(app_expire) + ".")
+                                        + app_expire_date)
             if app_expire.total_seconds() > 0:
                 return True
             else:

@@ -298,6 +298,9 @@ margin: 10px;
              <property name="spacing">
               <number>0</number>
              </property>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_3">
                <item>
@@ -789,7 +792,7 @@ background:transparent;</string>
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="bottomMargin">
         <number>20</number>
