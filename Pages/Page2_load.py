@@ -208,11 +208,14 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         if not string == sub_string:
             string = sub_string
             text_edit.setPlainText(string)
+            return
         if len(string) > max_length:
             string = string[:max_length - 1]
             text_edit.setPlainText(string)
+            return
         cursor = text_edit.textCursor()
         cursor.movePosition(QTextCursor.End)
+        text_edit.setTextCursor(cursor)
 
     # return page to initial status
     def refresh_view(self):

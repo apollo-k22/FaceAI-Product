@@ -44,25 +44,6 @@ class LoaderProbeReportPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_export_pdf(self):
-        report_path = Common.get_reg(Common.REG_KEY)
-        if report_path:
-            report_path = report_path + "/" + Common.REPORTS_PATH
-        else:
-            report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
-        Common.create_path(report_path)  
-
-        filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number,
-                                    self.probe_result.case_info.case_PS)
-        file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
-
-        if file_location[0] == "":
-            return
-
-        if not (self.probe_result.case_info.subject_image_url == '') and \
-                not (len(self.probe_result.case_info.target_image_urls) == 0):
-            self.write_probe_results_to_database()
-        
-        create_pdf(self.probe_result.probe_id, self.probe_result, file_location[0] + file_location[1])
         self.probe_result = ProbingResult()
         self.refresh_views()
         self.export_pdf_signal.emit(self.probe_result)
@@ -167,7 +148,7 @@ class LoaderProbeReportPage(QWidget):
                           ");background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-            self.etextJsonResult.setPlainText("")
+            self.teditJsonResult.setPlainText("")
 
     def init_target_images_view(self):
         # clear all child on result container layout

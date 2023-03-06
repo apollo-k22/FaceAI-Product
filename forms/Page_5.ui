@@ -646,7 +646,6 @@ p, li { white-space: pre-wrap; }
                  </property>
                  <property name="styleSheet">
                   <string notr="true">background:transparent;
-background-color: #34557a;
 background-size: cover;
 background-repeat: no-repeat;
 background-position: center;
@@ -734,7 +733,7 @@ background:transparent;</string>
 background:transparent;</string>
                </property>
                <property name="text">
-                <string>Keep First</string>
+                <string>Keep First   </string>
                </property>
               </widget>
              </item>
@@ -780,7 +779,7 @@ color: white;</string>
 background:transparent;</string>
                </property>
                <property name="text">
-                <string>matched photos</string>
+                <string> matched photos  </string>
                </property>
               </widget>
              </item>
