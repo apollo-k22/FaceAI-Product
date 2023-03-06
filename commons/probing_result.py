@@ -25,7 +25,7 @@ class ProbingResult(object):
             for result in results:
                 # remove % symbol from confidence
                 conf_buff = result['confidence'][:len(result['confidence']) - 2]
-                if float(conf_buff) > Common.MATCH_LEVEL:
+                if float(conf_buff) >= Common.MATCH_LEVEL:
                     self.matched = "Matched"
                     return self.matched
         return self.matched

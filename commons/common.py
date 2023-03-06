@@ -18,7 +18,7 @@ class Common:
     REPORTS_PATH = "Probe Reports"
     TEMP_PATH = "Temporary Data"
     REG_KEY = "DataFolder"
-    MATCH_LEVEL = 0.7
+    MATCH_LEVEL = 70
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
     CASE_EXAMINER_NAME_LENGTH = 63

@@ -214,3 +214,14 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         cursor = text_edit.textCursor()
         cursor.movePosition(QTextCursor.End)
 
+    # return page to initial status
+    def refresh_view(self):
+        btn_style = "content-aligne:left;border:none;background:transparent;" \
+                    "border-image:url(:/newPrefix/Group 68.png);border-radius: 30px;background:none;"
+        self.btnSelectPhoto.setStyleSheet(btn_style)
+        self.leditCaseNumber.setText("")
+        self.leditPS.setText("")
+        self.leditExaminerName.setText("")
+        self.leditExaminerNo.setText("")
+        self.leditRemarks.setText("")
+

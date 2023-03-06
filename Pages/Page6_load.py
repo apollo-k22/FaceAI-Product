@@ -51,7 +51,8 @@ class LoaderProbeReportPage(QWidget):
             report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH        
         Common.create_path(report_path)  
 
-        filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
+        filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number,
+                                    self.probe_result.case_info.case_PS)
         file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(report_path, filename), ".pdf")
 
         if file_location[0] == "":
@@ -62,6 +63,8 @@ class LoaderProbeReportPage(QWidget):
             self.write_probe_results_to_database()
         
         create_pdf(self.probe_result.probe_id, self.probe_result, file_location[0] + file_location[1])
+        self.probe_result = ProbingResult()
+        self.refresh_views()
         self.export_pdf_signal.emit(self.probe_result)
 
     @pyqtSlot()
@@ -151,16 +154,33 @@ class LoaderProbeReportPage(QWidget):
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
             js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.teditJsonResult.setPlainText(js_result)
+        else:
+            self.lblProbeId.setText("")
+            self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+            self.lblProbeResult.setText("")
+            self.lblCaseNumber.setText("")
+            self.lblExaminerNo.setText("")
+            self.lblExaminerName.setText("")
+            self.teditRemarks.setPlainText("")
+            self.lblTimeOfReportGeneration.setText("")
+            image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
+                          ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+            self.lblSubjectImage.setStyleSheet(image_style)
+            self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+            self.etextJsonResult.setPlainText("")
 
     def init_target_images_view(self):
+        # clear all child on result container layout
+        self.clear_result_list()
+        # add items to result container layout
+        self.glyReportBuff = QGridLayout(self)
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
-            # clear all child on result container layout
-            self.clear_result_list()
-            print(str(self.vlyReportResult.count()))
-            # add items to result container layout
-            self.glyReportBuff = QGridLayout(self)
+            # # clear all child on result container layout
+            # self.clear_result_list()
+            # # add items to result container layout
+            # self.glyReportBuff = QGridLayout(self)
             results = self.probe_result.json_result['results']
             index = 0
             for result in results:
