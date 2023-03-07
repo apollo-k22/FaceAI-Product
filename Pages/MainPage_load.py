@@ -62,8 +62,8 @@ class StartMain(QMainWindow):
         self.set_splash_signal_slot()
         self.init_widgets()
 
-    def start_main(self):
-        self.show_p1_home()
+    # def start_main(self):
+    #     self.show_p1_home()
 
     @pyqtSlot()
     def finished_decrypting_slot(self):
@@ -74,12 +74,14 @@ class StartMain(QMainWindow):
     # then, this slot will be called.
     @pyqtSlot()
     def finished_initializing_slot(self):
+        print("start")
         self.faceai_init_thread.quit()
-        self.check_device_info()
-        self.check_license()
+        unlocked, expire_date, fpo_info, atpo_info = read_information_db()
+        self.check_license(unlocked, expire_date)
+        self.check_device_info(fpo_info, atpo_info)
         self.finished_initiating_widget_signal.emit(self)
         self.showMaximized()
-        self.start_main()
+        # self.start_main()
 
     # when some widget finished to be initiated or refreshed, the widget emit finished signal.
     # then, this slot will be called.
@@ -277,22 +279,22 @@ class StartMain(QMainWindow):
         self.refresh_views_thread.quit()
         self.splash.quit()
 
-    def check_license(self):
-        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
-
+    def check_license(self, app_unlocked, app_expire_date):
         if not app_unlocked:
+            self.status_bar.showMessage("The license is not available.")
             self.show_p0_license()
         else:
             app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
             self.status_bar.showMessage("The license will be expired by "
                                         + app_expire_date)
             if app_expire.total_seconds() > 0:
+                self.show_p1_home()
                 return True
             else:
+                self.show_p0_license()
                 return False
 
-    def check_device_info(self):
-        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
+    def check_device_info(self, app_fpo_info, app_atpo_info):
         fpo_info, atpo_info = get_cpu_info()
         if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
             Common.show_message(QMessageBox.Warning, "You are an invalid user.", "",

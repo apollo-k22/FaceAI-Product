@@ -35,8 +35,8 @@ def access_license_list(license_str):
             print("File non-exist")
             encrypt_file(license_file_name)
             return (False, expire_flag)
-    except:
-        print("File open error")
+    except Exception as e:
+        print("access_license_list: ", e)
         encrypt_file(license_file_name)
         return (False, expire_flag)
 
@@ -85,9 +85,9 @@ def write_infomation_db(isdst, expire, fpo, atpo):
         cursor.execute("UPDATE appinfo SET isdst = ?, expire = ?, fpo = ?, atpo = ?", (isdst, expire, fpo, atpo))
         connection.commit()    
 
-    except: 
+    except Exception as e: 
         encrypt_file(database_file_name)
-        print("Database Error")
+        print("write_infomation_db: ", e)
         return(False, "expire", "fpo", "atpo")
 
     finally:
