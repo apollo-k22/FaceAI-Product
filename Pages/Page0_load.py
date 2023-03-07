@@ -1,22 +1,18 @@
-import time
-from datetime import datetime, timedelta
-from time import ctime
-
 import wmi
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtWidgets import QWidget, QLabel, QMessageBox
 from dateutil.relativedelta import relativedelta
-
+from datetime import timedelta
 from cryptophic.license import write_infomation_db, access_license_list
+from commons.ntptime import ntp_get_time
 
 
 class LicenseBoxPage(QWidget):
-    continue_app_signal = pyqtSignal()
+    continue_app_signal = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
-
         self.window = uic.loadUi("./forms/Page_0.ui", self)
         self.btnConfirm.clicked.connect(self.procLicenseConfirm)
         self.lblNotify = self.findChild(QLabel, "labelNotify")
@@ -41,24 +37,21 @@ class LicenseBoxPage(QWidget):
         self.lblNotify.setText("The license is correct. One minutes...")
         expire_dt = None
 
-        ### getting validate date                 
-        try:
-            # NIST = 'pool.ntp.org'
-            # ntp = ntplib.NTPClient()
-            # ntpResponse = ntp.request(NIST)                        
+        ### getting validate date    
+        today_dt = ntp_get_time()
+        if today_dt is None:
+            Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
+                                "NTP Error.",
+                                "")
+            quit()
 
-            today_dt = datetime.strptime(ctime(time.time()), "%a %b %d %H:%M:%S %Y")
-            # today_dt = datetime.strptime(ctime(ntpResponse.tx_time), "%a %b %d %H:%M:%S %Y")
+        if "1Year" in expire_flag:
+            expire_dt = today_dt + relativedelta(months=+12)
+        elif "1Month" in expire_flag:
+            expire_dt = today_dt + relativedelta(months=+1)
+        elif "1Day" in expire_flag:
+            expire_dt = today_dt + timedelta(days=1)
 
-            if "1Year" in expire_flag:
-                expire_dt = today_dt + relativedelta(months=+12)
-            elif "1Month" in expire_flag:
-                expire_dt = today_dt + relativedelta(months=+1)
-            elif "1Day" in expire_flag:
-                expire_dt = today_dt + timedelta(days=1)
-
-        except:
-            print("ntp error")
 
         ### getting processor batch number(FPO) and partial serial number(ATPO) date   
         fpo_value = ""
@@ -72,4 +65,4 @@ class LicenseBoxPage(QWidget):
 
         ## Goto homepage  
         self.lblNotify.setText("Let's go to home page")
-        self.continue_app_signal.emit()
+        self.continue_app_signal.emit(expire_dt.strftime('%d/%m/%Y'))

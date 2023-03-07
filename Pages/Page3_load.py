@@ -13,7 +13,7 @@ from commons.common import Common
 class LoaderSelectTargetPhotoPage(QWidget):
     go_back_signal = pyqtSignal()
     start_probe_signal = pyqtSignal(object)
-    return_home_signal = pyqtSignal()
+    return_home_signal = pyqtSignal(str)
 
     def __init__(self, faceai):
         super().__init__()
@@ -56,7 +56,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
 
     @pyqtSlot()
     def return_home_slot(self):
-        self.return_home_signal.emit()
+        self.return_home_signal.emit("")
 
     @pyqtSlot()
     def go_back_slot(self):

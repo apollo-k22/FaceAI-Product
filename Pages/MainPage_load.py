@@ -23,7 +23,7 @@ import images
 from cryptophic.dec_thread import DecThread
 from insightfaces.faceai_init_thread import FaceAIInitThread
 from insightfaces.main import FaceAI
-
+from commons.ntptime import ntp_get_time
 
 class StartMain(QMainWindow):
     finished_initiating_widget_signal = pyqtSignal(object)
@@ -32,6 +32,13 @@ class StartMain(QMainWindow):
 
     def __init__(self, splash):
         super().__init__()
+        ntptime = ntp_get_time()
+        if ntptime is None:
+            Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
+                                    "NTP Error.",
+                                    "")
+            quit()
+
         self.faceai = FaceAI()
         self.splash = splash
         # self.splash.start_splash(self)
@@ -74,7 +81,6 @@ class StartMain(QMainWindow):
     # then, this slot will be called.
     @pyqtSlot()
     def finished_initializing_slot(self):
-        print("start")
         self.faceai_init_thread.quit()
         unlocked, expire_date, fpo_info, atpo_info = read_information_db()
         self.check_license(unlocked, expire_date)
@@ -166,8 +172,8 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_0_license.showMaximized()
 
-    @pyqtSlot()
-    def show_p1_home(self):
+    @pyqtSlot(str)
+    def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
@@ -177,6 +183,9 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_1_home.showMaximized()
         self.ui_1_home.setFocus()
+        if len(expire_date) > 0:
+            self.status_bar.showMessage("The license will be expired by "
+                                            + expire_date)
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
@@ -288,7 +297,7 @@ class StartMain(QMainWindow):
             self.status_bar.showMessage("The license will be expired by "
                                         + app_expire_date)
             if app_expire.total_seconds() > 0:
-                self.show_p1_home()
+                self.show_p1_home(None)
                 return True
             else:
                 self.show_p0_license()

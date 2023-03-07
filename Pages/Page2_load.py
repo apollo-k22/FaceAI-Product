@@ -16,7 +16,7 @@ from insightfaces.main import FaceAI
 
 class LoaderCreateNewCasePage(QWidget, FaceAI):
     # when clicked 'return home' button, this will be emitted
-    return_home_signal = pyqtSignal()
+    return_home_signal = pyqtSignal(str)
     # when clicked 'continue to probe' button, this will be emitted
     continue_probe_signal = pyqtSignal(object)
 
@@ -90,7 +90,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
 
     @pyqtSlot()
     def return_home(self):
-        self.return_home_signal.emit()
+        self.return_home_signal.emit("")
 
     @pyqtSlot()
     def continue_probe_slot(self):
