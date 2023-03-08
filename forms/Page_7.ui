@@ -594,6 +594,9 @@ border: 1px solid rgb(53, 132, 228);</string>
            <property name="sizeConstraint">
             <enum>QLayout::SetDefaultConstraint</enum>
            </property>
+           <property name="bottomMargin">
+            <number>30</number>
+           </property>
            <item>
             <widget class="QTableWidget" name="resultTable">
              <property name="minimumSize">

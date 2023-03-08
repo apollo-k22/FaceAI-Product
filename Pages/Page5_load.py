@@ -11,6 +11,7 @@ from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
+from commons.target_items_container_generator import TargetItemsContainerGenerator
 from cryptophic.main import encrypt_file_to
 
 
@@ -19,13 +20,13 @@ class LoaderProbeReportPreviewPage(QWidget):
     go_back_signal = pyqtSignal(object)
     generate_report_signal = pyqtSignal(object, object)
     go_remaining_signal = pyqtSignal()
-    start_splash_signal = pyqtSignal()
-    finished_loading_items_signal = pyqtSignal()
+    start_splash_signal = pyqtSignal(str)
+    stop_splash_signal = pyqtSignal(object)
     show_window_signal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-
+        self.target_items_generator_thread = TargetItemsContainerGenerator()
         self.case_data_for_results = []
         self.probe_result = ProbingResult()
         self.window = uic.loadUi("./forms/Page_5.ui", self)
@@ -175,11 +176,37 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.btnGoBack.clicked.connect(self.on_clicked_go_back)
         self.btnReturnHome.clicked.connect(self.on_clicked_return_home)
         self.btnGoRemaining.clicked.connect(self.on_clicked_go_remaining)
+        self.target_items_generator_thread.finished_refreshing_target_items.connect(
+            self.finished_refresh_target_widget_slot)
 
     def refresh_views(self):
-        self.init_input_values()
+        # self.init_input_values()
         self.init_target_images_view()
-        self.repaint()
+        # self.repaint()
+
+    @pyqtSlot(list)
+    def finished_refresh_target_widget_slot(self, case_data):
+        self.glyReportBuff = QGridLayout(self)
+        results = self.probe_result.json_result['results']
+        self.case_data_for_results = case_data
+        index = 0
+        if len(results) > 0 and len(case_data):
+            for result in results:
+                case_information = case_data[index]
+                # show the cross button on image
+                result_view_item = ProbeResultItemWidget(result, True,
+                                                         self.probe_result.case_info.is_used_old_cases,
+                                                         case_information)
+                # connect delete signal from delete button on target image.
+                result_view_item.delete_item_signal.connect(self.delete_result_item)
+                self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+                index += 1
+        self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+        js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+        self.etextJsonResult.setPlainText(js_result)
+        self.init_input_values()
+        self.setEnabled(True)
+        self.stop_splash_signal.emit(None)
 
     def init_input_values(self):
         if not self.probe_result:
@@ -233,28 +260,34 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.clear_result_list()
         self.etextJsonResult.setPlainText("")
         # add items to result container layout
-        self.glyReportBuff = QGridLayout(self)
+        # self.glyReportBuff = QGridLayout(self)
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
             results = self.probe_result.json_result['results']
-            db = DBConnection()
-            self.case_data_for_results = db.get_case_data(results)
-            index = 0
-            if len(results) > 0 and len(self.case_data_for_results):
-                for result in results:
-                    case_information = self.case_data_for_results[index]
-                    # show the cross button on image
-                    result_view_item = ProbeResultItemWidget(result, True,
-                                                             self.probe_result.case_info.is_used_old_cases,
-                                                             case_information)
-                    # connect delete signal from delete button on target image.
-                    result_view_item.delete_item_signal.connect(self.delete_result_item)
-                    self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
-                    index += 1
-            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
-            js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-            self.etextJsonResult.setPlainText(js_result)
+
+            self.target_items_generator_thread.set_data(self, results, True,
+                                                        self.probe_result.case_info.is_used_old_cases)
+            self.setEnabled(False)
+            self.start_splash_signal.emit("data")
+            self.target_items_generator_thread.start()
+            # db = DBConnection()
+            # self.case_data_for_results = db.get_case_data(results)
+            # index = 0
+            # if len(results) > 0 and len(self.case_data_for_results):
+            #     for result in results:
+            #         case_information = self.case_data_for_results[index]
+            #         # show the cross button on image
+            #         result_view_item = ProbeResultItemWidget(result, True,
+            #                                                  self.probe_result.case_info.is_used_old_cases,
+            #                                                  case_information)
+            #         # connect delete signal from delete button on target image.
+            #         result_view_item.delete_item_signal.connect(self.delete_result_item)
+            #         self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+            #         index += 1
+            # self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+            # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            # self.etextJsonResult.setPlainText(js_result)
 
     @pyqtSlot(object)
     def delete_result_item(self, item):

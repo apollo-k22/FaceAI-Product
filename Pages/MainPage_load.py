@@ -13,7 +13,7 @@ from Pages.Page7_load import LoaderProbeReportListPage
 import datetime
 
 from commons.common import Common
-from commons.refresh_widget_thread import RefreshWidgetThread
+from commons.target_items_container_generator import TargetItemsContainerGenerator
 from cryptophic.license import read_information_db, get_cpu_info
 
 # start home page for probing
@@ -29,6 +29,7 @@ class StartMain(QMainWindow):
     finished_initiating_widget_signal = pyqtSignal(object)
     update_progress_signal = pyqtSignal(int)
     start_splash_signal = pyqtSignal(str)
+    stop_splash_signal = pyqtSignal()
 
     def __init__(self, splash):
         super().__init__()
@@ -53,8 +54,8 @@ class StartMain(QMainWindow):
         self.ui_6_probe_report = LoaderProbeReportPage()
         self.ui_7_prove_report_list = LoaderProbeReportListPage()
         self.status_bar = self.findChild(QStatusBar, "statusBar")
-        self.refresh_views_thread = RefreshWidgetThread()  # the thread to be used to refresh some page
-        self.refresh_views_thread.finished_refreshing_widget.connect(
+        self.refresh_views_thread = TargetItemsContainerGenerator()  # the thread to be used to refresh some page
+        self.refresh_views_thread.finished_refreshing_target_items.connect(
             lambda wdt: self.finished_refreshing_slot(wdt)
         )
 
@@ -92,15 +93,35 @@ class StartMain(QMainWindow):
         self.finished_initiating_widget_signal.emit(wdt)
 
     @pyqtSlot()
-    def start_splash_for_subwidgets(self, data_type):
+    def start_splash_for_subwidgets_slot(self, data_type):
         self.start_splash_signal.emit(data_type)
 
     def set_splash_signal_slot(self):
+        self.ui_0_license.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
+        )
+        self.ui_0_license.stop_splash_signal.connect(self.finished_refreshing_slot)
+
         self.ui_3_select_target_photo.start_splash_signal.connect(
-            lambda data_type: self.start_splash_for_subwidgets(data_type))
-        self.ui_3_select_target_photo.stop_splash_signal.connect(self.finished_initiating_widget_signal)
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type))
+        self.ui_3_select_target_photo.stop_splash_signal.connect(self.finished_refreshing_slot)
+
+        self.ui_5_probe_report_preview.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
+        )
+        self.ui_5_probe_report_preview.stop_splash_signal.connect(self.finished_refreshing_slot)
+
+        self.ui_6_probe_report.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
+        )
+        self.ui_6_probe_report.stop_splash_signal.connect(self.finished_refreshing_slot)
+
+        self.ui_7_prove_report_list.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
+        )
+        self.ui_7_prove_report_list.stop_splash_signal.connect(self.finished_refreshing_slot)
         #  when finished probing, the signal emitted so that let the system knows to start probe report preview page.
-        # self.ui_4_probing.probing_thread.start_splash_signal.connect(self.start_splash_for_subwidgets)
+        # self.ui_4_probing.probing_thread.start_splash_signal.connect(self.start_splash_for_subwidgets_slot)
         #  when go to probe report page, the signal emitted
         #  so that let the system knows to start probe report page.
 
@@ -223,6 +244,8 @@ class StartMain(QMainWindow):
         # init views
         self.ui_5_probe_report_preview.hide()
         self.ui_7_prove_report_list.hide()
+        # return page to initial status
+        self.ui_2_create_new_case.refresh_view()
         self.ui_6_probe_report.probe_result = probe_result
         self.ui_6_probe_report.case_data_for_results = case_data
         # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
@@ -245,9 +268,7 @@ class StartMain(QMainWindow):
         # init views
         self.ui_6_probe_report.hide()
         self.ui_7_prove_report_list.probe_result = probe_result
-        self.ui_7_prove_report_list.init_actions()
-        self.ui_7_prove_report_list.init_reports()
-        self.ui_7_prove_report_list.init_views()
+        self.ui_7_prove_report_list.refresh_view()
         # stop splashing
         # self.splash.stop_splash()
         # show probe report list page
@@ -258,8 +279,7 @@ class StartMain(QMainWindow):
         self.setWindowTitle("Probe Reports")
         self.ui_1_home.hide()
         self.ui_4_probing.hide()
-        self.ui_7_prove_report_list.init_reports()
-        self.ui_7_prove_report_list.init_views()
+        self.ui_7_prove_report_list.refresh_view()
         # show probe report list page
         self.ui_7_prove_report_list.showMaximized()
 

@@ -27,7 +27,7 @@ class DBConnection:
         reg_value = Common.get_reg(Common.REG_KEY)
         connection_string_buff = ""
         if reg_value is not None:
-            connection_string_buff = reg_value + "/" + Common.STORAGE_PATH
+            connection_string_buff = reg_value + "/" + Common.MEDIA_PATH + "/" + Common.STORAGE_PATH
         else:
             Common.show_message(QMessageBox.Warning, "You did not get data storage path. \n "
                                                      "The data storage path will be application root directory.",
@@ -133,7 +133,6 @@ class DBConnection:
                 probe_result.created_date = row[10]
                 probe_result.case_info = case_info
                 results.append(probe_result)
-                print(row)
         except sqlite3.IntegrityError as e:
             print('INTEGRITY ERROR\n')
             print(traceback.print_exc())

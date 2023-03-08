@@ -12,6 +12,9 @@
   </property>
   <property name="styleSheet">
    <string notr="true">background-image: url(:/newPrefix/Background.png);
+      background-repeat: no-repeat;
+      background-position: center;
+    
 border:none;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">

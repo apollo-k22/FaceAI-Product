@@ -99,7 +99,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
             else:
                 self.lblOldCaseResult.setText(
                     "Click on the \"Start probe\" button below to continue the further process.")
-                self.lblOldCaseSelectedNumber.setText(str(len(self.image_urls)) + "was selected.")
+                self.lblOldCaseSelectedNumber.setText(str(len(self.image_urls)) + " was selected.")
         self.stop_splash_signal.emit(None)
 
     @pyqtSlot()
@@ -134,7 +134,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
         urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', self.current_work_folder, Common.IMAGE_FILTER)
         length = len(urls)
         if length:
-            self.lblMultiPhotos.setText("Loading images....")
+            self.lblMultiPhotos.setText("")
             self.setEnabled(False)
             self.current_work_folder = Common.get_folder_path(urls[0])
             self.get_images_thread.urls = urls
@@ -151,7 +151,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
         direct = QFileDialog.getExistingDirectory(self, 'Entire Folder')
 
         if direct:
-            self.lblEntireFolder.setText("Loading images....")
+            self.lblEntireFolder.setText("")
             self.current_work_folder = direct
             self.get_images_thread.direct = direct
             self.get_images_thread.is_direct = True

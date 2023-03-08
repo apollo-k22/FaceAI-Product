@@ -9,6 +9,7 @@ from commons.common import Common
 from commons.db_connection import DBConnection
 from commons.export_pdf_button import ExportPdfButton
 from commons.gen_report import export_report_pdf, gen_pdf_filename
+from commons.get_reports_thread import GetReportsThread
 from commons.pagination_layout import PaginationLayout
 from commons.probing_result import ProbingResult
 from commons.zip_thread import ZipThread, ThreadResult
@@ -19,6 +20,8 @@ class LoaderProbeReportListPage(QWidget):
     return_home_signal = pyqtSignal()
     go_back_signal = pyqtSignal(object)
     go_back_empty_signal = pyqtSignal()
+    start_splash_signal = pyqtSignal(str)
+    stop_splash_signal = pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
@@ -30,6 +33,7 @@ class LoaderProbeReportListPage(QWidget):
         self.is_searching_result = False
         self.reports = []
         self.shown_reports = []  # current shown reports on table
+        self.get_reports_thread = GetReportsThread()
 
         self.window = uic.loadUi("./forms/Page_7.ui", self)
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
@@ -63,6 +67,7 @@ class LoaderProbeReportListPage(QWidget):
     @pyqtSlot(int)
     def changed_entries_number(self, current_index):
         self.number_per_page = int(self.combEntriesNumber.currentText())
+        self.current_page = 0
         self.init_views()
 
     @pyqtSlot(str)
@@ -80,11 +85,21 @@ class LoaderProbeReportListPage(QWidget):
         self.combEntriesNumber.currentIndexChanged.connect(self.changed_entries_number)
         self.leditSearchString.textChanged.connect(self.changed_search_string)
         self.btnExportAllZip.clicked.connect(self.on_clicked_export_allzip)
+        self.get_reports_thread.finished_reports_signal.connect(
+            lambda reports: self.finished_get_reports_slot(reports)
+        )
 
-    def init_reports(self):
-        db = DBConnection()
-        report_len = db.count_row_number("cases")
-        self.reports = db.get_values()
+    @pyqtSlot(list)
+    def finished_get_reports_slot(self, reports):
+        self.reports = reports
+        self.init_views()
+        self.setEnabled(True)
+        self.stop_splash_signal.emit(None)
+
+    def refresh_view(self):
+        self.get_reports_thread.start()
+        self.setEnabled(False)
+        self.start_splash_signal.emit("data")
 
     def init_views(self):
         Common.clear_layout(self.hlyPaginationContainer)
@@ -119,19 +134,13 @@ class LoaderProbeReportListPage(QWidget):
             case_info = item.case_info
             probe_id = item.probe_id
             created_date = item.created_date
-            if case_info.case_number.count(search_string) > 0:
-                searched.append(item)
-            if case_info.case_PS.count(search_string) > 0:
-                searched.append(item)
-            if case_info.examiner_no.count(search_string) > 0:
-                searched.append(item)
-            if case_info.examiner_name.count(search_string) > 0:
-                searched.append(item)
-            if case_info.remarks.count(search_string) > 0:
-                searched.append(item)
-            if probe_id.count(search_string) > 0:
-                searched.append(item)
-            if created_date.count(search_string) > 0:
+            if case_info.case_number.count(search_string) > 0 \
+                    or case_info.case_PS.count(search_string) > 0 \
+                    or case_info.examiner_no.count(search_string) > 0 \
+                    or case_info.examiner_name.count(search_string) > 0 \
+                    or case_info.remarks.count(search_string) > 0 \
+                    or probe_id.count(search_string) > 0 \
+                    or created_date.count(search_string) > 0:
                 searched.append(item)
         start_index = current_page * number_per_page
         end_index = start_index + number_per_page
