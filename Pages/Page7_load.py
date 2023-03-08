@@ -22,11 +22,14 @@ class LoaderProbeReportListPage(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.zip_thread = None
         self.probe_result = ProbingResult()
         self.current_page = 0
         self.number_per_page = 5
         self.search_string = '%'
         self.is_searching_result = False
+        self.reports = []
+        self.shown_reports = []  # current shown reports on table
 
         self.window = uic.loadUi("./forms/Page_7.ui", self)
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
@@ -78,23 +81,83 @@ class LoaderProbeReportListPage(QWidget):
         self.leditSearchString.textChanged.connect(self.changed_search_string)
         self.btnExportAllZip.clicked.connect(self.on_clicked_export_allzip)
 
+    def init_reports(self):
+        db = DBConnection()
+        report_len = db.count_row_number("cases")
+        self.reports = db.get_values()
+
     def init_views(self):
         Common.clear_layout(self.hlyPaginationContainer)
-        db = DBConnection()
-        reports = []
-        report_len = 0
+        # if self.is_searching_result:
+        #     report_len = db.count_search_results(self.search_string)
+        #     reports = db.search_results(self.search_string, report_len, self.current_page, self.number_per_page)
+        # else:
+        #     report_len = db.count_row_number("cases")
+        #     reports = db.get_pagination_results("cases", report_len, self.current_page, self.number_per_page)
+        # if report_len:
+        #     hly_pagination = PaginationLayout(report_len, self.number_per_page, self.current_page)
+        #     # connect signals
+        #     hly_pagination.changed_page_signal.connect(self.refresh_table)
+        #     self.hlyPaginationContainer.addLayout(hly_pagination)
+        report_len = len(self.reports)
         if self.is_searching_result:
-            report_len = db.count_search_results(self.search_string)
-            reports = db.search_results(self.search_string, report_len, self.current_page, self.number_per_page)
+            self.shown_reports = self.get_search_results(self.search_string, report_len, self.current_page, self.number_per_page)
+
         else:
-            report_len = db.count_row_number("cases")
-            reports = db.get_pagination_results("cases", report_len, self.current_page, self.number_per_page)
+            self.shown_reports = self.get_pagination_results(report_len, self.current_page, self.number_per_page)
         if report_len:
             hly_pagination = PaginationLayout(report_len, self.number_per_page, self.current_page)
             # connect signals
             hly_pagination.changed_page_signal.connect(self.refresh_table)
             self.hlyPaginationContainer.addLayout(hly_pagination)
-        self.init_table(reports)
+        self.init_table(self.shown_reports)
+
+    def get_search_results(self, search_string, report_len, current_page, number_per_page):
+        searched = []
+        paginated = []
+        for item in self.reports:
+            case_info = item.case_info
+            probe_id = item.probe_id
+            created_date = item.created_date
+            if case_info.case_number.count(search_string) > 0:
+                searched.append(item)
+            if case_info.case_PS.count(search_string) > 0:
+                searched.append(item)
+            if case_info.examiner_no.count(search_string) > 0:
+                searched.append(item)
+            if case_info.examiner_name.count(search_string) > 0:
+                searched.append(item)
+            if case_info.remarks.count(search_string) > 0:
+                searched.append(item)
+            if probe_id.count(search_string) > 0:
+                searched.append(item)
+            if created_date.count(search_string) > 0:
+                searched.append(item)
+        start_index = current_page * number_per_page
+        end_index = start_index + number_per_page
+        if start_index > report_len:
+            dif = start_index - report_len
+            start_index -= dif
+            end_index = report_len
+        else:
+            if end_index > report_len:
+                end_index = report_len
+        paginated = searched[start_index:end_index]
+        return paginated
+
+    def get_pagination_results(self, report_len, current_page, number_per_page):
+        results = []
+        start_index = current_page * number_per_page
+        end_index = start_index + number_per_page
+        if start_index > report_len:
+            dif = start_index - report_len
+            start_index -= dif
+            end_index = report_len
+        else:
+            if end_index > report_len:
+                end_index = report_len
+        results = self.reports[start_index:end_index]
+        return results
 
     def init_table(self, reports):
             row_index = 0
@@ -158,11 +221,10 @@ class LoaderProbeReportListPage(QWidget):
 
         if zip_location[0] == '':
             return
-
-        db = DBConnection()
-        reports = db.get_values()
-        
-        self.zip_thread = ZipThread(reports, zip_location[0] + zip_location[1])
+        #
+        # db = DBConnection()
+        # reports = db.get_values()
+        self.zip_thread = ZipThread(self.shown_reports, zip_location[0] + zip_location[1])
         self.zip_thread.finished_zip_signal.connect(self.finished_zip_slot)
         self.zip_thread.start()
 

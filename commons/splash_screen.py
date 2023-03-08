@@ -28,24 +28,27 @@ class SplashThread(QThread):
         self.splash_screen = QSplashScreen()
         self.splash_screen.setMinimumSize(0, 0)
         self.splash_screen.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.splash_screen.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+        self.splash_screen.setEnabled(False)
+        splash_pixmap = QPixmap(':/newPrefix/splash/splash_0.png')
+        self.splash_screen.setPixmap(splash_pixmap)
+        self.splash_screen.setStyleSheet("background:transparent;")
         self.timer = QTimer()
         self.splash_type = "widget"  # the splash whether while loading widget or data.
         self.start()
 
-    def start_splash(self):
+    def start_splash(self, data_type):
         global splash_i_widget, splash_i_data, max_i_data, max_i_widget, splash_stop, max_i, splash_i, splash_i_buff
         # splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
-        self.splash_screen.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
-        self.splash_screen.setEnabled(False)
-        splash_pixmap = QPixmap(':/newPrefix/splash/splash_0.png')
-        self.splash_screen.setStyleSheet("background-image:url(:/newPrefix/Background.png)")
-        self.splash_screen.setPixmap(splash_pixmap)
+        # self.splash_screen.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+        # self.splash_screen.setEnabled(False)
+        # splash_pixmap = QPixmap(':/newPrefix/splash/splash_0.png')
+        # self.splash_screen.setPixmap(splash_pixmap)
         self.timer.setInterval(50)
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.update_splash_screen)
         self.mysignal.connect(self.stop_splash)
-        self.splash_screen.show()
-        if self.splash_type == "widget":
+        if data_type == "widget":
             print("start splash with widget")
             splash_i_buff = splash_i_widget
             splash_i = splash_i_widget
@@ -56,6 +59,7 @@ class SplashThread(QThread):
             splash_i_buff = splash_i_data
             max_i = max_i_data
         self.timer.start()
+        self.splash_screen.show()
 
     # Update SplashScreen animation
     def update_splash_screen(self):
@@ -148,8 +152,9 @@ class SplashThread(QThread):
         max_i = 0
         splash_i_buff = 0
         # self.timer.stop()  # stop the timer
-        wdt.show()  # show form
-        wdt.setFocus()
+        if wdt is not None:
+            wdt.show()  # show form
+            wdt.setFocus()
         self.splash_screen.hide()  # close SplashScreen
 
 #

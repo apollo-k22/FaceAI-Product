@@ -31,6 +31,8 @@ class ProbingResult(object):
         return self.matched
 
     def remove_json_item(self, item):
-        if self.json_result['results'].index(item) >= 0:
+        index = self.json_result['results'].index(item)
+        if index >= 0:
             self.json_result['results'].remove(item)
+            self.json_result['faces'] = self.json_result['faces'][:index] + self.json_result['faces'][index + 1:]
 

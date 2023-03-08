@@ -109,6 +109,7 @@ class DBConnection:
                            ",subject_url,json_result,created_date" \
                            " from cases " \
                            " order by created_date desc"
+            print(query_string)
             self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)
@@ -132,6 +133,7 @@ class DBConnection:
                 probe_result.created_date = row[10]
                 probe_result.case_info = case_info
                 results.append(probe_result)
+                print(row)
         except sqlite3.IntegrityError as e:
             print('INTEGRITY ERROR\n')
             print(traceback.print_exc())
@@ -414,3 +416,16 @@ class DBConnection:
                 self.connection.close()
                 encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return results
+
+    def get_case_data(self, results):
+        cases = []
+        if len(results):
+            index = 0
+            for result in results:
+                img_path = results[index]['image_path']
+                case_no, ps = self.get_case_info(img_path)
+                case = (case_no, ps)
+                cases.append(case)
+                index += 1
+        return cases
+

@@ -137,6 +137,9 @@ border:none;</string>
            <property name="topMargin">
             <number>10</number>
            </property>
+           <property name="rightMargin">
+            <number>85</number>
+           </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <property name="spacing">
@@ -189,19 +192,6 @@ background:transparent;</string>
                 </size>
                </property>
               </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
              </item>
             </layout>
            </item>

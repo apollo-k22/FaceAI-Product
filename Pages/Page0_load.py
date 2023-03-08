@@ -20,6 +20,7 @@ class LicenseBoxPage(QWidget):
         self.window = uic.loadUi("./forms/Page_0.ui", self)
         self.btnConfirm.clicked.connect(self.procLicenseConfirm)
         self.lblNotify = self.findChild(QLabel, "labelNotify")
+        self.expired_date = ""
 
     # The function for license process confirm
     def procLicenseConfirm(self):
@@ -67,9 +68,8 @@ class LicenseBoxPage(QWidget):
         for s in c.Win32_Processor():
             fpo_value = s.ProcessorId
             atpo_value = s.Description
-
-        write_infomation_db(True, expire_dt.strftime('%d/%m/%Y'), fpo_value, atpo_value)
-
-        ## Goto homepage  
+        self.expired_date = expire_dt.strftime('%d/%m/%Y')
+        write_infomation_db(True, self.expired_date, fpo_value, atpo_value)
+        # Goto homepage
         self.lblNotify.setText("Let's go to home page")
         self.continue_app_signal.emit()

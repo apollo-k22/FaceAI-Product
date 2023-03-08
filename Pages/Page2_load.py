@@ -41,6 +41,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.subject_photo_url = ''
         self.set_event_actions()
         self.set_regxs()
+        # self.mock_view()
 
     # set slots to each widget
     def set_event_actions(self):
@@ -90,12 +91,17 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                 # self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.get_subject_photo()
             else:
-                Common.resize_image(photo_url)
+                Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
                 self.subject_photo_url = photo_url
                 btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
                              "border: 1px solid rgb(53, 132, 228);background-size:cover;"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        else:
+            self.subject_photo_url = ""
+            btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
+                        "border: 1px solid rgb(53, 132, 228);background-size:cover;"
+            self.btnSelectPhoto.setStyleSheet(btn_style)
 
     @pyqtSlot()
     def return_home(self):
@@ -228,3 +234,13 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditExaminerNo.setText("")
         self.leditRemarks.setText("")
 
+    def mock_view(self):
+        # init for testing
+        self.leditCaseNumber.setText("1231")
+        self.leditPS.setText("ps1")
+        self.leditExaminerName.setText("examiner")
+        self.leditExaminerNo.setText("examiner no")
+        self.leditRemarks.setText("remarks")
+        self.subject_photo_url = "Architecture.png"
+        self.btnSelectPhoto.setStyleSheet("image:url(Architecture.png);")
+        self.repaint()

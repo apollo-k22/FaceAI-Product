@@ -25,6 +25,7 @@ class LoaderProbeReportPage(QWidget):
 
         self.window = uic.loadUi("./forms/Page_6.ui", self)
         self.probe_result = ProbingResult()
+        self.case_data_for_results = []
         self.btnGoBack = self.findChild(QPushButton, "btnGoBack")
         self.btnExportPdf = self.findChild(QPushButton, "btnExportPdf")
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
@@ -183,12 +184,16 @@ class LoaderProbeReportPage(QWidget):
             # self.glyReportBuff = QGridLayout(self)
             results = self.probe_result.json_result['results']
             index = 0
-            for result in results:
-                # set unable the cross button on image
-                result_view_item = ProbeResultItemWidget(result, False, self.probe_result.case_info.is_used_old_cases)
-                self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
-                index += 1
+            if len(results) > 0 and len(self.case_data_for_results):
+                for result in results:
+                    case_info = self.case_data_for_results[index]
+                    # set unable the cross button on image
+                    result_view_item = ProbeResultItemWidget(result, False, self.probe_result.case_info.is_used_old_cases, case_info)
+                    self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+                    index += 1
             self.vlyReportResult.addLayout(self.glyReportBuff)
+            js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            self.teditJsonResult.setPlainText(js_result)
 
     def clear_result_list(self):
         Common.clear_layout(self.vlyReportResult)

@@ -132,7 +132,7 @@ class PaginationLayout(QHBoxLayout):
         lbl_page_number.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         hspacer = QSpacerItem(50, 10, QSizePolicy.Fixed, QSizePolicy.Fixed)
 
-        btn_go.setStyleSheet("border-radius: 10px;background: transparent"
+        btn_go.setStyleSheet("border-radius: 10px;background: transparent;"
                              "color: rgb(255, 255, 255);border: 1px solid white;")
         btn_go.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btn_go.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
