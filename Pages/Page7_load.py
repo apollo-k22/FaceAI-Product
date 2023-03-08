@@ -17,7 +17,7 @@ from datetime import datetime
 
 
 class LoaderProbeReportListPage(QWidget):
-    return_home_signal = pyqtSignal()
+    return_home_signal = pyqtSignal(str)
     go_back_signal = pyqtSignal(object)
     go_back_empty_signal = pyqtSignal()
     start_splash_signal = pyqtSignal(str)
@@ -62,7 +62,7 @@ class LoaderProbeReportListPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_return_home(self):
-        self.return_home_signal.emit()
+        self.return_home_signal.emit("")
 
     @pyqtSlot(int)
     def changed_entries_number(self, current_index):

@@ -16,7 +16,7 @@ from cryptophic.main import encrypt_file_to
 
 
 class LoaderProbeReportPage(QWidget):
-    return_home_signal = pyqtSignal()
+    return_home_signal = pyqtSignal(str)
     go_back_signal = pyqtSignal(object)
     export_pdf_signal = pyqtSignal(object)
     go_remaining_signal = pyqtSignal()
@@ -53,7 +53,7 @@ class LoaderProbeReportPage(QWidget):
         if self.probe_result.probe_id == '':
             Common.show_message(QMessageBox.Warning, "The data for generating report is empty. You will go home.",
                                 "", "Empty Data", "")
-            self.return_home_signal.emit()
+            self.return_home_signal.emit("")
         else:
             filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
             file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(Common.EXPORT_PATH, filename), ".pdf")
@@ -74,7 +74,7 @@ class LoaderProbeReportPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_return_home(self):
-        self.return_home_signal.emit()
+        self.return_home_signal.emit("")
 
     @pyqtSlot()
     def on_clicked_go_back(self):

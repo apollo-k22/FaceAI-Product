@@ -205,7 +205,7 @@ background:transparent;</string>
         <number>100</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>10</number>
        </property>
        <item>
         <spacer name="horizontalSpacer_5">
@@ -364,10 +364,13 @@ border-image:url(:/newPrefix/Group 67.png);</string>
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>40</height>
+                   <height>20</height>
                   </size>
                  </property>
                 </spacer>
@@ -788,202 +791,29 @@ background:transparent;</string>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>20</number>
-       </property>
        <property name="bottomMargin">
-        <number>20</number>
+        <number>10</number>
        </property>
        <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="rdobtnSinglePhoto">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>17</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>17</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QRadioButton:unchecked {
-color: rgba(255, 255, 255,0.6);
-}
-
-QRadioButton:checked {
-color: rgba(255, 255, 255,0.6);
-}
-QRadioButton{
-background:transparent;
-}
-
-</string>
-         </property>
+        <widget class="QRadioButton" name="radioButton_3">
          <property name="text">
-          <string>Single photo  </string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
+          <string>RadioButton</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="rdobtnMultiPhoto">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>17</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>17</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QRadioButton:unchecked {
-color: rgba(255, 255, 255,0.6);
-}
-
-QRadioButton:checked {
-color: rgba(255, 255, 255,0.6);
-}
-QRadioButton{
-background:transparent;
-}
-
-</string>
-         </property>
+        <widget class="QRadioButton" name="radioButton_2">
          <property name="text">
-          <string>Multiple photo  </string>
+          <string>RadioButton</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="rdobtnEntireFolder">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>17</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>17</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QRadioButton:unchecked {
-color: rgba(255, 255, 255,0.6);
-}
-
-QRadioButton:checked {
-color: rgba(255, 255, 255,0.6);
-}
-
-
-QRadioButton{
-background:transparent;
-}</string>
-         </property>
+        <widget class="QRadioButton" name="radioButton">
          <property name="text">
-          <string>Entire folder of photo  </string>
+          <string>RadioButton</string>
          </property>
         </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="rdobtnOldCasePhoto">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>17</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>17</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QRadioButton:unchecked {
-color: rgba(255, 255, 255,0.6);
-}
-
-QRadioButton:checked {
-color: rgba(255, 255, 255,0.6);
-}
-
-
-QRadioButton{
-background:transparent;
-}</string>
-         </property>
-         <property name="text">
-          <string>Old case photo  </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </item>

@@ -1,25 +1,23 @@
-import time
-from datetime import datetime, timedelta
-from time import ctime
-
 import wmi
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QMessageBox
 from dateutil.relativedelta import relativedelta
+from datetime import timedelta
 
+from commons.common import Common
 from commons.verifying_license_thread import VerifyingLicenseThread
 from cryptophic.license import write_infomation_db, access_license_list
+from commons.ntptime import ntp_get_time
 
 
 class LicenseBoxPage(QWidget):
-    continue_app_signal = pyqtSignal()
+    continue_app_signal = pyqtSignal(str)
     start_splash_signal = pyqtSignal(str)
     stop_splash_signal = pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
-
         self.window = uic.loadUi("./forms/Page_0.ui", self)
         self.btnConfirm = self.findChild(QPushButton, "btnConfirm")
         self.btnConfirm.clicked.connect(self.procLicenseConfirm)
@@ -38,14 +36,14 @@ class LicenseBoxPage(QWidget):
         self.lblNotify.setText("The license is correct. One minutes...")
         expire_dt = None
 
-        #  getting validate date
+        ### getting validate date
         try:
-            # NIST = 'pool.ntp.org'
-            # ntp = ntplib.NTPClient()
-            # ntpResponse = ntp.request(NIST)
-
-            today_dt = datetime.strptime(ctime(time.time()), "%a %b %d %H:%M:%S %Y")
-            # today_dt = datetime.strptime(ctime(ntpResponse.tx_time), "%a %b %d %H:%M:%S %Y")
+            today_dt = ntp_get_time()
+            if today_dt is None:
+                Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
+                                    "NTP Error.",
+                                    "")
+                quit()
 
             if "1Year" in expire_flag:
                 expire_dt = today_dt + relativedelta(months=+12)

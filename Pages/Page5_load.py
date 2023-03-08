@@ -16,7 +16,7 @@ from cryptophic.main import encrypt_file_to
 
 
 class LoaderProbeReportPreviewPage(QWidget):
-    return_home_signal = pyqtSignal()
+    return_home_signal = pyqtSignal(str)
     go_back_signal = pyqtSignal(object)
     generate_report_signal = pyqtSignal(object, object)
     go_remaining_signal = pyqtSignal()
@@ -58,7 +58,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         if self.probe_result.probe_id == '':
             Common.show_message(QMessageBox.Warning, "The data for generating report is empty. You will go home.",
                                 "", "Empty Data", "")
-            self.return_home_signal.emit()
+            self.return_home_signal.emit("")
         else:
             self.generate_report()
             self.generate_report_signal.emit(self.probe_result, self.case_data_for_results)
@@ -133,23 +133,26 @@ class LoaderProbeReportPreviewPage(QWidget):
         target_images = []
         index = 0
         for target in self.probe_result.case_info.target_image_urls:
-            target_buff = self.probe_result.probe_id + "-" + \
-                          "-" + self.probe_result.case_info.case_number + "-" + \
-                          Common.get_file_name_from_path(target)
-            target_buff = media_path + "/targets/" + target_buff
-            modified_target = Common.copy_file(target, target_buff)
-            target_images.append(modified_target)
-            self.probe_result.json_result["results"][index]["image_path"] = modified_target
-            self.probe_result.json_result["faces"][index]["image_path"] = modified_target
-        self.probe_result.case_info.target_image_urls = target_images
+            if not self.probe_result.case_info.is_used_old_cases:
+                target_buff = self.probe_result.probe_id + "-" + \
+                              "-" + self.probe_result.case_info.case_number + "-" + \
+                              Common.get_file_name_from_path(target)
+                target_buff = media_path + "/targets/" + target_buff
+                modified_target = Common.copy_file(target, target_buff)
+                target_images.append(modified_target)
+                self.probe_result.json_result["results"][index]["image_path"] = modified_target
+                self.probe_result.json_result["faces"][index]["image_path"] = modified_target
+                self.probe_result.case_info.target_image_urls = target_images
 
     @pyqtSlot()
     def on_clicked_return_home(self):
-        self.return_home_signal.emit()
+        self.return_home_signal.emit("")
 
     @pyqtSlot()
     def on_clicked_go_back(self):
-        self.go_back_signal.emit(self.probe_result.case_info)
+        case_info = self.probe_result.case_info
+        self.probe_result = ProbingResult()
+        self.go_back_signal.emit(case_info)
 
     @pyqtSlot()
     def on_clicked_go_remaining(self):

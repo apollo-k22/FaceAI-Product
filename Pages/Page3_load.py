@@ -14,7 +14,7 @@ from commons.get_images_thread import GetImagesThread
 class LoaderSelectTargetPhotoPage(QWidget):
     go_back_signal = pyqtSignal()
     start_probe_signal = pyqtSignal(object)
-    return_home_signal = pyqtSignal()
+    return_home_signal = pyqtSignal(str)
     start_splash_signal = pyqtSignal(str)
     stop_splash_signal = pyqtSignal(object)
 
@@ -61,7 +61,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
 
     @pyqtSlot()
     def return_home_slot(self):
-        self.return_home_signal.emit()
+        self.return_home_signal.emit("")
 
     @pyqtSlot()
     def go_back_slot(self):
@@ -92,7 +92,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
             else:
                 self.lblEntireFolder.setText(str(len(self.image_urls)) + " was selected.")
         if self.case_info.is_used_old_cases:
-            self.case_info.is_used_old_cases = False
+            # self.case_info.is_used_old_cases = False
             if not len(self.image_urls):
                 self.lblOldCaseSelectedNumber.setText("")
                 self.lblOldCaseResult.setText("There are no old cases images. Please select manually on other tab.")

@@ -23,6 +23,7 @@ import images
 from cryptophic.dec_thread import DecThread
 from insightfaces.faceai_init_thread import FaceAIInitThread
 from insightfaces.main import FaceAI
+from commons.ntptime import ntp_get_time
 
 
 class StartMain(QMainWindow):
@@ -33,6 +34,13 @@ class StartMain(QMainWindow):
 
     def __init__(self, splash):
         super().__init__()
+        ntptime = ntp_get_time()
+        if ntptime is None:
+            Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
+                                "NTP Error.",
+                                "")
+            quit()
+
         self.faceai = FaceAI()
         self.splash = splash
         # self.splash.start_splash(self)
@@ -63,8 +71,8 @@ class StartMain(QMainWindow):
         self.set_splash_signal_slot()
         self.init_widgets()
 
-    def start_main(self):
-        self.show_p1_home()
+    # def start_main(self):
+    #     self.show_p1_home()
 
     @pyqtSlot()
     def finished_decrypting_slot(self):
@@ -76,11 +84,12 @@ class StartMain(QMainWindow):
     @pyqtSlot()
     def finished_initializing_slot(self):
         self.faceai_init_thread.quit()
-        self.check_device_info()
-        if self.check_license():
+        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
+        self.check_device_info(app_fpo_info, app_atpo_info)
+        if self.check_license(app_unlocked, app_expire_date):
             self.finished_initiating_widget_signal.emit(self)
             self.showMaximized()
-            self.start_main()
+            self.show_p1_home(app_expire_date)
         else:
             self.finished_initiating_widget_signal.emit(self)
             self.showMaximized()
@@ -194,8 +203,8 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_0_license.showMaximized()
 
-    @pyqtSlot()
-    def show_p1_home(self):
+    @pyqtSlot(str)
+    def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
         if self.ui_0_license.expired_date:
             self.status_bar.showMessage("The license will be expired by " + self.ui_0_license.expired_date + ".")
@@ -207,6 +216,9 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_1_home.showMaximized()
         self.ui_1_home.setFocus()
+        if len(expire_date) > 0:
+            self.status_bar.showMessage("The license will be expired by "
+                                        + expire_date)
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
@@ -250,6 +262,8 @@ class StartMain(QMainWindow):
         self.ui_6_probe_report.case_data_for_results = case_data
         # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
         # self.refresh_views_thread.start()
+        self.ui_2_create_new_case.refresh_view()
+        self.ui_3_select_target_photo.refresh_view()
         self.ui_6_probe_report.refresh_views()
         self.ui_6_probe_report.showMaximized()
 
@@ -311,10 +325,9 @@ class StartMain(QMainWindow):
         self.refresh_views_thread.quit()
         self.splash.quit()
 
-    def check_license(self):
-        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
-
+    def check_license(self, app_unlocked, app_expire_date):
         if not app_unlocked:
+            self.status_bar.showMessage("The license is not available.")
             self.show_p0_license()
         else:
             app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
@@ -331,8 +344,7 @@ class StartMain(QMainWindow):
                                             + app_expire_date)
                 return False
 
-    def check_device_info(self):
-        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
+    def check_device_info(self, app_fpo_info, app_atpo_info):
         fpo_info, atpo_info = get_cpu_info()
         if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
             Common.show_message(QMessageBox.Warning, "You are an invalid user.", "",

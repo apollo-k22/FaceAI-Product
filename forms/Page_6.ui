@@ -10,6 +10,12 @@
     <height>800</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="styleSheet">
    <string notr="true">background-image: url(:/newPrefix/Background.png);
       background-repeat: no-repeat;
@@ -36,7 +42,7 @@ border:none;</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-436</y>
         <width>1274</width>
         <height>1517</height>
        </rect>
