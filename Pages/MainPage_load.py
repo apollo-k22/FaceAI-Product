@@ -1,5 +1,5 @@
-from PyQt5 import uic
-from PyQt5.QtGui import QShowEvent, QCloseEvent
+from PyQt5 import uic, Qt
+from PyQt5.QtGui import QShowEvent, QCloseEvent, QPixmap, QPalette
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QStatusBar, QMessageBox
 from PyQt5.QtCore import QTimer, pyqtSlot, pyqtSignal
 from Pages.Page0_load import LicenseBoxPage
@@ -137,7 +137,7 @@ class StartMain(QMainWindow):
     # set the connection between signal and slot for page transitions
     def set_page_transition(self):
         # Click to go page2 from page 1 button
-        self.ui_1_home.btnCreateCase.clicked.connect(self.show_p2_create_new_case)
+        self.ui_1_home.btnCreateCase.clicked.connect(self.init_child_widgets)
         # Click to go to page 7 from page 1 button
         self.ui_1_home.btnGo2ProbeReport.clicked.connect(self.show_p7_probe_report_list_without_param)
         self.ui_0_license.continue_app_signal.connect(self.show_p1_home)
@@ -156,7 +156,8 @@ class StartMain(QMainWindow):
         self.ui_3_select_target_photo.return_home_signal.connect(self.show_p1_home)
 
         # after completed probing, go to report preview page with probing_result object
-        self.ui_4_probing.completed_probing_signal.connect(self.show_p5_probe_report_preview)
+        self.ui_4_probing.completed_probing_signal.connect(
+            lambda probe_result: self.show_p5_probe_report_preview(probe_result, False))
 
         # once clicked "return home" button, return home page
         self.ui_5_probe_report_preview.return_home_signal.connect(self.show_p1_home)
@@ -173,7 +174,8 @@ class StartMain(QMainWindow):
         # self.ui_6_probe_report.export_pdf_signal.connect(self.show_p7_probe_report_list)
 
         # when clicked "go back" button on report page, go to "report preview page
-        self.ui_6_probe_report.go_back_signal.connect(self.show_p5_probe_report_preview)
+        self.ui_6_probe_report.go_back_signal.connect(
+            lambda probe_result, is_go_back: self.show_p5_probe_report_preview(probe_result, is_go_back))
 
         # when clicked "return home" button, return home page
         self.ui_7_prove_report_list.return_home_signal.connect(self.show_p1_home)
@@ -188,7 +190,7 @@ class StartMain(QMainWindow):
         self.ui_2_create_new_case.hide()
         self.ui_5_probe_report_preview.hide()
         # return page to initial status.
-        self.ui_3_select_target_photo.refresh_view()
+        # self.ui_3_select_target_photo.init_views()
         # set case information to page
         self.ui_3_select_target_photo.case_info = case_info
         self.ui_3_select_target_photo.showMaximized()
@@ -225,8 +227,6 @@ class StartMain(QMainWindow):
         self.setWindowTitle("Create Case")
         self.ui_1_home.hide()
         self.ui_3_select_target_photo.hide()
-        # return page to initial status
-        # self.ui_2_create_new_case.refresh_view()
         self.ui_2_create_new_case.showMaximized()
 
     @pyqtSlot(CaseInfo)
@@ -238,16 +238,15 @@ class StartMain(QMainWindow):
         self.ui_4_probing.start_probing(case_info)
 
     @pyqtSlot(ProbingResult)
-    def show_p5_probe_report_preview(self, probe_result):
+    def show_p5_probe_report_preview(self, probe_result, is_go_back):
         self.setWindowTitle("Probe Report Preview")
         # init views
         self.ui_4_probing.hide()
         self.ui_6_probe_report.hide()
-        # show probe report preview page
-        self.ui_5_probe_report_preview.probe_result = probe_result
-        # self.refresh_views_thread.set_widget(self.ui_5_probe_report_preview)
-        # self.refresh_views_thread.start()
-        self.ui_5_probe_report_preview.refresh_views()
+        if not is_go_back:
+            # show probe report preview page
+            self.ui_5_probe_report_preview.probe_result = probe_result
+            self.ui_5_probe_report_preview.refresh_views()
         self.ui_5_probe_report_preview.showMaximized()
 
     @pyqtSlot(ProbingResult, list)
@@ -257,11 +256,8 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_7_prove_report_list.hide()
         # return page to initial status
-        self.ui_2_create_new_case.refresh_view()
         self.ui_6_probe_report.probe_result = probe_result
         self.ui_6_probe_report.case_data_for_results = case_data
-        # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
-        # self.refresh_views_thread.start()
         self.ui_2_create_new_case.refresh_view()
         self.ui_3_select_target_photo.refresh_view()
         self.ui_6_probe_report.refresh_views()
@@ -351,3 +347,11 @@ class StartMain(QMainWindow):
                                 "Invalid selected.",
                                 "")
             quit()
+
+    def init_child_widgets(self):
+        self.ui_2_create_new_case.refresh_view()
+        self.ui_3_select_target_photo.init_views()
+        self.ui_5_probe_report_preview.init_views()
+        self.ui_6_probe_report.init_views()
+        self.show_p2_create_new_case()
+

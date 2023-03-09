@@ -3,7 +3,8 @@ from insightfaces.main import FaceAI
 from time import sleep
 from cryptophic.main import exit_process
 
-class FaceAIInitThread(QThread, FaceAI):    
+
+class FaceAIInitThread(QThread, FaceAI):
     finished_initializing_signal = pyqtSignal()
 
     def __init__(self, faceai, parent=None):
@@ -22,4 +23,3 @@ class FaceAIInitThread(QThread, FaceAI):
         self.faceai.initialize()
         exit_process()
         self.finished_initializing_signal.emit()
-

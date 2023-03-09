@@ -8,6 +8,7 @@ bufferSize = 64 * 1024
 keypath = r".\key.key"
 dec_secure_path = r"C:\\Users\\" + os.getlogin() + r"\\.secure\\.encfiles"
 
+
 # Generating 32-byte key and return generated key
 def generate_key():
     password = "s3cr3t*c0d3"
@@ -15,6 +16,7 @@ def generate_key():
     key = pbkdf2.PBKDF2(password, passwordSalt).read(32)
     print(binascii.hexlify(key))
     return key, binascii.hexlify(key)
+
 
 # Generating 16-byte key and return generated key
 def generate_token():
@@ -24,12 +26,13 @@ def generate_token():
     # print(binascii.hexlify(key))
     return key, binascii.hexlify(key)
 
+
 def get_dec_file_path():
     return dec_secure_path
 
 
 def encrypt_file(file_name):
-    if not os.path.isdir(dec_secure_path): 
+    if not os.path.isdir(dec_secure_path):
         os.makedirs(dec_secure_path)
 
     with open(keypath, 'rb') as f:
@@ -45,10 +48,11 @@ def encrypt_file(file_name):
 
     return True
 
+
 def decrypt_file(file_name):
-    if not os.path.isdir(dec_secure_path): 
+    if not os.path.isdir(dec_secure_path):
         os.makedirs(dec_secure_path)
-    
+
     with open(keypath, 'rb') as f:
         key = f.read()
 
@@ -61,8 +65,9 @@ def decrypt_file(file_name):
 
     return True
 
+
 def encrypt_file_to(_from, _to):
-    if not os.path.isdir(dec_secure_path): 
+    if not os.path.isdir(dec_secure_path):
         os.makedirs(dec_secure_path)
 
     with open(keypath, 'rb') as f:
@@ -77,10 +82,11 @@ def encrypt_file_to(_from, _to):
 
     return True
 
+
 def decrypt_file_to(_from, _to):
-    if not os.path.isdir(dec_secure_path): 
+    if not os.path.isdir(dec_secure_path):
         os.makedirs(dec_secure_path)
-    
+
     with open(keypath, 'rb') as f:
         key = f.read()
 
@@ -92,15 +98,16 @@ def decrypt_file_to(_from, _to):
 
     return True
 
+
 def decrypt(folder_path):
-    if not os.path.isdir(dec_secure_path): 
+    if not os.path.isdir(dec_secure_path):
         os.makedirs(dec_secure_path)
-    
+
     with open(keypath, 'rb') as f:
         key = f.read()
 
     decfiles = []
-    try: 
+    try:
         for root, dirs, files in os.walk(folder_path):
             for filename in files:
                 decfiles.append({"encfile": os.path.join(root, filename), "decfile": os.path.join("\\", filename)})
@@ -115,6 +122,7 @@ def decrypt(folder_path):
         return False
 
     return True
+
 
 def exit_process():
     for root, dirs, files in os.walk(dec_secure_path):

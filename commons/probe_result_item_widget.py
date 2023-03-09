@@ -105,9 +105,4 @@ class ProbeResultItemWidget(QWidget):
             # # rounding the number upto 2 digits after the decimal point
             # rounded = decimal_value.quantize(decimal.Decimal('0.00'))
             self.lbl_similarity_score.setText(self.result_item['confidence'])
-        if self.is_used_old_cases:
-            db = DBConnection()
-            case_no, ps = db.get_case_info(self.result_item['image_path'])
-            self.lbl_case_number.setText(case_no)
-            self.lbl_ps.setText(ps)
 

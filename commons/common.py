@@ -57,7 +57,7 @@ class Common:
     def create_path(path_name):
         try:
             path = pathlib.Path(path_name)
-            print(path.mkdir(parents=True, exist_ok=True))
+            path.mkdir(parents=True, exist_ok=True)
         except Exception as ex:
             print(ex)
 
@@ -79,7 +79,6 @@ class Common:
         list_len = len(removing_list)
         if start_index < list_len:
             for index in range(start_index):
-                print(str(index))
                 ret_list.append(removing_list[index])
                 print(removing_list[index])
         else:
@@ -101,9 +100,11 @@ class Common:
                     rate = size / width
                 else:
                     rate = size / height
-                dim = (int(img.shape[1] * rate), int(img.shape[0] * rate))
-                img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
-                cv2.imwrite(img_path, img)
+                if rate > 1:
+                    print("resized:", img_path)
+                    dim = (int(img.shape[1] * rate), int(img.shape[0] * rate))
+                    img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+                    cv2.imwrite(img_path, img)
         except IOError as e:
             print("resize image error:", e)
         return img_path
@@ -198,7 +199,7 @@ class Common:
     # round the float string up to 2 decimals
     @staticmethod
     def round_float_string(float_string):
-        sim = abs(float(float_string)) * 100
+        sim = float(float_string) * 100
         decimal_value = decimal.Decimal(sim)
         # rounding the number upto 2 digits after the decimal point
         rounded = decimal_value.quantize(decimal.Decimal('0.00'))

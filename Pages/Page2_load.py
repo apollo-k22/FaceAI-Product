@@ -89,7 +89,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                 self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         else:
             self.subject_photo_url = ""
-            btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
+            btn_style = "image:url(:/newPrefix/Group 68.png);background:transparent;" \
                         "border: 1px solid rgb(53, 132, 228);background-size:cover;"
             self.btnSelectPhoto.setStyleSheet(btn_style)
 
@@ -151,6 +151,8 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
     @pyqtSlot(str)
     def check_ptedit_string_validation(self, text_edit, regx, max_length):
         string = text_edit.toPlainText()
+        if string == '':
+            return
         sub_string = re.sub(regx, '', string)
         if not string == sub_string:
             string = sub_string

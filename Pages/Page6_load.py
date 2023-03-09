@@ -14,9 +14,10 @@ from commons.probing_result import ProbingResult
 from commons.target_items_container_generator import TargetItemsContainerGenerator
 from cryptophic.main import encrypt_file_to
 
+
 class LoaderProbeReportPage(QWidget):
     return_home_signal = pyqtSignal(str)
-    go_back_signal = pyqtSignal(object)
+    go_back_signal = pyqtSignal(object, bool) # bool is true, if go back
     export_pdf_signal = pyqtSignal(object)
     go_remaining_signal = pyqtSignal()
     start_splash_signal = pyqtSignal(str)
@@ -66,6 +67,7 @@ class LoaderProbeReportPage(QWidget):
                 self.probe_result = ProbingResult()
                 self.refresh_views()
                 self.init_input_values()
+                self.return_home_signal.emit("")  # return to home page so that can start new case.
                 # self.export_pdf_signal.emit(self.probe_result)
             else:
                 Common.show_message(QMessageBox.Information, "Exporting was failed.", "Report Generation", "Notice",
@@ -77,54 +79,8 @@ class LoaderProbeReportPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_go_back(self):
-        self.probe_result = ProbingResult()
-        self.go_back_signal.emit(self.probe_result)
- 
-    def write_probe_results_to_database(self):
-        self.update_json_data()
-        # make data to be inserted to database and insert
-        probe_result = self.probe_result
-        case_info = self.probe_result.case_info
-        cases_fields = ["probe_id", "matched", "report_generation_time", "case_no",
-                        "PS", "examiner_no", "examiner_name", "remarks",
-                        "subject_url", "json_result", "created_date"]
-        cases_data = [(probe_result.probe_id, probe_result.matched, probe_result.json_result["time_used"],
-                       case_info.case_number, case_info.case_PS, case_info.examiner_no, case_info.examiner_name,
-                       case_info.remarks, case_info.subject_image_url, json.dumps(probe_result.json_result),
-                       QDateTime().currentDateTime().toString("yyyy-MM-dd hh-mm-ss"))]
-        target_fields = ["target_url", "case_id"]
-        target_data = []
-        db = DBConnection()
-        case_id = db.insert_values("cases", cases_fields, cases_data)
-        for target in case_info.target_image_urls:
-            target_tuple = (target, case_id)
-            target_data.append(target_tuple)
-
-        db.insert_values("targets", target_fields, target_data)
-
-    # update probe result with copied image urls
-    def update_json_data(self):
-        # create path "FaceAI Media" if not exists
-        # so that subject and target images will be saved to that directory
-        media_path = Common.get_reg(Common.REG_KEY)
-        if media_path:
-            media_path = media_path + "/" + Common.MEDIA_PATH
-        else:
-            media_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH            
-        Common.create_path(media_path)
-
-        # copy subject and target images to media directory, after that, replace urls with urls in media folder
-        self.probe_result.case_info.subject_image_url = Common.copy_file(self.probe_result.case_info.subject_image_url,
-                                                                         media_path + "/subjects")
-        target_images = []
-        index = 0
-        for target in self.probe_result.case_info.target_image_urls:
-            modified_target = Common.copy_file(target, media_path + "/targets")
-            target_images.append(modified_target)
-            self.probe_result.json_result["results"][index]["image_path"] = modified_target
-            self.probe_result.json_result["faces"][index]["image_path"] = modified_target
-        self.probe_result.case_info.target_image_urls = target_images
-
+        # self.probe_result = ProbingResult()
+        self.go_back_signal.emit(self.probe_result, True)
     def init_actions(self):
         self.btnExportPdf.clicked.connect(self.on_clicked_export_pdf)
         self.btnGoBack.clicked.connect(self.on_clicked_go_back)
@@ -209,3 +165,19 @@ class LoaderProbeReportPage(QWidget):
     def clear_result_list(self):
         Common.clear_layout(self.vlyReportResult)
 
+    def init_views(self):
+        self.lblProbeId.setText("")
+        self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+        self.lblProbeResult.setText("")
+        self.lblCaseNumber.setText("")
+        self.lblExaminerNo.setText("")
+        self.lblExaminerName.setText("")
+        self.teditRemarks.setPlainText("")
+        self.lblTimeOfReportGeneration.setText("")
+        image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
+                      ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+        self.lblSubjectImage.setStyleSheet(image_style)
+        self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.teditRemarks.setPlainText("")
+        self.clear_result_list()
+        self.probe_result = ProbingResult()

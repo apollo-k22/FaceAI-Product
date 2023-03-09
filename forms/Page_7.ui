@@ -17,7 +17,8 @@
    </sizepolicy>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/newPrefix/Background.png);</string>
+   <string notr="true">background:transparent;
+border:none;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="spacing">
@@ -27,6 +28,12 @@
     <number>10</number>
    </property>
    <property name="topMargin">
+    <number>10</number>
+   </property>
+   <property name="rightMargin">
+    <number>10</number>
+   </property>
+   <property name="bottomMargin">
     <number>10</number>
    </property>
    <item>
@@ -48,6 +55,9 @@
      </property>
      <item>
       <layout class="QVBoxLayout" name="logoverticalLayout" stretch="0">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <property name="leftMargin">
         <number>10</number>
        </property>
@@ -55,7 +65,7 @@
         <number>10</number>
        </property>
        <property name="bottomMargin">
-        <number>10</number>
+        <number>0</number>
        </property>
        <item>
         <widget class="QLabel" name="logo">
@@ -104,8 +114,14 @@ background:transparent;</string>
        </property>
        <item>
         <layout class="QVBoxLayout" name="btn_layout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="leftMargin">
           <number>30</number>
+         </property>
+         <property name="topMargin">
+          <number>10</number>
          </property>
          <item>
           <widget class="QPushButton" name="btnGoBack">
@@ -594,6 +610,9 @@ border: 1px solid rgb(53, 132, 228);</string>
            <property name="sizeConstraint">
             <enum>QLayout::SetDefaultConstraint</enum>
            </property>
+           <property name="bottomMargin">
+            <number>30</number>
+           </property>
            <item>
             <widget class="QTableWidget" name="resultTable">
              <property name="minimumSize">
@@ -650,16 +669,16 @@ background:transparent;</string>
               <bool>true</bool>
              </attribute>
              <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-              <bool>false</bool>
+              <bool>true</bool>
              </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderVisible">
-              <bool>false</bool>
+              <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderCascadingSectionResizes">
-              <bool>false</bool>
+              <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderMinimumSectionSize">
               <number>35</number>
