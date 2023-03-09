@@ -167,8 +167,6 @@ class PaginationLayout(QHBoxLayout):
 
     @pyqtSlot()
     def clicked_go_button(self):
-        # leditGoPage = self.hlyGo2Page.findChild(QLineEdit, "leditGoPageNumber")
-        print(self.hlyGo2Page.count())
         leditGoPage = self.hlyGo2Page.itemAt(1).widget()
         print(self.hlyGo2Page.count())
         go_page = leditGoPage.text()

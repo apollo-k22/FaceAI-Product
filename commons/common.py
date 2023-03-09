@@ -4,7 +4,6 @@ import operator
 import os.path
 import pathlib
 import winreg
-from typing import Union
 
 import PIL.Image
 import cv2
@@ -58,7 +57,7 @@ class Common:
     def create_path(path_name):
         try:
             path = pathlib.Path(path_name)
-            print(path.mkdir(parents=True, exist_ok=True))
+            path.mkdir(parents=True, exist_ok=True)
         except Exception as ex:
             print(ex)
 
@@ -80,9 +79,7 @@ class Common:
         list_len = len(removing_list)
         if start_index < list_len:
             for index in range(start_index):
-                print(str(index))
                 ret_list.append(removing_list[index])
-                print(removing_list[index])
         else:
             ret_list = removing_list
         return ret_list
@@ -90,7 +87,7 @@ class Common:
     @staticmethod
     def resize_image(img_path, size):
         try:
-            body_img = PIL.Image.open(img_path)
+            body_img = cv2.imread(img_path)
             if body_img is None:
                 print('resize image: wrong path', img_path)
             else:
@@ -102,9 +99,11 @@ class Common:
                     rate = size / width
                 else:
                     rate = size / height
-                dim = (int(img.shape[1] * rate), int(img.shape[0] * rate))
-                img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
-                cv2.imwrite(img_path, img)
+                if rate > 1:
+                    print("resized:", img_path)
+                    dim = (int(img.shape[1] * rate), int(img.shape[0] * rate))
+                    img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+                    cv2.imwrite(img_path, img)
         except IOError as e:
             print("resize image error:", e)
         return img_path

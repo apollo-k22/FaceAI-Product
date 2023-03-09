@@ -188,7 +188,7 @@ class StartMain(QMainWindow):
         self.ui_2_create_new_case.hide()
         self.ui_5_probe_report_preview.hide()
         # return page to initial status.
-        self.ui_3_select_target_photo.refresh_view()
+        self.ui_3_select_target_photo.init_views()
         # set case information to page
         self.ui_3_select_target_photo.case_info = case_info
         self.ui_3_select_target_photo.showMaximized()

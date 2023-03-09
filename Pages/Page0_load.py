@@ -31,6 +31,8 @@ class LicenseBoxPage(QWidget):
     def finished_verifying_license_slot(self, ret, expire_flag):
         if not ret:
             self.lblNotify.setText("The license is not correct")
+            self.stop_splash_signal.emit(None)  # stop splash
+            self.setEnabled(True)  # once finished to process, can access to screen.
             return
 
         self.lblNotify.setText("The license is correct. One minutes...")
@@ -83,44 +85,4 @@ class LicenseBoxPage(QWidget):
         self.setEnabled(False)  # once start to process, cannot access to screen.
         self.start_splash_signal.emit("data")  # start splash during verifying
         self.verifying_license_thread.start()  # start thread to verify license
-        # # Read license list file
-        # ret, expire_flag = access_license_list(lic)
-        #
-        # if not ret:
-        #     self.lblNotify.setText("The license is not correct")
-        #     return
-        #
-        # self.lblNotify.setText("The license is correct. One minutes...")
-        # expire_dt = None
-        #
-        # #  getting validate date
-        # try:
-        #     # NIST = 'pool.ntp.org'
-        #     # ntp = ntplib.NTPClient()
-        #     # ntpResponse = ntp.request(NIST)
-        #
-        #     today_dt = datetime.strptime(ctime(time.time()), "%a %b %d %H:%M:%S %Y")
-        #     # today_dt = datetime.strptime(ctime(ntpResponse.tx_time), "%a %b %d %H:%M:%S %Y")
-        #
-        #     if "1Year" in expire_flag:
-        #         expire_dt = today_dt + relativedelta(months=+12)
-        #     elif "1Month" in expire_flag:
-        #         expire_dt = today_dt + relativedelta(months=+1)
-        #     elif "1Day" in expire_flag:
-        #         expire_dt = today_dt + timedelta(days=1)
-        #
-        # except:
-        #     print("ntp error")
-        #
-        # ### getting processor batch number(FPO) and partial serial number(ATPO) date
-        # fpo_value = ""
-        # atpo_value = ""
-        # c = wmi.WMI()
-        # for s in c.Win32_Processor():
-        #     fpo_value = s.ProcessorId
-        #     atpo_value = s.Description
-        # self.expired_date = expire_dt.strftime('%d/%m/%Y')
-        # write_infomation_db(True, self.expired_date, fpo_value, atpo_value)
-        # # Goto homepage
-        # self.lblNotify.setText("Let's go to home page")
-        # self.continue_app_signal.emit()
+        

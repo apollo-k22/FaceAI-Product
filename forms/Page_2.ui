@@ -496,7 +496,7 @@ background:none;</string>
        <property name="maximumSize">
         <size>
          <width>300</width>
-         <height>70</height>
+         <height>90</height>
         </size>
        </property>
        <property name="font">

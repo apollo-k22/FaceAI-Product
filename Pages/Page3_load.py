@@ -115,17 +115,11 @@ class LoaderSelectTargetPhotoPage(QWidget):
                 self.current_work_folder = Common.get_folder_path(url)
                 Common.resize_image(url, self.btnSinglePhoto.size().width())
                 btn_style = "image:url(" + url + ");height: auto;border: 1px solid rgb(53, 132, 228);"
-                # self.btnSinglePhoto.setStyleSheet(btn_style)
-                # btn_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
                 self.btnSinglePhoto.setStyleSheet(btn_style)
-                # btn_icon = QIcon(url)
-                # btn_rect = self.btnSinglePhoto.size()
-                # self.btnSinglePhoto.setIcon(btn_icon)
-                # self.btnSinglePhoto.setIconSize(btn_rect)
                 self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
                 self.image_urls.append(url)
         else:
-            btn_style = "border: 1px solid rgb(53, 132, 228);"
+            btn_style = "border: 1px solid rgb(53, 132, 228);image:url(:/newPrefix/Group 67.png);"
             self.btnSinglePhoto.setStyleSheet(btn_style)
 
     @pyqtSlot()
@@ -190,8 +184,6 @@ class LoaderSelectTargetPhotoPage(QWidget):
 
     # initiate actions for window
     def init_actions(self):
-        # connect(pageComboBox, SIGNAL(activated(int)),
-        #         stackedWidget, SLOT(setCurrentIndex(int)));
         self.btnStartProbe.clicked.connect(self.start_probe_slot)
         self.btnReturnHome.clicked.connect(self.return_home_slot)
         self.cmdbtnGoBack.clicked.connect(self.go_back_slot)
@@ -230,7 +222,13 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.lblEntireResult.setText("Raster image formats are accepted.")
         self.lblOldCaseSelectedNumber.setText("")
         self.lblOldCaseResult.setText("Click on the \"Start probe\" button below to continue the further process.")
+        self.repaint()
 
     def showEvent(self, a0: QShowEvent) -> None:
         super(LoaderSelectTargetPhotoPage, self).showEvent(a0)
         self.refresh_view()
+
+    def init_views(self):
+        self.refresh_view()
+        self.stkwdtSelectPhotos.setCurrentIndex(0)
+        self.rdobtnSinglePhoto.setChecked(True)

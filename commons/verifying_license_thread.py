@@ -13,4 +13,4 @@ class VerifyingLicenseThread(QThread):
     def run(self) -> None:
         # Read license list file
         ret, expire_flag = access_license_list(self.license)
-        self.finished_verifying_license_signal(ret, expire_flag)
+        self.finished_verifying_license_signal.emit(ret, expire_flag)

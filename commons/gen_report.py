@@ -191,7 +191,6 @@ def create_pdf(probe_id, probe_result, file_location):
 
         reportinfo["targets"] = []
         for result in probe_result.json_result['results']:
-            print(result)
             conf_buff = result['confidence'][:len(result['confidence']) - 1]
             reportinfo["targets"].append({
                 "path": result["image_path"],

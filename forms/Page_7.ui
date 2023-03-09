@@ -653,16 +653,16 @@ background:transparent;</string>
               <bool>true</bool>
              </attribute>
              <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-              <bool>false</bool>
+              <bool>true</bool>
              </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderVisible">
-              <bool>false</bool>
+              <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderCascadingSectionResizes">
-              <bool>false</bool>
+              <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderMinimumSectionSize">
               <number>35</number>

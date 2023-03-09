@@ -27,7 +27,7 @@ class DBConnection:
         reg_value = Common.get_reg(Common.REG_KEY)
         connection_string_buff = ""
         if reg_value is not None:
-            connection_string_buff = reg_value + "/" + Common.MEDIA_PATH + "/" + Common.STORAGE_PATH
+            connection_string_buff = reg_value
         else:
             Common.show_message(QMessageBox.Warning, "You did not get data storage path. \n "
                                                      "The data storage path will be application root directory.",
@@ -109,7 +109,6 @@ class DBConnection:
                            ",subject_url,json_result,created_date" \
                            " from cases " \
                            " order by created_date desc"
-            print(query_string)
             self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)

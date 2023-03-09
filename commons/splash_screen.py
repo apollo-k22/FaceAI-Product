@@ -39,11 +39,7 @@ class SplashThread(QThread):
 
     def start_splash(self, data_type):
         global splash_i_widget, splash_i_data, max_i_data, max_i_widget, splash_stop, max_i, splash_i, splash_i_buff
-        # splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
-        # self.splash_screen.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
-        # self.splash_screen.setEnabled(False)
-        # splash_pixmap = QPixmap(':/newPrefix/splash/splash_0.png')
-        # self.splash_screen.setPixmap(splash_pixmap)
+
         self.timer.setInterval(0)
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.update_splash_screen)

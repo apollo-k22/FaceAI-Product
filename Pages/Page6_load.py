@@ -67,6 +67,7 @@ class LoaderProbeReportPage(QWidget):
                 self.probe_result = ProbingResult()
                 self.refresh_views()
                 self.init_input_values()
+                self.return_home_signal.emit("")  # return to home page so that can start new case.
                 # self.export_pdf_signal.emit(self.probe_result)
             else:
                 Common.show_message(QMessageBox.Information, "Exporting was failed.", "Report Generation", "Notice",

@@ -299,9 +299,6 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     def clear_result_list(self):
         Common.clear_layout(self.vlyReportResultLayout)
-        # self.repaint()
-        # self.showMaximized()
-
     def showEvent(self, a0: QtGui.QShowEvent) -> None:
         super().showEvent(a0)
         print("shown")
