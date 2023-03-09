@@ -89,7 +89,7 @@ class Common:
     @staticmethod
     def resize_image(img_path, size):
         try:
-            body_img = PIL.Image.open(img_path)
+            body_img = cv2.imread(img_path)
             if body_img is None:
                 print('resize image: wrong path', img_path)
             else:
