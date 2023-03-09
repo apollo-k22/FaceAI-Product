@@ -9,6 +9,7 @@ from commons.common import Common
 from commons.verifying_license_thread import VerifyingLicenseThread
 from cryptophic.license import write_infomation_db, access_license_list
 from commons.ntptime import ntp_get_time
+from sys import exit
 
 
 class LicenseBoxPage(QWidget):
@@ -45,7 +46,7 @@ class LicenseBoxPage(QWidget):
                 Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
                                     "NTP Error.",
                                     "")
-                quit()
+                exit()
 
             if "1Year" in expire_flag:
                 expire_dt = today_dt + relativedelta(months=+12)
