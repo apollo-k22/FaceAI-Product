@@ -6,6 +6,7 @@ import pathlib
 import winreg
 
 import PIL.Image
+import cv2
 from PyQt5.QtCore import QFile
 from PyQt5.QtWidgets import QMessageBox
 import numpy as np
@@ -41,6 +42,7 @@ class Common:
     CROSS_BUTTON_SIZE = 30
     PAGINATION_BUTTON_SIZE = 60
     NUMBER_PER_PAGE = 5
+    RESULT_ITEM_WIDGET_SIZE = 330
 
     @staticmethod
     def clear_layout(layout):
@@ -60,9 +62,8 @@ class Common:
             print(ex)
 
     @staticmethod
-    def copy_file(from_path, to_directory):
-        Common.create_path(to_directory)
-        to_path = to_directory + "/" + Common.get_file_name_from_path(from_path)
+    def copy_file(from_path, to_path):
+        Common.create_path(Common.get_folder_path(to_path))
         if not QFile.exists(to_path):
             QFile.copy(from_path, to_path)
         return to_path
@@ -86,13 +87,25 @@ class Common:
         return ret_list
 
     @staticmethod
-    def resize_image(img_path):
-        img = PIL.Image.open(img_path)
-        if os.path.getsize(img_path) / (1000 * 1000) > 6:
-            wid = img.width
-            he = img.height
-            img.resize((wid, he), PIL.Image.ADAPTIVE)
-            img.save(img_path)
+    def resize_image(img_path, size):
+        try:
+            body_img = PIL.Image.open(img_path)
+            if body_img is None:
+                print('resize image: wrong path', img_path)
+            else:
+                img = np.array(body_img)
+                rate = 1
+                width = img.shape[0]
+                height = img.shape[1]
+                if width > height:
+                    rate = size / width
+                else:
+                    rate = size / height
+                dim = (int(img.shape[1] * rate), int(img.shape[0] * rate))
+                img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+                cv2.imwrite(img_path, img)
+        except IOError as e:
+            print("resize image error:", e)
         return img_path
 
     @staticmethod

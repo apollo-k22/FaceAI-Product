@@ -9,10 +9,11 @@ from commons.db_connection import DBConnection
 class ProbeResultItemWidget(QWidget):
     delete_item_signal = pyqtSignal(object)
 
-    def __init__(self, result_item, is_shown_delete_button, is_used_old_cases, parent=None):
+    def __init__(self, result_item, is_shown_delete_button, is_used_old_cases, case_information, parent=None):
         QWidget.__init__(self, parent=parent)
         self.result_item = result_item
         self.is_used_old_cases = is_used_old_cases
+        self.case_information = case_information
         # set whether to show cross button on image
         self.is_showed_cross_button = is_shown_delete_button
 
@@ -55,11 +56,12 @@ class ProbeResultItemWidget(QWidget):
     def init_view(self):
         self.vly_item_container.setSpacing(6)
 
-        self.wdt_image.setGeometry(1, 1, 330, 350)
+        self.wdt_image.setGeometry(1, 1, Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
         self.wdt_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.wdt_image.setMinimumSize(330, 350)
-        self.wdt_image.setMaximumSize(400, 500)
-        style = ".QWidget{color:rgb(255, 255, 255);image:url(" + self.result_item['image_path'] + ");}"
+        self.wdt_image.setMinimumSize(Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
+        self.wdt_image.setMaximumSize(Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
+        style = ".QWidget{color:rgb(255, 255, 255);" \
+                "image:url(" + Common.resize_image(self.result_item['image_path'], Common.RESULT_ITEM_WIDGET_SIZE) + ");}"
         self.wdt_image.setStyleSheet(style)
 
         if self.is_showed_cross_button:
@@ -88,6 +90,9 @@ class ProbeResultItemWidget(QWidget):
 
             self.fly_info_container.addRow(self.lbl_case_number_label, self.lbl_case_number)
             self.fly_info_container.addRow(self.lbl_ps_label, self.lbl_ps)
+            if len(self.case_information):
+                self.lbl_case_number.setText(self.case_information[0])
+                self.lbl_ps.setText(self.case_information[1])
 
         self.vly_info_container.addLayout(self.fly_info_container)
 

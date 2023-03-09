@@ -13,7 +13,7 @@ from Pages.Page7_load import LoaderProbeReportListPage
 import datetime
 
 from commons.common import Common
-from commons.refresh_widget_thread import RefreshWidgetThread
+from commons.target_items_container_generator import TargetItemsContainerGenerator
 from cryptophic.license import read_information_db, get_cpu_info
 
 # start home page for probing
@@ -25,18 +25,20 @@ from insightfaces.faceai_init_thread import FaceAIInitThread
 from insightfaces.main import FaceAI
 from commons.ntptime import ntp_get_time
 
+
 class StartMain(QMainWindow):
     finished_initiating_widget_signal = pyqtSignal(object)
     update_progress_signal = pyqtSignal(int)
-    start_splash_signal = pyqtSignal()
+    start_splash_signal = pyqtSignal(str)
+    stop_splash_signal = pyqtSignal()
 
     def __init__(self, splash):
         super().__init__()
         ntptime = ntp_get_time()
         if ntptime is None:
             Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
-                                    "NTP Error.",
-                                    "")
+                                "NTP Error.",
+                                "")
             quit()
 
         self.faceai = FaceAI()
@@ -60,8 +62,8 @@ class StartMain(QMainWindow):
         self.ui_6_probe_report = LoaderProbeReportPage()
         self.ui_7_prove_report_list = LoaderProbeReportListPage()
         self.status_bar = self.findChild(QStatusBar, "statusBar")
-        self.refresh_views_thread = RefreshWidgetThread()  # the thread to be used to refresh some page
-        self.refresh_views_thread.finished_refreshing_widget.connect(
+        self.refresh_views_thread = TargetItemsContainerGenerator()  # the thread to be used to refresh some page
+        self.refresh_views_thread.finished_refreshing_target_items.connect(
             lambda wdt: self.finished_refreshing_slot(wdt)
         )
 
@@ -82,12 +84,16 @@ class StartMain(QMainWindow):
     @pyqtSlot()
     def finished_initializing_slot(self):
         self.faceai_init_thread.quit()
-        unlocked, expire_date, fpo_info, atpo_info = read_information_db()
-        self.check_license(unlocked, expire_date)
-        self.check_device_info(fpo_info, atpo_info)
-        self.finished_initiating_widget_signal.emit(self)
-        self.showMaximized()
-        # self.start_main()
+        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
+        self.check_device_info(app_fpo_info, app_atpo_info)
+        if self.check_license(app_unlocked, app_expire_date):
+            self.finished_initiating_widget_signal.emit(self)
+            self.showMaximized()
+            self.show_p1_home(app_expire_date)
+        else:
+            self.finished_initiating_widget_signal.emit(self)
+            self.showMaximized()
+            self.show_p0_license()
 
     # when some widget finished to be initiated or refreshed, the widget emit finished signal.
     # then, this slot will be called.
@@ -96,13 +102,35 @@ class StartMain(QMainWindow):
         self.finished_initiating_widget_signal.emit(wdt)
 
     @pyqtSlot()
-    def start_splash_for_subwidgets(self):
-        self.start_splash_signal.emit()
+    def start_splash_for_subwidgets_slot(self, data_type):
+        self.start_splash_signal.emit(data_type)
 
     def set_splash_signal_slot(self):
-        pass
+        self.ui_0_license.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
+        )
+        self.ui_0_license.stop_splash_signal.connect(self.finished_refreshing_slot)
+
+        self.ui_3_select_target_photo.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type))
+        self.ui_3_select_target_photo.stop_splash_signal.connect(self.finished_refreshing_slot)
+
+        self.ui_5_probe_report_preview.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
+        )
+        self.ui_5_probe_report_preview.stop_splash_signal.connect(self.finished_refreshing_slot)
+
+        self.ui_6_probe_report.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
+        )
+        self.ui_6_probe_report.stop_splash_signal.connect(self.finished_refreshing_slot)
+
+        self.ui_7_prove_report_list.start_splash_signal.connect(
+            lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
+        )
+        self.ui_7_prove_report_list.stop_splash_signal.connect(self.finished_refreshing_slot)
         #  when finished probing, the signal emitted so that let the system knows to start probe report preview page.
-        # self.ui_4_probing.probing_thread.start_splash_signal.connect(self.start_splash_for_subwidgets)
+        # self.ui_4_probing.probing_thread.start_splash_signal.connect(self.start_splash_for_subwidgets_slot)
         #  when go to probe report page, the signal emitted
         #  so that let the system knows to start probe report page.
 
@@ -133,21 +161,24 @@ class StartMain(QMainWindow):
         # once clicked "return home" button, return home page
         self.ui_5_probe_report_preview.return_home_signal.connect(self.show_p1_home)
         # once clicked "generate report" button on preview page, go to report page
-        self.ui_5_probe_report_preview.generate_report_signal.connect(self.show_p6_probe_report)
+        self.ui_5_probe_report_preview.generate_report_signal.connect(
+            lambda probe_result, case_data:
+            self.show_p6_probe_report(probe_result, case_data))
         # when clicked "go back" button on preview page, go to "select target photo" page
         self.ui_5_probe_report_preview.go_back_signal.connect(self.show_p3_select_target_photos)
 
         # when clicked "return home" button , return home page
         self.ui_6_probe_report.return_home_signal.connect(self.show_p1_home)
         # when clicked "export pdf" button, export result to pdf and go to report list page
-        self.ui_6_probe_report.export_pdf_signal.connect(self.show_p7_probe_report_list)
+        # self.ui_6_probe_report.export_pdf_signal.connect(self.show_p7_probe_report_list)
+
         # when clicked "go back" button on report page, go to "report preview page
         self.ui_6_probe_report.go_back_signal.connect(self.show_p5_probe_report_preview)
 
         # when clicked "return home" button, return home page
         self.ui_7_prove_report_list.return_home_signal.connect(self.show_p1_home)
         # when clicked "go back" button, go back to "Probe report" page
-        self.ui_7_prove_report_list.go_back_signal.connect(self.show_p6_probe_report)
+        self.ui_7_prove_report_list.go_back_signal.connect(self.show_p6_probe_report_without_param)
         self.ui_7_prove_report_list.go_back_empty_signal.connect(self.show_p6_probe_report_without_param)
 
     @pyqtSlot(CaseInfo)
@@ -175,6 +206,8 @@ class StartMain(QMainWindow):
     @pyqtSlot(str)
     def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
+        if self.ui_0_license.expired_date:
+            self.status_bar.showMessage("The license will be expired by " + self.ui_0_license.expired_date + ".")
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
@@ -185,7 +218,7 @@ class StartMain(QMainWindow):
         self.ui_1_home.setFocus()
         if len(expire_date) > 0:
             self.status_bar.showMessage("The license will be expired by "
-                                            + expire_date)
+                                        + expire_date)
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
@@ -193,7 +226,7 @@ class StartMain(QMainWindow):
         self.ui_1_home.hide()
         self.ui_3_select_target_photo.hide()
         # return page to initial status
-        self.ui_2_create_new_case.refresh_view()
+        # self.ui_2_create_new_case.refresh_view()
         self.ui_2_create_new_case.showMaximized()
 
     @pyqtSlot(CaseInfo)
@@ -217,15 +250,20 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.refresh_views()
         self.ui_5_probe_report_preview.showMaximized()
 
-    @pyqtSlot(ProbingResult)
-    def show_p6_probe_report(self, probe_result):
+    @pyqtSlot(ProbingResult, list)
+    def show_p6_probe_report(self, probe_result, case_data):
         self.setWindowTitle("Probe Report")
         # init views
         self.ui_5_probe_report_preview.hide()
         self.ui_7_prove_report_list.hide()
+        # return page to initial status
+        self.ui_2_create_new_case.refresh_view()
         self.ui_6_probe_report.probe_result = probe_result
+        self.ui_6_probe_report.case_data_for_results = case_data
         # self.refresh_views_thread.set_widget(self.ui_6_probe_report)
         # self.refresh_views_thread.start()
+        self.ui_2_create_new_case.refresh_view()
+        self.ui_3_select_target_photo.refresh_view()
         self.ui_6_probe_report.refresh_views()
         self.ui_6_probe_report.showMaximized()
 
@@ -244,8 +282,7 @@ class StartMain(QMainWindow):
         # init views
         self.ui_6_probe_report.hide()
         self.ui_7_prove_report_list.probe_result = probe_result
-        self.ui_7_prove_report_list.init_actions()
-        self.ui_7_prove_report_list.init_views()
+        self.ui_7_prove_report_list.refresh_view()
         # stop splashing
         # self.splash.stop_splash()
         # show probe report list page
@@ -256,7 +293,7 @@ class StartMain(QMainWindow):
         self.setWindowTitle("Probe Reports")
         self.ui_1_home.hide()
         self.ui_4_probing.hide()
-        self.ui_7_prove_report_list.init_views()
+        self.ui_7_prove_report_list.refresh_view()
         # show probe report list page
         self.ui_7_prove_report_list.showMaximized()
 
@@ -294,13 +331,17 @@ class StartMain(QMainWindow):
             self.show_p0_license()
         else:
             app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
-            self.status_bar.showMessage("The license will be expired by "
-                                        + app_expire_date)
+            # self.status_bar.showMessage("The license will be expired by "
+            #                             + app_expire_date + ". You can use more this application for "
+            #                             + str(app_expire) + ".")
+
             if app_expire.total_seconds() > 0:
-                self.show_p1_home(app_expire_date)
+                self.status_bar.showMessage("The license will be expired by "
+                                            + app_expire_date)
                 return True
             else:
-                self.show_p0_license()
+                self.status_bar.showMessage("The license was expired by "
+                                            + app_expire_date)
                 return False
 
     def check_device_info(self, app_fpo_info, app_atpo_info):

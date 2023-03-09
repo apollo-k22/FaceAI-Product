@@ -10,7 +10,6 @@ QLineEdit {
     color: rgb(255, 255, 255);
     font-size: 14pt;
     font-family: Arial;
-    background-color: #3E536A;
     background:transparent;
     border: 1px solid rgb(53, 132, 228);
 }
@@ -18,7 +17,6 @@ QTextEdit{
     color: rgb(255, 255, 255);
     font-size: 14pt;
     font-family: Arial;
-    background-color: #3E536A;
     background:transparent;
     border: 1px solid rgb(53, 132, 228);
 }

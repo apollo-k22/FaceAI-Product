@@ -27,7 +27,7 @@ class DBConnection:
         reg_value = Common.get_reg(Common.REG_KEY)
         connection_string_buff = ""
         if reg_value is not None:
-            connection_string_buff = reg_value + "/" + Common.STORAGE_PATH
+            connection_string_buff = reg_value
         else:
             Common.show_message(QMessageBox.Warning, "You did not get data storage path. \n "
                                                      "The data storage path will be application root directory.",
@@ -414,3 +414,16 @@ class DBConnection:
                 self.connection.close()
                 encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return results
+
+    def get_case_data(self, results):
+        cases = []
+        if len(results):
+            index = 0
+            for result in results:
+                img_path = results[index]['image_path']
+                case_no, ps = self.get_case_info(img_path)
+                case = (case_no, ps)
+                cases.append(case)
+                index += 1
+        return cases
+

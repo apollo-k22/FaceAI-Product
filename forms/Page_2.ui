@@ -388,6 +388,11 @@ background: none;</string>
              <height>100</height>
             </size>
            </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 255, 255);
+background:transparent;
+border: 1px solid rgb(53, 132, 228);</string>
+           </property>
           </widget>
          </item>
         </layout>

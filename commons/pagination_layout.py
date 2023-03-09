@@ -132,7 +132,7 @@ class PaginationLayout(QHBoxLayout):
         lbl_page_number.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         hspacer = QSpacerItem(50, 10, QSizePolicy.Fixed, QSizePolicy.Fixed)
 
-        btn_go.setStyleSheet("border-radius: 10px;background: transparent"
+        btn_go.setStyleSheet("border-radius: 10px;background: transparent;"
                              "color: rgb(255, 255, 255);border: 1px solid white;")
         btn_go.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btn_go.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
@@ -168,13 +168,16 @@ class PaginationLayout(QHBoxLayout):
 
     @pyqtSlot()
     def clicked_go_button(self):
-        go_page = self.hlyGo2Page.itemAt(1).widget().text()
+        leditGoPage = self.hlyGo2Page.itemAt(1).widget()
+        print(self.hlyGo2Page.count())
+        go_page = leditGoPage.text()
         if go_page == '':
             return
-        to_be_gone_page = int(self.hlyGo2Page.itemAt(1).widget().text()) - 1
+        to_be_gone_page = int(go_page) - 1
         if to_be_gone_page < 0 or to_be_gone_page > self.page_count - 1:
             return
         self.changed_page_signal.emit(to_be_gone_page)
+        leditGoPage.setText("")
 
     def create_pagination_button(self, current):
         button = PaginationButton(current)

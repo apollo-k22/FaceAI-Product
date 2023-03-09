@@ -81,12 +81,17 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                 # self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.get_subject_photo()
             else:
-                Common.resize_image(photo_url)
+                Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
                 self.subject_photo_url = photo_url
                 btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
                              "border: 1px solid rgb(53, 132, 228);background-size:cover;"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        else:
+            self.subject_photo_url = ""
+            btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
+                        "border: 1px solid rgb(53, 132, 228);background-size:cover;"
+            self.btnSelectPhoto.setStyleSheet(btn_style)
 
     @pyqtSlot()
     def return_home(self):
@@ -169,4 +174,5 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditExaminerName.setText("")
         self.leditExaminerNo.setText("")
         self.leditRemarks.setText("")
+        self.case_info = CaseInfo()
 

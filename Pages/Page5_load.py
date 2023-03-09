@@ -11,21 +11,23 @@ from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
+from commons.target_items_container_generator import TargetItemsContainerGenerator
 from cryptophic.main import encrypt_file_to
 
 
 class LoaderProbeReportPreviewPage(QWidget):
     return_home_signal = pyqtSignal(str)
     go_back_signal = pyqtSignal(object)
-    generate_report_signal = pyqtSignal(object)
+    generate_report_signal = pyqtSignal(object, object)
     go_remaining_signal = pyqtSignal()
-    start_splash_signal = pyqtSignal()
-    finished_loading_items_signal = pyqtSignal()
+    start_splash_signal = pyqtSignal(str)
+    stop_splash_signal = pyqtSignal(object)
     show_window_signal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-
+        self.target_items_generator_thread = TargetItemsContainerGenerator()
+        self.case_data_for_results = []
         self.probe_result = ProbingResult()
         self.window = uic.loadUi("./forms/Page_5.ui", self)
         self.btnGoBack = self.findChild(QPushButton, "btnGoBack")
@@ -59,7 +61,7 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.return_home_signal.emit("")
         else:
             self.generate_report()
-            self.generate_report_signal.emit(self.probe_result)
+            self.generate_report_signal.emit(self.probe_result, self.case_data_for_results)
 
     # save probe result and make probe report file as pdf.
     def generate_report(self):
@@ -73,8 +75,8 @@ class LoaderProbeReportPreviewPage(QWidget):
         if temp_path:
             temp_path = temp_path + "/" + Common.TEMP_PATH
         else:
-            temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH        
-        Common.create_path(temp_path) 
+            temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH
+        Common.create_path(temp_path)
 
         filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number,
                                     self.probe_result.case_info.case_PS)
@@ -121,17 +123,26 @@ class LoaderProbeReportPreviewPage(QWidget):
         Common.create_path(media_path)
 
         # copy subject and target images to media directory, after that, replace urls with urls in media folder
-        self.probe_result.case_info.subject_image_url = Common.copy_file(self.probe_result.case_info.subject_image_url,
-                                                                         media_path + "/subjects")
+        path_buff = self.probe_result.probe_id + "-" + \
+                    self.probe_result.case_info.case_number + "-" + \
+                    Common.get_file_name_from_path(self.probe_result.case_info.subject_image_url)
+
+        path_buff = media_path + "/subjects/" + path_buff
+        self.probe_result.case_info.subject_image_url = \
+            Common.copy_file(self.probe_result.case_info.subject_image_url, path_buff)
         target_images = []
         index = 0
-        print(self.probe_result.case_info.target_image_urls)
         for target in self.probe_result.case_info.target_image_urls:
-            modified_target = Common.copy_file(target, media_path + "/targets")
-            target_images.append(modified_target)
-            self.probe_result.json_result["results"][index]["image_path"] = modified_target
-            self.probe_result.json_result["faces"][index]["image_path"] = modified_target
-        self.probe_result.case_info.target_image_urls = target_images
+            if not self.probe_result.case_info.is_used_old_cases:
+                target_buff = self.probe_result.probe_id + "-" + \
+                              "-" + self.probe_result.case_info.case_number + "-" + \
+                              Common.get_file_name_from_path(target)
+                target_buff = media_path + "/targets/" + target_buff
+                modified_target = Common.copy_file(target, target_buff)
+                target_images.append(modified_target)
+                self.probe_result.json_result["results"][index]["image_path"] = modified_target
+                self.probe_result.json_result["faces"][index]["image_path"] = modified_target
+                self.probe_result.case_info.target_image_urls = target_images
 
     @pyqtSlot()
     def on_clicked_return_home(self):
@@ -139,7 +150,9 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_go_back(self):
-        self.go_back_signal.emit(self.probe_result.case_info)
+        case_info = self.probe_result.case_info
+        self.probe_result = ProbingResult()
+        self.go_back_signal.emit(case_info)
 
     @pyqtSlot()
     def on_clicked_go_remaining(self):
@@ -150,8 +163,11 @@ class LoaderProbeReportPreviewPage(QWidget):
             # remove some items from json results except remaining number
             self.probe_result.json_result['results'] = \
                 Common.remove_elements_from_list_tail(self.probe_result.json_result['results'], remaining_number)
-            # repaint target images view
-            self.init_target_images_view()
+            self.probe_result.json_result['faces'] = \
+                Common.remove_elements_from_list_tail(self.probe_result.json_result['faces'], remaining_number)
+            self.leditRemainingPhotoNumber.setText("")
+            # repaint view
+            self.refresh_views()
 
     # set validator to input box
     def set_validate_input_data(self):
@@ -163,25 +179,50 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.btnGoBack.clicked.connect(self.on_clicked_go_back)
         self.btnReturnHome.clicked.connect(self.on_clicked_return_home)
         self.btnGoRemaining.clicked.connect(self.on_clicked_go_remaining)
+        self.target_items_generator_thread.finished_refreshing_target_items.connect(
+            self.finished_refresh_target_widget_slot)
 
     def refresh_views(self):
-        self.init_input_values()
+        # self.init_input_values()
         self.init_target_images_view()
-        self.repaint()
+        # self.repaint()
+
+    @pyqtSlot(list)
+    def finished_refresh_target_widget_slot(self, case_data):
+        self.glyReportBuff = QGridLayout(self)
+        results = self.probe_result.json_result['results']
+        self.case_data_for_results = case_data
+        index = 0
+        if len(results) > 0 and len(case_data):
+            for result in results:
+                case_information = case_data[index]
+                # show the cross button on image
+                result_view_item = ProbeResultItemWidget(result, True,
+                                                         self.probe_result.case_info.is_used_old_cases,
+                                                         case_information)
+                # connect delete signal from delete button on target image.
+                result_view_item.delete_item_signal.connect(self.delete_result_item)
+                self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+                index += 1
+        self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+        js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+        self.etextJsonResult.setPlainText(js_result)
+        self.init_input_values()
+        self.setEnabled(True)
+        self.stop_splash_signal.emit(None)
 
     def init_input_values(self):
-        print("page 5 init_input_values")
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
-            print("page 5 data is not empty")
-            probe_id = Common.generate_probe_id()
-            # check whether probe id exist on database
-            db = DBConnection()
-            while db.is_exist_value("cases", "probe_id", probe_id):
+            if self.probe_result.probe_id == '':
                 probe_id = Common.generate_probe_id()
-            self.probe_result.probe_id = probe_id
-            self.lblProbeId.setText(probe_id)
+                # check whether probe id exist on database
+                db = DBConnection()
+                while db.is_exist_value("cases", "probe_id", probe_id):
+                    probe_id = Common.generate_probe_id()
+                self.probe_result.probe_id = probe_id
+            self.lblProbeId.setText(self.probe_result.probe_id)
             matched = self.probe_result.is_matched()
             if matched == 'Matched':
                 self.lblMatchedDescription.setText("The subject photo has matched to the following target photos."
@@ -202,7 +243,6 @@ class LoaderProbeReportPreviewPage(QWidget):
             js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.etextJsonResult.setPlainText(js_result)
         else:
-            print("page 5 data is empty")
             self.lblProbeId.setText("")
             self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
             self.lblProbeResult.setText("")
@@ -221,27 +261,36 @@ class LoaderProbeReportPreviewPage(QWidget):
     def init_target_images_view(self):
         # clear all child on result container layout
         self.clear_result_list()
+        self.etextJsonResult.setPlainText("")
         # add items to result container layout
-        self.glyReportBuff = QGridLayout(self)
+        # self.glyReportBuff = QGridLayout(self)
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
-            print("probing result is not empty")
-            # clear all child on result container layout
-            # self.clear_result_list()
-            # add items to result container layout
-            # self.glyReportBuff = QGridLayout(self)
-            # if there is one matched image
             results = self.probe_result.json_result['results']
-            index = 0
-            for result in results:
-                # show the cross button on image
-                result_view_item = ProbeResultItemWidget(result, True, self.probe_result.case_info.is_used_old_cases)
-                # connect delete signal from delete button on target image.
-                result_view_item.delete_item_signal.connect(self.delete_result_item)
-                self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
-                index += 1
-            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+
+            self.target_items_generator_thread.set_data(self, results, True,
+                                                        self.probe_result.case_info.is_used_old_cases)
+            self.setEnabled(False)
+            self.start_splash_signal.emit("data")
+            self.target_items_generator_thread.start()
+            # db = DBConnection()
+            # self.case_data_for_results = db.get_case_data(results)
+            # index = 0
+            # if len(results) > 0 and len(self.case_data_for_results):
+            #     for result in results:
+            #         case_information = self.case_data_for_results[index]
+            #         # show the cross button on image
+            #         result_view_item = ProbeResultItemWidget(result, True,
+            #                                                  self.probe_result.case_info.is_used_old_cases,
+            #                                                  case_information)
+            #         # connect delete signal from delete button on target image.
+            #         result_view_item.delete_item_signal.connect(self.delete_result_item)
+            #         self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+            #         index += 1
+            # self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+            # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            # self.etextJsonResult.setPlainText(js_result)
 
     @pyqtSlot(object)
     def delete_result_item(self, item):

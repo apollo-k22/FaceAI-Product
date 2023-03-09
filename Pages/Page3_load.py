@@ -2,26 +2,30 @@ import pathlib
 
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QShowEvent
 from PyQt5.QtWidgets import QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel, \
     QSizePolicy, QWidget
 
 from commons.case_info import CaseInfo
 from commons.common import Common
+from commons.get_images_thread import GetImagesThread
 
 
 class LoaderSelectTargetPhotoPage(QWidget):
     go_back_signal = pyqtSignal()
     start_probe_signal = pyqtSignal(object)
     return_home_signal = pyqtSignal(str)
+    start_splash_signal = pyqtSignal(str)
+    stop_splash_signal = pyqtSignal(object)
 
     def __init__(self, faceai):
         super().__init__()
 
-        self.window = uic.loadUi("./forms/Page_3.ui", self)
+        self.window = uic.loadUi("./forms/Page_3-Copy.ui", self)
         self.case_info = CaseInfo()
         self.faceai = faceai
         self.image_urls = []
+        self.get_images_thread = GetImagesThread(faceai, [])
         self.current_work_folder = ""
         self.cmdbtnGoBack = self.findChild(QPushButton, "cmdbtnGoBack")
         self.btnStartProbe = self.findChild(QPushButton, "btnStartProbe")
@@ -38,6 +42,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.lblEntireFolder = self.findChild(QLabel, "lblEntireFolder")
         self.lblEntireResult = self.findChild(QLabel, "lblEntireFolderResult")
         self.lblOldCaseResult = self.findChild(QLabel, "lblOldCaseResult")
+        self.lblOldCaseSelectedNumber = self.findChild(QLabel, "lblOldCaseSelectedNumber")
         self.stkwdtSelectPhotos = self.findChild(QStackedWidget, "stkwdtSelectPhotos")
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
@@ -70,9 +75,36 @@ class LoaderSelectTargetPhotoPage(QWidget):
             if index == 3:
                 self.select_from_old_cases()
 
+    @pyqtSlot(list)
+    def get_images_slot(self, urls):
+        self.setEnabled(True)
+        self.image_urls = urls
+        if self.get_images_thread.is_urls:
+            self.get_images_thread.is_urls = False
+            if len(self.image_urls) == 0:
+                self.lblMultiPhotoResult.setText("There are no raster images in this folder.")
+            else:
+                self.lblMultiPhotos.setText(str(len(self.image_urls)) + " was selected.")
+        if self.get_images_thread.is_direct:
+            self.get_images_thread.is_direct = False
+            if len(self.image_urls) == 0:
+                self.lblEntireResult.setText("There are no raster images in this folder.")
+            else:
+                self.lblEntireFolder.setText(str(len(self.image_urls)) + " was selected.")
+        if self.case_info.is_used_old_cases:
+            # self.case_info.is_used_old_cases = False
+            if not len(self.image_urls):
+                self.lblOldCaseSelectedNumber.setText("")
+                self.lblOldCaseResult.setText("There are no old cases images. Please select manually on other tab.")
+            else:
+                self.lblOldCaseResult.setText(
+                    "Click on the \"Start probe\" button below to continue the further process.")
+                self.lblOldCaseSelectedNumber.setText(str(len(self.image_urls)) + " was selected.")
+        self.stop_splash_signal.emit(None)
+
     @pyqtSlot()
     def select_single_photo_slot(self):
-        self.image_urls.clear()
+        self.refresh_view()
         url, _ = QFileDialog.getOpenFileName(self, 'Open File', self.current_work_folder, Common.IMAGE_FILTER)
         if url:
             if not self.faceai.is_face(url):
@@ -81,51 +113,70 @@ class LoaderSelectTargetPhotoPage(QWidget):
                                     "")
             else:
                 self.current_work_folder = Common.get_folder_path(url)
+                Common.resize_image(url, self.btnSinglePhoto.size().width())
                 btn_style = "image:url(" + url + ");height: auto;border: 1px solid rgb(53, 132, 228);"
+                # self.btnSinglePhoto.setStyleSheet(btn_style)
+                # btn_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
                 self.btnSinglePhoto.setStyleSheet(btn_style)
                 self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
                 self.image_urls.append(url)
+        else:
+            btn_style = "border: 1px solid rgb(53, 132, 228);"
+            self.btnSinglePhoto.setStyleSheet(btn_style)
 
     @pyqtSlot()
     def select_multi_photo_slot(self):
-        self.image_urls.clear()
+        self.refresh_view()
         urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', self.current_work_folder, Common.IMAGE_FILTER)
         length = len(urls)
         if length:
+            self.lblMultiPhotos.setText("")
+            self.setEnabled(False)
             self.current_work_folder = Common.get_folder_path(urls[0])
-            self.lblMultiPhotos.setText(str(length) + " was selected.")
+            self.get_images_thread.urls = urls
+            self.get_images_thread.is_urls = True
+            self.start_splash_signal.emit("data")
+            self.get_images_thread.start()
         else:
-            self.lblMultiPhotoResult.setText("There are no raster images in selected folder.")
-        for url in urls:
-            if self.faceai.is_face(url):
-                url_buff = Common.resize_image(url)
-                self.image_urls.append(url_buff)
+            self.lblMultiPhotos.setText("Select target images.")
+            self.lblMultiPhotoResult.setText("Raster image formats are accepted.")
 
     @pyqtSlot()
     def select_entire_folder_slot(self):
-        self.image_urls.clear()
+        self.refresh_view()
         direct = QFileDialog.getExistingDirectory(self, 'Entire Folder')
-        self.current_work_folder = direct
-        desktop = pathlib.Path(direct)
-        self.lblEntireFolder.setText(direct)
-        for url in desktop.glob(r'**/*'):
-            if Common.EXTENSIONS.count(url.suffix):
-                if self.faceai.is_face(url):
-                    url = Common.resize_image(url)
-                    self.image_urls.append(url)
-        if len(self.image_urls) == 0:
-            self.lblEntireResult.setText("There are no raster images in this folder.")
+
+        if direct:
+            self.lblEntireFolder.setText("")
+            self.current_work_folder = direct
+            self.get_images_thread.direct = direct
+            self.get_images_thread.is_direct = True
+            self.setEnabled(False)
+            self.start_splash_signal.emit("data")
+            self.get_images_thread.start()
+
+        else:
+            self.lblEntireFolder.setText("Select target folder.")
+            self.lblEntireResult.setText("Raster image formats are accepted.")
 
     # get all images from old cases
     def select_from_old_cases(self):
+        self.refresh_view()
+        self.lblOldCaseResult.setText("Loading images from old cases.... ")
+        self.setEnabled(False)
+        # start splash
+        self.start_splash_signal.emit("data")
         self.image_urls.clear()
         self.case_info.is_used_old_cases = True
-        desktop = pathlib.Path(Common.MEDIA_PATH + "/targets")
-        for url in desktop.glob(r'**/*'):
-            if url.suffix in Common.EXTENSIONS:
-                self.image_urls.append(url)
-        if not len(self.image_urls):
-            self.lblOldCaseResult.setText("There are no old cases images. Please select manually on other tab.")
+        reg_val = Common.get_reg(Common.REG_KEY)
+        targets_path = ""
+        if reg_val:
+            targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/targets"
+        else:
+            targets_path = Common.MEDIA_PATH + "/targets"
+        self.get_images_thread.is_direct = True
+        self.get_images_thread.direct = targets_path
+        self.get_images_thread.start()
 
     # make file filter for QFileDialog from Common.EXTENSIONS
     def make_file_filter(self):
@@ -143,6 +194,8 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.btnSinglePhoto.clicked.connect(self.select_single_photo_slot)
         self.btnMultiPhoto.clicked.connect(self.select_multi_photo_slot)
         self.btnEntireFolder.clicked.connect(self.select_entire_folder_slot)
+        self.get_images_thread.finished_get_images_signal.connect(
+            lambda urls: self.get_images_slot(urls))
 
         self.rdobtnSinglePhoto.toggled[bool].connect(
             lambda checked:
@@ -162,10 +215,18 @@ class LoaderSelectTargetPhotoPage(QWidget):
         )
 
     def refresh_view(self):
-        btn_style = "background:transparent;border:0px;border-image:url(:/newPrefix/Group 67.png);"
+        self.image_urls.clear()
+        self.case_info.target_image_urls.clear()
+        self.case_info.is_used_old_cases = False
+        btn_style = "background:transparent;border:0px;image:url(:/newPrefix/Group 67.png);"
         self.btnSinglePhoto.setStyleSheet(btn_style)
-        self.lblMultiPhotos.setText("Select target photos")
-        self.lblMultiPhotoResult.setText("Raster image formats are accepted")
-        self.lblEntireFolder.setText("Select target folder")
-        self.lblEntireResult.setText("Raster image formats are accepted")
+        self.lblMultiPhotos.setText("Select target photos.")
+        self.lblMultiPhotoResult.setText("Raster image formats are accepted.")
+        self.lblEntireFolder.setText("Select target folder.")
+        self.lblEntireResult.setText("Raster image formats are accepted.")
+        self.lblOldCaseSelectedNumber.setText("")
         self.lblOldCaseResult.setText("Click on the \"Start probe\" button below to continue the further process.")
+
+    def showEvent(self, a0: QShowEvent) -> None:
+        super(LoaderSelectTargetPhotoPage, self).showEvent(a0)
+        self.refresh_view()

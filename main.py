@@ -20,8 +20,9 @@ if __name__ == '__main__':
         window = StartMain(global_splash)
         window.finished_initiating_widget_signal.connect(
             lambda wdt: global_splash.stop_splash(wdt))
-        window.start_splash_signal.connect(global_splash.start_splash)
-        global_splash.start_splash()
+        window.start_splash_signal.connect(
+            lambda data_type: global_splash.start_splash(data_type))
+        global_splash.start_splash("widget")
         app.exec_()
     finally:
         print("exit")
