@@ -297,7 +297,7 @@ class StartMain(QMainWindow):
             self.status_bar.showMessage("The license will be expired by "
                                         + app_expire_date)
             if app_expire.total_seconds() > 0:
-                self.show_p1_home(None)
+                self.show_p1_home(app_expire_date)
                 return True
             else:
                 self.show_p0_license()
