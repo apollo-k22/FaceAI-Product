@@ -791,6 +791,9 @@ background:transparent;</string>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="topMargin">
+        <number>50</number>
+       </property>
        <property name="bottomMargin">
         <number>10</number>
        </property>
