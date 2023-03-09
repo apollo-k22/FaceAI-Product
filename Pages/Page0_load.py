@@ -69,7 +69,7 @@ class LicenseBoxPage(QWidget):
         self.lblNotify.setText("Let's go to home page")
         self.stop_splash_signal.emit(None)  # stop splash
         self.setEnabled(True)  # once finished to process, can access to screen.
-        self.continue_app_signal.emit()  # start main
+        self.continue_app_signal.emit(self.expired_date)  # start main
 
     # The function for license process confirm
     def procLicenseConfirm(self):

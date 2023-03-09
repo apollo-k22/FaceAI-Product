@@ -81,7 +81,6 @@ class LoaderProbeReportPage(QWidget):
     def on_clicked_go_back(self):
         # self.probe_result = ProbingResult()
         self.go_back_signal.emit(self.probe_result, True)
-
     def init_actions(self):
         self.btnExportPdf.clicked.connect(self.on_clicked_export_pdf)
         self.btnGoBack.clicked.connect(self.on_clicked_go_back)

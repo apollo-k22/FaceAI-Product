@@ -115,6 +115,8 @@ class LoaderSelectTargetPhotoPage(QWidget):
                 self.current_work_folder = Common.get_folder_path(url)
                 Common.resize_image(url, self.btnSinglePhoto.size().width())
                 btn_style = "image:url(" + url + ");height: auto;border: 1px solid rgb(53, 132, 228);"
+                # self.btnSinglePhoto.setStyleSheet(btn_style)
+                # btn_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
                 self.btnSinglePhoto.setStyleSheet(btn_style)
                 self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
                 self.image_urls.append(url)

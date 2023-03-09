@@ -389,20 +389,6 @@ class DBConnection:
                 self.connection.close()
                 encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return results
-    #
-    # def get_case_data(self, results):
-    #     decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
-    #     cases = []
-    #     if len(results):
-    #         index = 0
-    #         for result in results:
-    #             img_path = results[index]['image_path']
-    #             case_no, ps = self.get_case_info(img_path)
-    #             case = (case_no, ps)
-    #             cases.append(case)
-    #             index += 1
-    #     encrypt_file_to(self.dec_db_file_path, self.connection_string)
-    #     return cases
 
     def get_case_data(self, results):
         decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
