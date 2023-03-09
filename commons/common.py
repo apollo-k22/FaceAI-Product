@@ -80,6 +80,8 @@ class Common:
         if start_index < list_len:
             for index in range(start_index):
                 ret_list.append(removing_list[index])
+                print(removing_list[index])
+                print("return list:", index, ret_list[index])
         else:
             ret_list = removing_list
         return ret_list
@@ -198,7 +200,9 @@ class Common:
     # round the float string up to 2 decimals
     @staticmethod
     def round_float_string(float_string):
-        sim = abs(float(float_string)) * 100
+        sim = float(float_string) * 100
+        # if sim < 0.00:
+        #     sim = 0.00
         decimal_value = decimal.Decimal(sim)
         # rounding the number upto 2 digits after the decimal point
         rounded = decimal_value.quantize(decimal.Decimal('0.00'))

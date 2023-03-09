@@ -9,6 +9,8 @@ from commons.case_info import CaseInfo
 
 class ProbingThread(QThread, CaseInfo, FaceAI):
     finished_probing_signal = pyqtSignal(ProbingResult)
+    failed_probing_signal = pyqtSignal()
+    success_probing_signal = pyqtSignal()
     start_splash_signal = pyqtSignal()
 
     def __init__(self, case_info, faceai, parent=None):
@@ -49,10 +51,18 @@ class ProbingThread(QThread, CaseInfo, FaceAI):
             results_buff = Common.sort_list_by_float_attribute(results_buff, 'confidence', 'string', True)
             ret_json['results'] = results_buff
         if type(faces).__name__ == 'list':
-            for item in faces:
-                img_url = item['image_path']
-                img_url = img_url.replace("\\", "/")
-                item['image_path'] = img_url
-                faces_buff.append(item)
+            # for item in faces:
+            #     img_url = item['image_path']
+            #     img_url = img_url.replace("\\", "/")
+            #     item['image_path'] = img_url
+            #     faces_buff.append(item)
+            for result in ret_json['results']:
+                result_token = result['face_token']
+                for item in faces:
+                    if item['face_token'] == result_token:
+                        img_url = item['image_path']
+                        img_url = img_url.replace("\\", "/")
+                        item['image_path'] = img_url
+                        faces_buff.append(item)
             ret_json['faces'] = faces_buff
         return ret_json, targets_buff

@@ -152,6 +152,8 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
     @pyqtSlot(str)
     def check_ptedit_string_validation(self, text_edit, regx, max_length):
         string = text_edit.toPlainText()
+        if string == '':
+            return
         sub_string = re.sub(regx, '', string)
         if not string == sub_string:
             string = sub_string

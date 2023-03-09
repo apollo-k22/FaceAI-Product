@@ -232,7 +232,7 @@ margin: 10px;
 </string>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>3</number>
            </property>
            <widget class="QWidget" name="wdtSinglePhoto">
             <property name="sizePolicy">
@@ -821,6 +821,18 @@ background:transparent;</string>
              </item>
              <item>
               <widget class="QLabel" name="lblOldCaseSelectedNumber">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>100</height>
+                </size>
+               </property>
                <property name="styleSheet">
                 <string notr="true">color: rgb(255, 255, 255);
 background:transparent;</string>
@@ -838,7 +850,7 @@ background:transparent;</string>
                <property name="minimumSize">
                 <size>
                  <width>700</width>
-                 <height>200</height>
+                 <height>100</height>
                 </size>
                </property>
                <property name="font">
@@ -922,6 +934,9 @@ background:transparent;</string>
         <widget class="QRadioButton" name="rdobtnSinglePhoto">
          <property name="text">
           <string>Single image   </string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

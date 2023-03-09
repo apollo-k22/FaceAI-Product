@@ -35,15 +35,14 @@ class SplashThread(QThread):
         self.splash_screen.setStyleSheet("background:transparent;")
         self.timer = QTimer()
         self.splash_type = "widget"  # the splash whether while loading widget or data.
-        self.start()
-
-    def start_splash(self, data_type):
-        global splash_i_widget, splash_i_data, max_i_data, max_i_widget, splash_stop, max_i, splash_i, splash_i_buff
-
         self.timer.setInterval(0)
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.update_splash_screen)
         self.mysignal.connect(self.stop_splash)
+        # self.start()
+
+    def start_splash(self, data_type):
+        global splash_i_widget, splash_i_data, max_i_data, max_i_widget, splash_stop, max_i, splash_i, splash_i_buff
         if data_type == "widget":
             print("start splash with widget")
             splash_i_buff = splash_i_widget

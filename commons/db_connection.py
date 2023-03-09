@@ -332,31 +332,6 @@ class DBConnection:
                 encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return False
 
-    def get_case_info(self, image_path):
-        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
-        case_no = ''
-        ps = ''
-        try:
-            query_string = "select " \
-                           "case_no,PS from cases " \
-                           " where id=(select case_id from targets where target_url='" + image_path + "')"
-            self.connection = sqlite3.connect(self.dec_db_file_path)
-            cursor = self.connection.cursor()
-            cursor.execute(query_string)
-            rows = cursor.fetchall()
-            self.connection.commit()
-            for row in rows:
-                case_no = row[0]
-                ps = row[1]
-        except sqlite3.IntegrityError as e:
-            print('INTEGRITY ERROR\n')
-            print(traceback.print_exc())
-        finally:
-            if self.connection:
-                self.connection.close()
-                encrypt_file_to(self.dec_db_file_path, self.connection_string)
-        return case_no, ps
-
     def get_pagination_results(self, param, total, current_page, number_per_page):
         decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         results = []
@@ -414,16 +389,51 @@ class DBConnection:
                 self.connection.close()
                 encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return results
+    #
+    # def get_case_data(self, results):
+    #     decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
+    #     cases = []
+    #     if len(results):
+    #         index = 0
+    #         for result in results:
+    #             img_path = results[index]['image_path']
+    #             case_no, ps = self.get_case_info(img_path)
+    #             case = (case_no, ps)
+    #             cases.append(case)
+    #             index += 1
+    #     encrypt_file_to(self.dec_db_file_path, self.connection_string)
+    #     return cases
 
     def get_case_data(self, results):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
+        case_no = ''
+        ps = ''
         cases = []
-        if len(results):
+        if results is not None:
             index = 0
-            for result in results:
-                img_path = results[index]['image_path']
-                case_no, ps = self.get_case_info(img_path)
-                case = (case_no, ps)
-                cases.append(case)
-                index += 1
+            try:
+                self.connection = sqlite3.connect(self.dec_db_file_path)
+                for result in results:
+                    img_path = result['image_path']
+                    query_string = "select " \
+                                   "case_no,PS from cases " \
+                                   " where id=(select case_id from targets where target_url='" + img_path + "')"
+                    cursor = self.connection.cursor()
+                    cursor.execute(query_string)
+                    rows = cursor.fetchall()
+                    self.connection.commit()
+                    case_no = ""
+                    ps = ""
+                    for row in rows:
+                        case_no = row[0]
+                        ps = row[1]
+                    case = (case_no, ps)
+                    cases.append(case)
+            except sqlite3.IntegrityError as e:
+                print('INTEGRITY ERROR\n')
+                print(traceback.print_exc())
+            finally:
+                if self.connection:
+                    self.connection.close()
+                    encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return cases
-

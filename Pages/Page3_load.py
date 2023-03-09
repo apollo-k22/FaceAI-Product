@@ -76,7 +76,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
                 self.select_from_old_cases()
 
     @pyqtSlot(list)
-    def get_images_slot(self, urls):
+    def finished_get_images_slot(self, urls):
         self.setEnabled(True)
         self.image_urls = urls
         if self.get_images_thread.is_urls:
@@ -119,7 +119,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
                 self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
                 self.image_urls.append(url)
         else:
-            btn_style = "border: 1px solid rgb(53, 132, 228);image:url(:/newPrefix/Group 67.png);"
+            btn_style = "border: none;image:url(:/newPrefix/Group 67.png);"
             self.btnSinglePhoto.setStyleSheet(btn_style)
 
     @pyqtSlot()
@@ -191,7 +191,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.btnMultiPhoto.clicked.connect(self.select_multi_photo_slot)
         self.btnEntireFolder.clicked.connect(self.select_entire_folder_slot)
         self.get_images_thread.finished_get_images_signal.connect(
-            lambda urls: self.get_images_slot(urls))
+            lambda urls: self.finished_get_images_slot(urls))
 
         self.rdobtnSinglePhoto.toggled[bool].connect(
             lambda checked:
@@ -224,9 +224,9 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.lblOldCaseResult.setText("Click on the \"Start probe\" button below to continue the further process.")
         self.repaint()
 
-    def showEvent(self, a0: QShowEvent) -> None:
-        super(LoaderSelectTargetPhotoPage, self).showEvent(a0)
-        self.refresh_view()
+    # def showEvent(self, a0: QShowEvent) -> None:
+    #     super(LoaderSelectTargetPhotoPage, self).showEvent(a0)
+    #     self.refresh_view()
 
     def init_views(self):
         self.refresh_view()
