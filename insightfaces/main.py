@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 import scipy.spatial.distance as distance
 import onnxruntime
+from PyQt5.QtCore import pyqtSignal, QObject
+
 from insightfaces.scrfd import SCRFD
 from insightfaces.arcface_onnx import ArcFaceONNX
 import math, time, json
@@ -14,8 +16,12 @@ from cryptophic.main import generate_token
 THRESHOLDS = [0.7, 0.8, 0.9]
 
 
-class FaceAI:
+class FaceAI(QObject):
+    failed_probing_signal = pyqtSignal()
+    success_probing_signal = pyqtSignal()
+
     def __init__(self):
+        super().__init__()
         self.DETECT_ONNX_MODEL = "231658a02e26b60e629bfddd7067b3"
         self.RECOG_ONNX_MODEL = "8e9068219eb663d67500912dd0ce1f"
         self.onnxruntime = onnxruntime.set_default_logger_severity(3)
@@ -201,6 +207,7 @@ class FaceAI:
             if bboxes2.shape[0] == 0:
                 jsondata = self.append_failed_json_data(jsondata, path2.__str__())
                 # return -1.0, "Face not found in Image-2"
+                self.failed_probing_signal.emit()
                 continue
 
             x1, y1, x2, y2, z2 = bboxes2[0]
@@ -212,6 +219,10 @@ class FaceAI:
             # sim[index] = findCosineDistance(feat1, feat2) * 2
             if sim[index] > 1: sim[index] = 1
             print("sim: ", sim[index])
+            if sim[index] >= 0.7:
+                self.success_probing_signal.emit()  # emit success signal for updating gif.
+            else:
+                self.failed_probing_signal.emit()  # emit failed signal for updating gif
 
             res = self.get_similarity_str(jsondata, sim[index], path2.__str__())
             jsondata = self.append_json_data(jsondata, x1, y1, x2, y2, angles2[index], sim[index], path2.__str__())

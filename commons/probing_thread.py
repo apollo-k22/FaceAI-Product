@@ -18,6 +18,8 @@ class ProbingThread(QThread, CaseInfo, FaceAI):
         self.faceai = faceai
         self.probing_result = ProbingResult()
         self.probing_result.case_info = case_info
+        self.faceai.success_probing_signal.connect(self.success_probing_slot)
+        self.faceai.failed_probing_signal.connect(self.failed_probing_slot)
 
     def run(self) -> None:
         self.probe_images()
@@ -61,3 +63,11 @@ class ProbingThread(QThread, CaseInfo, FaceAI):
                         faces_buff.append(item)
             ret_json['faces'] = faces_buff
         return ret_json, targets_buff
+
+    # when get success signal from FaceAi main, emit success signal to probing page
+    def success_probing_slot(self):
+        self.success_probing_signal.emit()
+
+    # when get failed signal from FaceAi main, emit failed signal to probing page
+    def failed_probing_slot(self):
+        self.failed_probing_signal.emit()

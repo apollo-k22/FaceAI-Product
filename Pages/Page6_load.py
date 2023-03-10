@@ -91,12 +91,14 @@ class LoaderProbeReportPage(QWidget):
     @pyqtSlot(list)
     def finished_refresh_target_items_slot(self, case_data):
         results = self.probe_result.json_result['results']
+        faces = self.probe_result.json_result['faces']
         index = 0
         if len(results) > 0 and len(self.case_data_for_results):
             for result in results:
+                face = faces[index]
                 case_info = self.case_data_for_results[index]
                 # set unable the cross button on image
-                result_view_item = ProbeResultItemWidget(result, False, self.probe_result.case_info.is_used_old_cases,
+                result_view_item = ProbeResultItemWidget(result, face, False, self.probe_result.case_info.is_used_old_cases,
                                                          case_info)
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
                 index += 1

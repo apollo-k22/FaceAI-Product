@@ -141,9 +141,6 @@ border:none;</string>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <property name="rightMargin">
-            <number>10</number>
-           </property>
-           <property name="rightMargin">
             <number>85</number>
            </property>
            <item>
@@ -280,7 +277,7 @@ background:transparent;</string>
           <x>0</x>
           <y>0</y>
           <width>1271</width>
-          <height>1242</height>
+          <height>1251</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -744,6 +741,9 @@ background:transparent;</string>
                <property name="rightMargin">
                 <number>0</number>
                </property>
+               <property name="bottomMargin">
+                <number>10</number>
+               </property>
                <item>
                 <spacer name="horizontalSpacer_5">
                  <property name="orientation">
@@ -1043,6 +1043,9 @@ font: 12pt &quot;Arial&quot;;</string>
         <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0,0">
          <property name="spacing">
           <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>10</number>
          </property>
          <property name="bottomMargin">
           <number>5</number>

@@ -1,7 +1,7 @@
 from random import random
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QLabel
@@ -27,9 +27,13 @@ class LoaderProbingPage(QWidget, FaceAI):
         self.success_gif = QMovie(":/newPrefix/AIFace_Success.gif")
         self.window = uic.loadUi("./forms/Page_4.ui", self)
         self.lblFaceGif = self.findChild(QLabel, "lblFaceGif")
-        self.lblFaceGif.setMovie(self.processing_gif)
+        self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
+        self.probing_thread.failed_probing_signal.connect(self.failed_probing_slot)
+        self.probing_thread.success_probing_signal.connect(self.success_probing_slot)
+        self.timer = QTimer()
 
     def start_gif(self):
+        self.lblFaceGif.setMovie(self.current_gif)
         self.current_gif.start()
 
     def stop_gif(self):
@@ -52,7 +56,25 @@ class LoaderProbingPage(QWidget, FaceAI):
 
     @pyqtSlot()
     # a slot to be run when timeout on probing page
-    def timeout_probing(self):
+    def timeout_gif(self):
         self.stop_gif()
-        self.completed_probing_signal.emit(self.probing_result)
+        self.current_gif = self.processing_gif
+        self.lblProbeResult.setText("Probing images...")
+        self.start_gif()
+
+    def failed_probing_slot(self):
+        self.stop_gif()
+        self.current_gif = self.failed_gif
+        self.lblProbeResult.setText("Failed Probing for one image.")
+        self.start_gif()
+        self.timer.singleShot(1000, self.timeout_gif)
+        self.timer.start()
+
+    def success_probing_slot(self):
+        self.stop_gif()
+        self.current_gif = self.success_gif
+        self.lblProbeResult.setText("Success Probing for one image.")
+        self.start_gif()
+        self.timer.singleShot(1000, self.timeout_gif)
+        self.timer.start()
 

@@ -1,17 +1,22 @@
 import decimal
 
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
+import cv2
+import numpy as np
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QRect
+from PyQt5.QtGui import QPainter, QColor, QPen, QPaintEvent, QImage, QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QPushButton, QFormLayout, QLabel
 from commons.common import Common
 from commons.db_connection import DBConnection
+from commons.probe_result_item_image_widget import ProbeResultItemImageWidget
 
 
 class ProbeResultItemWidget(QWidget):
     delete_item_signal = pyqtSignal(object)
 
-    def __init__(self, result_item, is_shown_delete_button, is_used_old_cases, case_information, parent=None):
+    def __init__(self, result_item, face_item, is_shown_delete_button, is_used_old_cases, case_information, parent=None):
         QWidget.__init__(self, parent=parent)
         self.result_item = result_item
+        self.face_item = face_item
         self.is_used_old_cases = is_used_old_cases
         self.case_information = case_information
         # set whether to show cross button on image
@@ -23,6 +28,7 @@ class ProbeResultItemWidget(QWidget):
         self.vly_info_container = QVBoxLayout()
 
         self.wdt_image = QWidget()
+        self.lbl_image = QLabel(self.wdt_image)
 
         if self.is_showed_cross_button:
             self.btn_delete = QPushButton(self.wdt_image)
@@ -55,14 +61,10 @@ class ProbeResultItemWidget(QWidget):
 
     def init_view(self):
         self.vly_item_container.setSpacing(6)
-
-        self.wdt_image.setGeometry(1, 1, Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
+        self.wdt_image.setGeometry(0, 0, Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
         self.wdt_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.wdt_image.setMinimumSize(Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
         self.wdt_image.setMaximumSize(Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
-        style = ".QWidget{color:rgb(255, 255, 255);" \
-                "image:url(" + Common.resize_image(self.result_item['image_path'], Common.RESULT_ITEM_WIDGET_SIZE) + ");}"
-        self.wdt_image.setStyleSheet(style)
 
         if self.is_showed_cross_button:
             image_geo = self.wdt_image.geometry()
@@ -105,4 +107,38 @@ class ProbeResultItemWidget(QWidget):
             # # rounding the number upto 2 digits after the decimal point
             # rounded = decimal_value.quantize(decimal.Decimal('0.00'))
             self.lbl_similarity_score.setText(self.result_item['confidence'])
+        img = cv2.imread(self.result_item['image_path'])
+        img = np.array(img)
 
+        size = Common.RESULT_ITEM_WIDGET_SIZE
+        rate = 0.75
+        width = img.shape[1]
+        height = img.shape[0]
+        if width > height:
+            rate = size / width
+        else:
+            rate = size / height
+        dim = (int(img.shape[1] * rate), int(img.shape[0] * rate))
+        img = cv2.resize(img, dim)
+
+        if float(self.result_item['confidence'][:len(self.result_item['confidence']) - 2]) >= 70.0:
+            x1 = self.face_item['face_rectangle']['left'] * rate
+            y1 = self.face_item['face_rectangle']['top'] * rate
+            x2 = x1 + self.face_item['face_rectangle']['width'] * rate
+            y2 = y1 + self.face_item['face_rectangle']['height'] * rate
+            img = cv2.rectangle(img, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 1)
+
+        height, width, channel = img.shape
+        bytesPerLine = 3 * width
+        qimage = QImage(img.tobytes(), width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
+        pixmap = QPixmap(qimage)
+        print(pixmap.size().width())
+        lbl_x = 0
+        lbl_y = 0
+        if pixmap.size().width() > pixmap.size().height():
+            lbl_y = (self.wdt_image.size().height() - pixmap.height()) / 2
+            self.lbl_image.setGeometry(0, lbl_y, pixmap.width(), pixmap.height())
+        else:
+            lbl_x = (self.wdt_image.size().width() - pixmap.width()) / 2
+            self.lbl_image.setGeometry(lbl_x, 0, pixmap.width(), pixmap.height())
+        self.lbl_image.setPixmap(pixmap)
