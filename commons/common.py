@@ -3,12 +3,15 @@ import json
 import operator
 import os.path
 import pathlib
+import shutil
+import uuid
 import winreg
 
 import PIL.Image
 import cv2
 from PyQt5.QtCore import QFile
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QMessageBox, QLabel
 import numpy as np
 
 
@@ -89,6 +92,14 @@ class Common:
     @staticmethod
     def resize_image(img_path, size):
         try:
+            temp_path = Common.get_reg(Common.REG_KEY)
+            if temp_path:
+                temp_path = temp_path + "/" + Common.TEMP_PATH
+            else:
+                temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH
+            Common.create_path(temp_path)
+            temp_folder = temp_path + "/resize-temp/"
+            Common.create_path(temp_folder)
             body_img = cv2.imread(img_path)
             if body_img is None:
                 print('resize image: wrong path', img_path)
@@ -105,10 +116,52 @@ class Common:
                     print("resized:", img_path)
                     dim = (int(img.shape[1] * rate), int(img.shape[0] * rate))
                     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+                    img_path = temp_folder + Common.get_file_name_from_path(img_path)
                     cv2.imwrite(img_path, img)
         except IOError as e:
             print("resize image error:", e)
         return img_path
+
+    @staticmethod
+    def remove_temp_folder_for_resize_image():
+        temp_path = Common.get_reg(Common.REG_KEY)
+        if temp_path:
+            temp_path = temp_path + "/" + Common.TEMP_PATH
+        else:
+            temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH
+        Common.create_path(temp_path)
+        temp_folder = temp_path + "/resize-temp"
+        Common.create_path(temp_folder)
+        shutil.rmtree(temp_folder, ignore_errors=True)
+
+    @staticmethod
+    def make_pixmap_from_image(image_path, parent):
+        img = cv2.imread(image_path)
+        img = np.array(img)
+        size = parent.size().width()
+        rate = 0.75
+        width = img.shape[1]
+        height = img.shape[0]
+        if width > height:
+            rate = size / width
+        else:
+            rate = size / height
+        dim = (int(img.shape[1] * rate), int(img.shape[0] * rate))
+        img = cv2.resize(img, dim)
+        height, width, channel = img.shape
+        bytesPerLine = 3 * width
+        qimage = QImage(img.tobytes(), width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
+        pixmap = QPixmap(qimage)
+        lbl_x = 0
+        lbl_y = 0
+        if pixmap.size().width() > pixmap.size().height():
+            lbl_y = (parent.size().height - pixmap.height()) / 2
+            # ret_label.setGeometry(0, lbl_y, pixmap.width(), pixmap.height())
+        else:
+            lbl_x = (parent.size().width() - pixmap.width()) / 2
+            # ret_label.setGeometry(lbl_x, 0, pixmap.width(), pixmap.height())
+        # ret_label.setPixmap(pixmap)
+        return lbl_x, lbl_y, pixmap
 
     @staticmethod
     def is_empty(case_info):

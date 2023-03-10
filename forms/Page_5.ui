@@ -143,6 +143,9 @@ border:none;</string>
            <property name="rightMargin">
             <number>85</number>
            </property>
+           <property name="bottomMargin">
+            <number>10</number>
+           </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <property name="spacing">

@@ -236,10 +236,12 @@ class LoaderProbeReportListPage(QWidget):
         self.zip_thread = ZipThread(self.shown_reports, zip_location[0] + zip_location[1])
         self.zip_thread.finished_zip_signal.connect(self.finished_zip_slot)
         self.zip_thread.start()
+        self.setEnabled(False)  # set screen to be unable to operate
 
     @pyqtSlot(ThreadResult)
     def finished_zip_slot(self, res):
         self.zip_thread.quit()
+        self.setEnabled(True)
         if res.status:
             Common.show_message(QMessageBox.Information, "Zip file included all pdfs was created.", "AllZip Generation", "Notice", "")
         else:
