@@ -45,8 +45,10 @@ class ZipThread(QThread, ProbingResult):
             Common.create_path(temp_path)
             temp_folder = temp_path + "/" + str(uuid.uuid4()) + "/"
             Common.create_path(temp_folder)
-
+            index = 0
             for report in self.reports:
+                print(index)
+                index += 1
                 filename = gen_pdf_filename(report.probe_id, report.case_info.case_number, report.case_info.case_PS)
                 export_report_pdf(temp_folder, filename)
 

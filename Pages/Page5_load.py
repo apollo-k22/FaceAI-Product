@@ -128,13 +128,15 @@ class LoaderProbeReportPreviewPage(QWidget):
     def finished_refresh_target_widget_slot(self, case_data):
         self.glyReportBuff = QGridLayout(self)
         results = self.probe_result.json_result['results']
+        faces = self.probe_result.json_result['faces']
         self.case_data_for_results = case_data
         index = 0
         if len(results) > 0 and len(case_data):
             for result in results:
                 case_information = case_data[index]
+                face = faces[index]
                 # show the cross button on image
-                result_view_item = ProbeResultItemWidget(result, True,
+                result_view_item = ProbeResultItemWidget(result, face, True,
                                                          self.probe_result.case_info.is_used_old_cases,
                                                          case_information)
                 # connect delete signal from delete button on target image.
