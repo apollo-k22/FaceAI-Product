@@ -116,7 +116,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
                 resized_image_path = Common.resize_image(url, self.btnSinglePhoto.size().width())
                 btn_style = "image:url(" + resized_image_path + ");height: auto;border: 1px solid rgb(53, 132, 228);"
                 self.btnSinglePhoto.setStyleSheet(btn_style)
-                self.btnSinglePhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+                self.btnSinglePhoto.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
                 self.image_urls.append(url)
         else:
             btn_style = "border: none;border-image:url(:/newPrefix/Group 67.png);"

@@ -278,7 +278,7 @@ background:transparent;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-315</y>
+          <y>0</y>
           <width>1271</width>
           <height>1251</height>
          </rect>
@@ -691,6 +691,9 @@ border: 1px solid rgb(53, 132, 228);
                    </property>
                    <property name="text">
                     <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
