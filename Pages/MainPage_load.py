@@ -355,4 +355,6 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.init_views()
         self.ui_6_probe_report.init_views()
         self.show_p2_create_new_case()
+        # remove all resized image file
+        Common.remove_temp_folder_for_resize_image()
 

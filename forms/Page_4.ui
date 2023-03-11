@@ -241,7 +241,7 @@ background-size: contain;
           </size>
          </property>
          <property name="text">
-          <string/>
+          <string>Probing images...</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>

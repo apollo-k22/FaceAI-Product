@@ -2,7 +2,7 @@ import re
 
 from PyQt5 import uic
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QPlainTextEdit, QTextEdit
+from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QPlainTextEdit, QTextEdit, QLabel
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QFileDialog
@@ -77,20 +77,18 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                                     "Incorrect image selected.",
                                     "")
                 self.subject_photo_url = ""
-                # btn_style = "border-image:url("");"
-                # self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.get_subject_photo()
             else:
-                Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
+                resized_image_path = Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
                 self.subject_photo_url = photo_url
-                btn_style = "image:url(" + self.subject_photo_url + ");background:transparent;" \
+                btn_style = "image:url(" + resized_image_path + ");background:transparent;" \
                              "border: 1px solid rgb(53, 132, 228);background-size:cover;"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         else:
             self.subject_photo_url = ""
-            btn_style = "image:url(:/newPrefix/Group 68.png);background:transparent;" \
-                        "border: 1px solid rgb(53, 132, 228);background-size:cover;"
+            btn_style = "content-align:left;border:none;background:transparent;" \
+                        "border-image:url(:/newPrefix/Group 68.png);border-radius: 30px;background:none;"
             self.btnSelectPhoto.setStyleSheet(btn_style)
 
     @pyqtSlot()
@@ -135,7 +133,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
             self.btnSelectPhoto.setFocus()
             return true, "Subject Image Url"
         return false, "All Fields are filled."
-    # remove all invalid substring according to regx
+
     # remove all invalid substring according to regx
     @pyqtSlot(str)
     def check_ledit_string_validation(self, line_edit, regx, txt, max_length):
@@ -168,7 +166,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
 
     # return page to initial status
     def refresh_view(self):
-        btn_style = "content-aligne:left;border:none;background:transparent;" \
+        btn_style = "content-align:left;border:none;background:transparent;" \
                     "border-image:url(:/newPrefix/Group 68.png);border-radius: 30px;background:none;"
         self.btnSelectPhoto.setStyleSheet(btn_style)
         self.leditCaseNumber.setText("")

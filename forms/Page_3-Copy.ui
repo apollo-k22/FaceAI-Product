@@ -232,7 +232,7 @@ margin: 10px;
 </string>
            </property>
            <property name="currentIndex">
-            <number>3</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="wdtSinglePhoto">
             <property name="sizePolicy">
@@ -333,10 +333,16 @@ margin: 10px;
                      <height>600</height>
                     </size>
                    </property>
+                   <property name="baseSize">
+                    <size>
+                     <width>300</width>
+                     <height>300</height>
+                    </size>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true">background:transparent;
 border:0px;
-border-image:url(:/newPrefix/Group 67.png);</string>
+image:url(:/newPrefix/Group 67.png);</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -349,12 +355,12 @@ border-image:url(:/newPrefix/Group 67.png);</string>
                     <enum>Qt::Vertical</enum>
                    </property>
                    <property name="sizeType">
-                    <enum>QSizePolicy::Expanding</enum>
+                    <enum>QSizePolicy::Fixed</enum>
                    </property>
                    <property name="sizeHint" stdset="0">
                     <size>
                      <width>20</width>
-                     <height>60</height>
+                     <height>100</height>
                     </size>
                    </property>
                   </spacer>
