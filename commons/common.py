@@ -155,7 +155,7 @@ class Common:
         lbl_x = 0
         lbl_y = 0
         if pixmap.size().width() > pixmap.size().height():
-            lbl_y = (parent.size().height - pixmap.height()) / 2
+            lbl_y = (parent.size().height() - pixmap.height()) / 2
             # ret_label.setGeometry(0, lbl_y, pixmap.width(), pixmap.height())
         else:
             lbl_x = (parent.size().width() - pixmap.width()) / 2
