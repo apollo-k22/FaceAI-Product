@@ -65,8 +65,6 @@ class ProbeResultItemWidget(QWidget):
         self.wdt_image.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.wdt_image.setMinimumSize(Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
         self.wdt_image.setMaximumSize(Common.RESULT_ITEM_WIDGET_SIZE, Common.RESULT_ITEM_WIDGET_SIZE)
-        # style = "image:url(" + Common.resize_image(self.result_item['image_path'], Common.RESULT_ITEM_WIDGET_SIZE) + ");"
-        # self.wdt_image.setStyleSheet(style)
 
         if self.is_showed_cross_button:
             image_geo = self.wdt_image.geometry()
@@ -109,11 +107,6 @@ class ProbeResultItemWidget(QWidget):
             # # rounding the number upto 2 digits after the decimal point
             # rounded = decimal_value.quantize(decimal.Decimal('0.00'))
             self.lbl_similarity_score.setText(self.result_item['confidence'])
-        # if self.is_used_old_cases:
-        #     db = DBConnection()
-        #     case_no, ps = db.get_case_info(self.result_item['image_path'])
-        #     self.lbl_case_number.setText(case_no)
-        #     self.lbl_ps.setText(ps)
         img = cv2.imread(self.result_item['image_path'])
         img = np.array(img)
 

@@ -24,6 +24,7 @@ from cryptophic.dec_thread import DecThread
 from insightfaces.faceai_init_thread import FaceAIInitThread
 from insightfaces.main import FaceAI
 from commons.ntptime import ntp_get_time
+from sys import exit
 
 
 class StartMain(QMainWindow):
@@ -39,7 +40,7 @@ class StartMain(QMainWindow):
             Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
                                 "NTP Error.",
                                 "")
-            quit()
+            exit()
 
         self.faceai = FaceAI()
         self.splash = splash
@@ -352,7 +353,7 @@ class StartMain(QMainWindow):
             Common.show_message(QMessageBox.Warning, "You are an invalid user.", "",
                                 "Invalid selected.",
                                 "")
-            quit()
+            exit()
 
     def init_child_widgets(self):
         self.ui_2_create_new_case.refresh_view()
@@ -360,6 +361,4 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.init_views()
         self.ui_6_probe_report.init_views()
         self.show_p2_create_new_case()
-        # remove all resized image file
-        Common.remove_temp_folder_for_resize_image()
 

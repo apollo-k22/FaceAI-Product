@@ -53,11 +53,6 @@ class ProbingThread(QThread, CaseInfo, FaceAI):
             results_buff = Common.sort_list_by_float_attribute(results_buff, 'confidence', 'string', True)
             ret_json['results'] = results_buff
         if type(faces).__name__ == 'list':
-            # for item in faces:
-            #     img_url = item['image_path']
-            #     img_url = img_url.replace("\\", "/")
-            #     item['image_path'] = img_url
-            #     faces_buff.append(item)
             for result in ret_json['results']:
                 result_token = result['face_token']
                 for item in faces:

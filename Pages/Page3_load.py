@@ -224,10 +224,6 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.lblOldCaseResult.setText("Click on the \"Start probe\" button below to continue the further process.")
         self.repaint()
 
-    # def showEvent(self, a0: QShowEvent) -> None:
-    #     super(LoaderSelectTargetPhotoPage, self).showEvent(a0)
-    #     self.refresh_view()
-
     def init_views(self):
         self.refresh_view()
         self.stkwdtSelectPhotos.setCurrentIndex(0)
