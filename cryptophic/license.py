@@ -4,7 +4,7 @@ from pyutil import filereplace
 import cpuinfo, wmi
 
 license_file_name = r"license.dat"
-dec_secure_path = r"C:\\Users\\" + os.getlogin() + r"\\.secure\\.encfiles"
+database_file_name = r"data.db"
 
 def access_license_list(license_str):
     expire_flag = ""
@@ -35,8 +35,8 @@ def access_license_list(license_str):
             print("File non-exist")
             encrypt_file(license_file_name)
             return (False, expire_flag)
-    except:
-        print("File open error")
+    except Exception as e:
+        print("access_license_list: ", e)
         encrypt_file(license_file_name)
         return (False, expire_flag)
 
@@ -45,14 +45,17 @@ def access_license_list(license_str):
     
 
 def read_information_db():
+    decrypt_file(os.path.join(database_file_name))
+    dec_secure_path = get_dec_file_path()
     try:
-        connection = sqlite3.connect("./data.db")
+        connection = sqlite3.connect(os.path.join(dec_secure_path, database_file_name))
         cursor = connection.cursor()
     
         (count,) = connection.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{}'".format("appinfo")).fetchone()
         if count == 0:
+            fpo, atpo = get_cpu_info()
             cursor.execute("""CREATE TABLE appinfo (isdst, expire, fpo, atpo)""")
-            cursor.execute("INSERT INTO appinfo VALUES (?,?,?,?)", (False, "expire", "fpo", "atpo"))
+            cursor.execute("INSERT INTO appinfo VALUES (?,?,?,?)", (False, "expire", fpo, atpo))
             connection.commit()
     
         cursor.execute("SELECT * FROM appinfo")
@@ -63,25 +66,34 @@ def read_information_db():
         atpo_info = result[3]
     
     except OperationalError:
+        encrypt_file(database_file_name)
         print("Database Error")
+        return(False, "expire", "fpo", "atpo")
     
     finally:
         connection.close()
-
+    encrypt_file(database_file_name)
     return (unlocked, expire_date, fpo_info, atpo_info)
 
 def write_infomation_db(isdst, expire, fpo, atpo):
+    decrypt_file(os.path.join(database_file_name))
+    dec_secure_path = get_dec_file_path()
+
     try:
-        connection = sqlite3.connect("./data.db")
+        connection = sqlite3.connect(os.path.join(dec_secure_path, database_file_name))
         cursor = connection.cursor()  
         cursor.execute("UPDATE appinfo SET isdst = ?, expire = ?, fpo = ?, atpo = ?", (isdst, expire, fpo, atpo))
         connection.commit()    
 
-    except: 
-        print("Database Error")   
+    except Exception as e: 
+        encrypt_file(database_file_name)
+        print("write_infomation_db: ", e)
+        return(False, "expire", "fpo", "atpo")
 
     finally:
         connection.close() 
+
+    encrypt_file(database_file_name)
 
 def get_cpu_info():
     fpo_value = ""

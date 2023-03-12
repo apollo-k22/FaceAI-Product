@@ -1,27 +1,51 @@
 import json
+import os
 import pathlib
 import sqlite3
 import traceback
 from sqlite3 import OperationalError
 from typing import Union
 
+from PyQt5.QtWidgets import QMessageBox
+
 from commons.case_info import CaseInfo
 from commons.common import Common
 from commons.probing_result import ProbingResult
+from cryptophic.main import get_dec_file_path, decrypt_file, decrypt_file_to, encrypt_file_to
 
 
 class DBConnection:
     def __init__(self):
-        self.connection_string = "./" + Common.DATABASE_PATH + "/reports.db"
+        self.connection_string = None
         self.connection = None
+        self.dec_db_file_path = ''
+        self.create_connection_string()
         self.create_table()
 
-    def create_table(self):
-        try:
-            Common.create_path("./" + Common.DATABASE_PATH)
-        except Union[FileExistsError, FileNotFoundError] as ex:
-            print(ex)
+    # create connection string from according register value and common value
+    def create_connection_string(self):
+        reg_value = Common.get_reg(Common.REG_KEY)
+        connection_string_buff = ""
+        if reg_value is not None:
+            connection_string_buff = reg_value
+        else:
+            Common.show_message(QMessageBox.Warning, "You did not get data storage path. \n "
+                                                     "The data storage path will be application root directory.",
+                                "Data Storage not found", "Data Storage not found", "")
+            connection_string_buff = Common.STORAGE_PATH
+        # create database path from created database path
+        Common.create_path(connection_string_buff)
+        connection_string_buff += '/reports.db'
+        self.connection_string = connection_string_buff
+        # get the temporary path for enc/dec
+        dec_root_path = get_dec_file_path()
+        # create temporary database file
+        dec_db_path = os.path.join(dec_root_path, Common.STORAGE_PATH)
+        self.dec_db_file_path = os.path.join(dec_db_path, 'reports.db')
+        Common.create_path(dec_db_path)
 
+    def create_table(self):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         try:
             query_string_cases = "create table if not exists cases (" \
                                  "id INTEGER PRIMARY KEY, " \
@@ -41,7 +65,8 @@ class DBConnection:
                                    "target_url TEXT," \
                                    "case_id INTEGER," \
                                    "similarity FLOAT);"
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
+            # self.connection = sqlite3.connect(self.connection_string)
             cursor = self.connection.cursor()
             cursor.execute(query_string_cases)
             cursor.execute(query_string_targets)
@@ -49,15 +74,16 @@ class DBConnection:
         except sqlite3.IntegrityError as e:
             print('INTEGRITY ERROR\n')
             print(traceback.print_exc())
-
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
 
     def count_row_number(self, table_name):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         try:
             query_string = "select count(id) from " + table_name + ";"
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)
             row = cursor.fetchone()
@@ -70,9 +96,11 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return 0
 
     def get_values(self):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         results = []
         try:
             query_string = "select " \
@@ -81,7 +109,7 @@ class DBConnection:
                            ",subject_url,json_result,created_date" \
                            " from cases " \
                            " order by created_date desc"
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)
             rows = cursor.fetchall()
@@ -98,7 +126,7 @@ class DBConnection:
                 case_info.remarks = row[7]
                 case_info.subject_image_url = row[8]
                 json_data = row[9]
-                json_data = json.dumps(json_data)
+                # json_data = json.dumps(json_data)
                 json_data = json.loads(json_data)
                 probe_result.json_result = json_data
                 probe_result.created_date = row[10]
@@ -110,12 +138,14 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return results
 
-    def search_results(self, search_val, current_page, number_per_page):
+    def search_results(self, search_val, total, current_page, number_per_page):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         last_index = current_page * number_per_page
         query_string = ""
-        if last_index == 0:
+        if number_per_page >= total:
             query_string = "select id,probe_id,matched," \
                            "case_no,PS,examiner_no,examiner_name,remarks" \
                            ",subject_url,json_result,created_date" \
@@ -129,33 +159,47 @@ class DBConnection:
                                                                                                                                                                                                                                                                        " order by created_date desc limit " \
                            + str(number_per_page)
         else:
-            query_string = "select id,probe_id,matched," \
-                           "case_no,PS,examiner_no,examiner_name,remarks" \
-                           ",subject_url,json_result,created_date" \
-                           " from " \
-                           " (select * from cases where created_date like '%" + search_val + "%' " \
-                                                                                             " or case_no like '%" + search_val + "%' " \
-                                                                                                                                  " or ps like '%" + search_val + "%' " \
-                                                                                                                                                                  " or probe_id like '%" + search_val + "%' " \
-                                                                                                                                                                                                        " or examiner_no like '%" + search_val + "%' " \
-                                                                                                                                                                                                                                                 " or examiner_name like '%" + search_val + "%' " \
-                                                                                                                                                                                                                                                                                            " order by created_date desc) as a " \
-                                                                                                                                                                                                                                                                                            " where a.id < " \
-                                                                                                                                                                                                                                                                                            "(select min(id) from " \
-                                                                                                                                                                                                                                                                                            " (select * from cases" \
-                                                                                                                                                                                                                                                                                            " where created_date like '%" + search_val + "%' " \
-                                                                                                                                                                                                                                                                                                                                         " or case_no like '%" + search_val + "%' " \
-                                                                                                                                                                                                                                                                                                                                                                              " or ps like '%" + search_val + "%' " \
-                                                                                                                                                                                                                                                                                                                                                                                                              " or probe_id like '%" + search_val + "%' " \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    " or examiner_no like '%" + search_val + "%' " \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             " or examiner_name like '%" + search_val + "%' " \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        " order by created_date desc limit " \
-                           + str(last_index) + "))" \
-                                               " limit " + str(number_per_page)
+
+            if last_index == 0:
+                query_string = "select id,probe_id,matched," \
+                               "case_no,PS,examiner_no,examiner_name,remarks" \
+                               ",subject_url,json_result,created_date" \
+                               " from cases" \
+                               " where created_date like '%" + search_val + "%' " \
+                                                                            " or case_no like '%" + search_val + "%' " \
+                                                                                                                 " or ps like '%" + search_val + "%' " \
+                                                                                                                                                 " or probe_id like '%" + search_val + "%' " \
+                                                                                                                                                                                       " or examiner_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                " or examiner_name like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                           " order by created_date desc limit " \
+                               + str(number_per_page)
+            else:
+                query_string = "select id,probe_id,matched," \
+                               "case_no,PS,examiner_no,examiner_name,remarks" \
+                               ",subject_url,json_result,created_date" \
+                               " from " \
+                               " (select * from cases where created_date like '%" + search_val + "%' " \
+                                                                                                 " or case_no like '%" + search_val + "%' " \
+                                                                                                                                      " or ps like '%" + search_val + "%' " \
+                                                                                                                                                                      " or probe_id like '%" + search_val + "%' " \
+                                                                                                                                                                                                            " or examiner_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                     " or examiner_name like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                " order by created_date desc) as a " \
+                                                                                                                                                                                                                                                                                                " where a.id < " \
+                                                                                                                                                                                                                                                                                                "(select min(id) from " \
+                                                                                                                                                                                                                                                                                                " (select * from cases" \
+                                                                                                                                                                                                                                                                                                " where created_date like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                             " or case_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                  " or ps like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                                                  " or probe_id like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        " or examiner_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 " or examiner_name like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            " order by created_date desc limit " \
+                               + str(last_index) + "))" \
+                                                   " limit " + str(number_per_page)
         results = []
-        print(query_string)
         try:
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)
             rows = cursor.fetchall()
@@ -172,7 +216,7 @@ class DBConnection:
                 case_info.remarks = row[7]
                 case_info.subject_image_url = row[8]
                 json_data = row[9]
-                json_data = json.dumps(json_data)
+                # json_data = json.dumps(json_data)
                 json_data = json.loads(json_data)
                 probe_result.json_result = json_data
                 probe_result.created_date = row[10]
@@ -184,20 +228,21 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return results
 
     def count_search_results(self, search_val):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         query_string = query_string = "select count(id) from cases" \
-                                        " where created_date like '%" + search_val + "%' " \
-                                        " or case_no like '%" + search_val + "%' " \
-                                        " or ps like '%" + search_val + "%' " \
-                                        " or probe_id like '%" + search_val + "%' " \
-                                        " or examiner_no like '%" + search_val + "%' " \
-                                        " or examiner_name like '%" + search_val + "%' " \
-                                        " order by created_date desc "
-        print(query_string)
+                                      " where created_date like '%" + search_val + "%' " \
+                                                                                   " or case_no like '%" + search_val + "%' " \
+                                                                                                                        " or ps like '%" + search_val + "%' " \
+                                                                                                                                                        " or probe_id like '%" + search_val + "%' " \
+                                                                                                                                                                                              " or examiner_no like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                       " or examiner_name like '%" + search_val + "%' " \
+                                                                                                                                                                                                                                                                                  " order by created_date desc "
         try:
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)
             rows = cursor.fetchone()
@@ -210,12 +255,14 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return 0
 
     def get_last_inserted_id(self, table_name, id_field):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         try:
             query_string = "select " + id_field + " from " + table_name + " order by " + id_field + " desc;"
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)
             rows = cursor.fetchone()
@@ -229,12 +276,14 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return 0
 
     # values : list of tuples
     def insert_values(self, table_name, fields, values):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         try:
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             query_string = "insert into " + table_name + "("
             # add field names to query
@@ -259,12 +308,14 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return self.get_last_inserted_id(table_name, "id")
 
     def is_exist_value(self, table_name, field, value):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         try:
             query_string = "select * from " + table_name + " where " + field + "=" + value
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)
             rows = cursor.fetchone()
@@ -278,52 +329,36 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return False
 
-    def get_case_info(self, image_path):
-        case_no = ''
-        ps = ''
-        try:
-            query_string = "select " \
-                           "case_no,PS from cases " \
-                           " where id=(select case_id from targets where target_url='" + image_path + "')"
-            self.connection = sqlite3.connect(self.connection_string)
-            cursor = self.connection.cursor()
-            cursor.execute(query_string)
-            rows = cursor.fetchall()
-            self.connection.commit()
-            for row in rows:
-                case_no = row[0]
-                ps = row[1]
-        except sqlite3.IntegrityError as e:
-            print('INTEGRITY ERROR\n')
-            print(traceback.print_exc())
-        finally:
-            if self.connection:
-                self.connection.close()
-        return case_no, ps
-
-    def get_pagination_results(self, param, current_page, number_per_page):
+    def get_pagination_results(self, param, total, current_page, number_per_page):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
         results = []
         last_index = current_page * number_per_page
         query_string = ""
-        if last_index:
-            query_string = "select id,probe_id,matched," \
-                           "case_no,PS,examiner_no,examiner_name,remarks" \
-                           ",subject_url,json_result,created_date" \
-                           " from " \
-                           " (select * from cases order by created_date DESC) as a " \
-                           " where a.id < (select min(id) from (select * from cases order by created_date DESC limit " \
-                           + str(last_index) + "))" \
-                                               " limit " + str(number_per_page)
-        else:
+        if number_per_page >= total:
             query_string = "select id,probe_id,matched," \
                            "case_no,PS,examiner_no,examiner_name,remarks" \
                            ",subject_url,json_result,created_date" \
                            " from cases order by created_date DESC limit " + str(number_per_page)
-        print(query_string)
+        else:
+            if last_index:
+                query_string = "select id,probe_id,matched," \
+                               "case_no,PS,examiner_no,examiner_name,remarks" \
+                               ",subject_url,json_result,created_date" \
+                               " from " \
+                               " (select * from cases order by created_date DESC) as a " \
+                               " where a.id < (select min(id) from (select * from cases order by created_date DESC limit " \
+                               + str(last_index) + "))" \
+                                                   " limit " + str(number_per_page)
+            else:
+                query_string = "select id,probe_id,matched," \
+                               "case_no,PS,examiner_no,examiner_name,remarks" \
+                               ",subject_url,json_result,created_date" \
+                               " from cases order by created_date DESC limit " + str(number_per_page)
         try:
-            self.connection = sqlite3.connect(self.connection_string)
+            self.connection = sqlite3.connect(self.dec_db_file_path)
             cursor = self.connection.cursor()
             cursor.execute(query_string)
             rows = cursor.fetchall()
@@ -340,7 +375,7 @@ class DBConnection:
                 case_info.remarks = row[7]
                 case_info.subject_image_url = row[8]
                 json_data = row[9]
-                json_data = json.dumps(json_data)
+                # json_data = json.dumps(json_data)
                 json_data = json.loads(json_data)
                 probe_result.json_result = json_data
                 probe_result.created_date = row[10]
@@ -352,4 +387,40 @@ class DBConnection:
         finally:
             if self.connection:
                 self.connection.close()
+                encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return results
+
+    def get_case_data(self, results):
+        decrypt_file_to(os.path.join(self.connection_string), self.dec_db_file_path)
+        case_no = ''
+        ps = ''
+        cases = []
+        if results is not None:
+            index = 0
+            try:
+                self.connection = sqlite3.connect(self.dec_db_file_path)
+                for result in results:
+                    img_path = result['image_path']
+                    query_string = "select " \
+                                   "case_no,PS from cases " \
+                                   " where id=(select case_id from targets where target_url='" + img_path + "')"
+                    cursor = self.connection.cursor()
+                    cursor.execute(query_string)
+                    rows = cursor.fetchall()
+                    self.connection.commit()
+                    case_no = ""
+                    ps = ""
+                    for row in rows:
+                        case_no = row[0]
+                        ps = row[1]
+                    case = (case_no, ps)
+                    cases.append(case)
+            except sqlite3.IntegrityError as e:
+                print('INTEGRITY ERROR\n')
+                print(traceback.print_exc())
+            finally:
+                if self.connection:
+                    self.connection.close()
+                    encrypt_file_to(self.dec_db_file_path, self.connection_string)
+        return cases
+

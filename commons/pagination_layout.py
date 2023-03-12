@@ -1,4 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QLabel, QWidget, QLayout, QSpacerItem, QSizePolicy, QLineEdit
 
 from commons.common import Common
@@ -131,7 +132,7 @@ class PaginationLayout(QHBoxLayout):
         lbl_page_number.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         hspacer = QSpacerItem(50, 10, QSizePolicy.Fixed, QSizePolicy.Fixed)
 
-        btn_go.setStyleSheet("border-radius: 10px;background: transparent"
+        btn_go.setStyleSheet("border-radius: 10px;background: transparent;"
                              "color: rgb(255, 255, 255);border: 1px solid white;")
         btn_go.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btn_go.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
@@ -140,6 +141,8 @@ class PaginationLayout(QHBoxLayout):
         self.hlyGo2Page.addWidget(lbl_page_label)
         self.hlyGo2Page.addSpacerItem(hspacer)
         self.hlyGo2Page.addWidget(btn_go)
+        # set validator for line edit box of go number
+        self.set_validate_input_data()
 
     @pyqtSlot()
     def previous_page_slot(self):
@@ -165,13 +168,24 @@ class PaginationLayout(QHBoxLayout):
 
     @pyqtSlot()
     def clicked_go_button(self):
-        to_be_gone_page = int(self.hlyGo2Page.itemAt(1).widget().text()) - 1
+        leditGoPage = self.hlyGo2Page.itemAt(1).widget()
+        print(self.hlyGo2Page.count())
+        go_page = leditGoPage.text()
+        if go_page == '':
+            return
+        to_be_gone_page = int(go_page) - 1
         if to_be_gone_page < 0 or to_be_gone_page > self.page_count - 1:
             return
         self.changed_page_signal.emit(to_be_gone_page)
+        leditGoPage.setText("")
 
     def create_pagination_button(self, current):
         button = PaginationButton(current)
         button.button_clicked_signal.connect(
             lambda current_page: self.clicked_slot(current_page))
         return button
+
+    # set validator to input box
+    def set_validate_input_data(self):
+        go_page_number_validator = QIntValidator(self.hlyGo2Page.itemAt(1).widget())
+        self.hlyGo2Page.itemAt(1).widget().setValidator(go_page_number_validator)

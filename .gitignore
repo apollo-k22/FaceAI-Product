@@ -16,5 +16,6 @@ key.key
 
 # Ignored folders
 FaceAI Media
+Data Storage
 /.idea
 /forms/mainwindow.ui

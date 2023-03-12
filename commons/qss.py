@@ -1,6 +1,6 @@
 QSS = """
 QLabel {
-    background-color: transparent; 
+    background: transparent; 
     color: rgb(255,255,255);
     font: bold;
     font-size: 14pt;
@@ -8,14 +8,36 @@ QLabel {
 }
 QLineEdit {
     color: rgb(255, 255, 255);
-    font-size: 12pt;    
+    font-size: 14pt;
+    font-family: Arial;
+    background:transparent;
+    border: 1px solid rgb(53, 132, 228);
+}
+QRadioButton{
+    color: rgb(255, 255, 255);
+    font-size: 12pt;
+    font-family: Arial;
+    background:transparent;
+    border: 1px solid rgb(53, 132, 228);
+}
+QTextEdit{
+    color: rgb(255, 255, 255);
+    font-size: 14pt;
+    font-family: Arial;
+    background:transparent;
+    border: 1px solid rgb(53, 132, 228);
 }
 QPushButton {
     color: rgb(255, 255, 255);
     font-size: 12pt;
     font: bold;
+    font-family: Arial;
 }
-
+QStatusBar{
+    color: rgb(255, 255, 255);
+    font-size: 10pt;
+    font-family: Arial;
+}
 * {
     # background-color: transparent; 
     font-family: "Arial";
@@ -36,7 +58,8 @@ QScrollArea  QWidget  QTextEdit
     font: 12pt "Arial";
 }
 QMessageBox{
-    background-color: rgb(98, 136, 178)
+    background-color: rgb(98, 136, 178);
+    background:transparent;
 }
 QTableWidget::item{
     max-height:50px;

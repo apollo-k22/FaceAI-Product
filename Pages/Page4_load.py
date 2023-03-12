@@ -1,8 +1,8 @@
 from random import random
 
 from PyQt5 import uic
-from PyQt5.QtCore import QTimer, pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QTimer
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QLabel
 
@@ -12,30 +12,36 @@ from commons.probing_thread import ProbingThread
 from insightfaces.main import FaceAI
 
 
-class LoaderProbingPage(QMainWindow, FaceAI):
+class LoaderProbingPage(QWidget, FaceAI):
     completed_probing_signal = pyqtSignal(ProbingResult)
+    start_splash_signal = pyqtSignal()
 
     def __init__(self, faceai):
         super().__init__()
         self.faceai = faceai
         self.probing_result = ProbingResult()
         self.probing_thread = ProbingThread(CaseInfo, self.faceai)
-        self.gif = QMovie(":/newPrefix/AIFace.gif")  # ('ui/animated_gif_logo_UI_.gif') !!!
+        self.processing_gif = QMovie(":/newPrefix/AIFace_Processing.gif")
+        self.current_gif = self.processing_gif
+        self.failed_gif = QMovie(":/newPrefix/AIFace_Failed.gif")
+        self.success_gif = QMovie(":/newPrefix/AIFace_Success.gif")
         self.window = uic.loadUi("./forms/Page_4.ui", self)
         self.lblFaceGif = self.findChild(QLabel, "lblFaceGif")
-        self.lblFaceGif.setMovie(self.gif)
+        self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
+        self.probing_thread.failed_probing_signal.connect(self.failed_probing_slot)
+        self.probing_thread.success_probing_signal.connect(self.success_probing_slot)
+        self.timer = QTimer()
 
     def start_gif(self):
-        self.gif.start()
+        self.lblFaceGif.setMovie(self.current_gif)
+        self.current_gif.start()
 
     def stop_gif(self):
-        self.gif.stop()
+        self.current_gif.stop()
 
     def start_probing(self, case_info):
         self.probing_result.case_info = case_info
-        # self.make_mock()
         self.start_gif()
-        # QTimer.singleShot(2000, self.timeout_probing)
         # start to probe images
         self.probing_thread.probing_result.case_info = case_info
         self.probing_thread.finished_probing_signal.connect(self.finished_probing_slot)
@@ -45,37 +51,30 @@ class LoaderProbingPage(QMainWindow, FaceAI):
     def finished_probing_slot(self, probing_result):
         self.stop_gif()
         self.probing_thread.quit()
+        self.start_splash_signal.emit()
         self.completed_probing_signal.emit(probing_result)
 
     @pyqtSlot()
     # a slot to be run when timeout on probing page
-    def timeout_probing(self):
+    def timeout_gif(self):
         self.stop_gif()
-        self.completed_probing_signal.emit(self.probing_result)
+        self.current_gif = self.processing_gif
+        self.lblProbeResult.setText("Probing images...")
+        self.start_gif()
 
-    def make_mock(self):
-        faces = []
-        results = []
-        index = 0
-        for target_url in self.probing_result.case_info.target_image_urls:
-            face = {
-                "face_token": index,
-                "face_rectangle": {}
-            }
-            result = {
-                "image_path": target_url,
-                "confidence": random() * 100
-            }
-            faces.append(face)
-            results.append(result)
-        json_buff = {
-            "time_used": 467,
-            "thresholds": {
-                "low": 70,
-                "medium": 80,
-                "high": 90
-            },
-            "faces": faces,
-            "results": results
-        }
-        self.probing_result.json_result = json_buff
+    def failed_probing_slot(self):
+        self.stop_gif()
+        self.current_gif = self.failed_gif
+        self.lblProbeResult.setText("Failed Probing for one image.")
+        self.start_gif()
+        self.timer.singleShot(800, self.timeout_gif)
+        self.timer.start()
+
+    def success_probing_slot(self):
+        self.stop_gif()
+        self.current_gif = self.success_gif
+        self.lblProbeResult.setText("Success Probing for one image.")
+        self.start_gif()
+        self.timer.singleShot(800, self.timeout_gif)
+        self.timer.start()
+

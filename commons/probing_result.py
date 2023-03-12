@@ -23,12 +23,16 @@ class ProbingResult(object):
             # else:
             results = self.json_result['results']
             for result in results:
-                if float(result['confidence']) > Common.MATCH_LEVEL:
+                # remove % symbol from confidence
+                conf_buff = result['confidence'][:len(result['confidence']) - 2]
+                if float(conf_buff) >= Common.MATCH_LEVEL:
                     self.matched = "Matched"
                     return self.matched
         return self.matched
 
     def remove_json_item(self, item):
-        if self.json_result['results'].index(item) >= 0:
+        index = self.json_result['results'].index(item)
+        if index >= 0:
             self.json_result['results'].remove(item)
+            self.json_result['faces'] = self.json_result['faces'][:index] + self.json_result['faces'][index + 1:]
 
