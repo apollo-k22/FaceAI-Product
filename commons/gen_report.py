@@ -170,6 +170,7 @@ class NumberedCanvas(canvas.Canvas):
         self.drawRightString(self.width / 2.0 + 10, 0.35 * inch,
                              "Page %d of %d" % (self._pageNumber, page_count))
 
+
 def gen_pdf_filename(probe_id, case_num, ps):
     return 'probe_report_%s_%s_%s'%(probe_id, case_num, ps)
 
@@ -201,6 +202,7 @@ def create_pdf(probe_id, probe_result, file_location):
         report = GenReport(buffer, probe_id)
         pdf = report.print_reports(reportinfo)
         buffer.seek(0)
+    
         with open(file_location, 'wb') as f:
             f.write(buffer.read())
 

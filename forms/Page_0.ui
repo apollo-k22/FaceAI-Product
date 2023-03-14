@@ -14,7 +14,6 @@
    <string notr="true">background-image: url(:/newPrefix/Background.png);
       background-repeat: no-repeat;
       background-position: center;
-      background-size: contain;
     </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">

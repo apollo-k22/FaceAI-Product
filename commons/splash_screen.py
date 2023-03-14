@@ -39,6 +39,7 @@ class SplashThread(QThread):
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.update_splash_screen)
         self.mysignal.connect(self.stop_splash)
+
     def start_splash(self, data_type):
         global splash_i_widget, splash_i_data, max_i_data, max_i_widget, splash_stop, max_i, splash_i, splash_i_buff
         if data_type == "widget":

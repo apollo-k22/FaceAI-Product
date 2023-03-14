@@ -157,7 +157,7 @@ border:none;</string>
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-size: cover;
+          <string notr="true">
 background-repeat: no-repeat;
 background-color: rgb(127, 0, 226);
 border-radius: 10px;

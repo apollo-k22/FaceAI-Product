@@ -178,7 +178,7 @@ border:none;</string>
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-size: cover;
+                <string notr="true">
 background-repeat: no-repeat;
 background-color: rgb(127, 0, 226);
 border-radius: 10px;
@@ -724,7 +724,6 @@ p, li { white-space: pre-wrap; }
                    </property>
                    <property name="styleSheet">
                     <string notr="true">background:transparent;
-background-size: cover;
 background-repeat: no-repeat;
 background-position: center;
 background-attachment: fixed;
