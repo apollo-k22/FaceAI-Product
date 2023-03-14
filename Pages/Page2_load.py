@@ -81,15 +81,15 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                 self.get_subject_photo()
             else:
                 resized_image_path = Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
-                self.subject_photo_url = photo_url
+                self.subject_photo_url = resized_image_path
                 btn_style = "image:url(" + resized_image_path + ");background:transparent;" \
-                             "border: 1px solid rgb(53, 132, 228);background-size:cover;"
+                             "border: 1px solid rgb(53, 132, 228);"
                 self.btnSelectPhoto.setStyleSheet(btn_style)
                 self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         else:
             self.subject_photo_url = ""
-            btn_style = "content-align:left;border:none;background:transparent;" \
-                        "border-image:url(:/newPrefix/Group 68.png);border-radius: 30px;background:none;"
+            btn_style = "border:none;background:transparent;" \
+                        "image:url(:/newPrefix/Group 68.png);border-radius: 30px;background:none;"
             self.btnSelectPhoto.setStyleSheet(btn_style)
 
     @pyqtSlot()
@@ -167,8 +167,8 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
 
     # return page to initial status
     def refresh_view(self):
-        btn_style = "content-align:left;border:none;background:transparent;" \
-                    "border-image:url(:/newPrefix/Group 68.png);border-radius: 30px;background:none;"
+        btn_style = "border:none;background:transparent;" \
+                    "image:url(:/newPrefix/Group 68.png);border-radius: 30px;background:none;"
         self.btnSelectPhoto.setStyleSheet(btn_style)
         self.leditCaseNumber.setText("")
         self.leditPS.setText("")

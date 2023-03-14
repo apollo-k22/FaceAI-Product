@@ -157,7 +157,7 @@ border:none;</string>
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-size: cover;
+          <string notr="true">
 background-repeat: no-repeat;
 background-color: rgb(127, 0, 226);
 border-radius: 10px;
@@ -360,7 +360,7 @@ image:url(:/newPrefix/Group 67.png);</string>
                    <property name="sizeHint" stdset="0">
                     <size>
                      <width>20</width>
-                     <height>150</height>
+                     <height>100</height>
                     </size>
                    </property>
                   </spacer>

@@ -107,6 +107,15 @@ class Common:
                 rate = 1
                 width = img.shape[0]
                 height = img.shape[1]
+                # if the size of image is larger than 6MB, the image will be resized.
+                if (width * height) / (1000 * 1000) > 6:
+                    rate = (width * height) / (1000 * 1000 * 6)
+                    dim = (int(img.shape[1] / rate), int(img.shape[0] / rate))
+                    img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+                    img_path = temp_folder + Common.get_file_name_from_path(img_path)
+                    cv2.imwrite(img_path, img)
+
+                rate = 1
                 if width > height:
                     rate = size / width
                 else:

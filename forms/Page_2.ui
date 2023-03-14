@@ -20,7 +20,6 @@
    <string notr="true">background-image: url(:/newPrefix/Background.png);
       background-repeat: no-repeat;
       background-position: center;
-      background-size: contain;
     </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0">
@@ -426,8 +425,7 @@ border: 1px solid rgb(53, 132, 228);</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">content-aligne:left;
-border:none;
+            <string notr="true">border:none;
 background:transparent;
 border-image:url(:/newPrefix/Group 68.png);
 border-radius: 30px;

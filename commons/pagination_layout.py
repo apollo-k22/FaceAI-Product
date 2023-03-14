@@ -45,7 +45,6 @@ class PaginationLayout(QHBoxLayout):
         btnPrevious.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnPrevious.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnPrevious.setStyleSheet("background-image: url(:/newPrefix/icon-back2.png); "
-                                  "background-size: cover;"
                                   "border: 1px solid #7F00E2;"
                                   "border-radius: 10px;"
                                   "background-repeat: no-repeat;"
@@ -56,7 +55,6 @@ class PaginationLayout(QHBoxLayout):
         btnNext.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnNext.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnNext.setStyleSheet("background-image: url(:/newPrefix/icon-next2.png); "
-                              "background-size: cover;"
                               "border: 1px solid #7F00E2;"
                               "border-radius: 10px;"
                               "background-repeat: no-repeat;"
