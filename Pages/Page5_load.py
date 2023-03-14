@@ -181,6 +181,8 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             # lbl_x, lbl_y, pixmap = Common.make_pixmap_from_image(self.probe_result.case_info.subject_image_url, self.lblSubjectImage)
             # self.lblSubjectImage.setPixmap(pixmap)
+            # lbl_x, lbl_y, pixmap = Common.make_pixmap_from_image(self.probe_result.case_info.subject_image_url, self.lblSubjectImage)
+            # self.lblSubjectImage.setPixmap(pixmap)
 
             js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.etextJsonResult.setPlainText(js_result)
