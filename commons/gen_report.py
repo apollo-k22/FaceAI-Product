@@ -13,6 +13,7 @@ import json, os
 from insightfaces.main import FaceAI
 from commons.common import Common
 from cryptophic.main import decrypt_file_to
+from commons.db_connection import DBConnection
 
 class GenReport:
     def __init__(self, buffer, probid):
@@ -70,7 +71,12 @@ class GenReport:
         # elements.append(Paragraph('''<para align=center leading=18 fontName='Arial'><font size=12 color=0xff0000><b>''' + 'Probe result: ' + reportinfo["result"] + '''</b></font></para>'''))
         elements.append(Paragraph('Probe result: ' + reportinfo["result"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=red, leading=20)))
 
-        tablestyle = TableStyle([('GRID', (0,0), (-1,-1), 1.0, white),('VALIGN', (0, 0), (-1, -1), 'TOP')])
+        tablestyle1 = TableStyle([
+            ('GRID', (0,0), (-1,-1), 1.0, white),
+            ('VALIGN', (0, 0), (0, 0), 'TOP'), 
+            ('VALIGN', (-1, -1), (-1, -1), 'CENTER'), 
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+        ])
         nested1 = [
             Paragraph('Time of report generation: ' + reportinfo["created"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
             Paragraph('Case no.:' + reportinfo["casenum"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
@@ -80,8 +86,7 @@ class GenReport:
             Paragraph('Remarks: ' + reportinfo["remarks"] * 5, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
         ]   
         img = Image(reportinfo["subject"])
-        img.drawHeight = 3.0*inch
-        img.drawWidth = 3.6*inch
+        img._restrictSize(3.6*inch, 3.0*inch)
         img.hAlign = TA_CENTER
         img.vAlign = TA_CENTER
         nested2 = [
@@ -91,30 +96,40 @@ class GenReport:
         table1 = Table([[nested1, nested2]],
                   colWidths=('50%', '50%'),
                   rowHeights=None,
-                  style=tablestyle)
+                  style=tablestyle1)
         elements.append(table1)
 
         elements.append(Paragraph('The subject photo has matched to the following old case photos. Respective similarity scores and case details are attached herewith.', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceBefore=spacing, spaceAfter=spacing)))
 
         nested = {}
         targets_len = len(reportinfo["targets"])
+        tablestyle2 = TableStyle([
+            ('GRID', (0,0), (-1,-1), 1.0, white),
+            ('VALIGN', (0, 0), (-1, -1), 'CENTER'), 
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+        ])
         for index, target in enumerate(reportinfo["targets"]):  
             img = Image(target['path'])
-            img.drawHeight = 3.0*inch
-            img.drawWidth = 3.6*inch
+            img._restrictSize(3.6*inch, 3.0*inch)
             img.hAlign = TA_CENTER
             img.vAlign = TA_CENTER
-            nested[index % 2] = [
-                img,
-                Paragraph('Similarity score: %.2f%%(%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
-                # Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
-                # Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
-            ]
+            if target['oldcase']:
+                nested[index % 2] = [
+                    img,
+                    Paragraph('Similarity score: %.2f%%(%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                    Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                    Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+                ]
+            else:
+                nested[index % 2] = [
+                    img,
+                    Paragraph('Similarity score: %.2f%%(%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+                ]
             if ((targets_len % 2 != 0) & (index == targets_len - 1)):
                 table = Table([[nested[0]]],
                     colWidths=('50%'),
                     rowHeights=None,
-                    style=tablestyle)
+                    style=tablestyle2)
                 elements.append(table)
                 
             if index % 2 == 0:
@@ -122,7 +137,7 @@ class GenReport:
             table = Table([[nested[0], nested[1]]],
                     colWidths=('50%', '50%'),
                     rowHeights=None,
-                    style=tablestyle)
+                    style=tablestyle2)
             elements.append(table)
 
         elements.append(Paragraph('JSON results', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
@@ -170,10 +185,11 @@ class NumberedCanvas(canvas.Canvas):
         self.drawRightString(self.width / 2.0 + 10, 0.35 * inch,
                              "Page %d of %d" % (self._pageNumber, page_count))
 
+
 def gen_pdf_filename(probe_id, case_num, ps):
     return 'probe_report_%s_%s_%s'%(probe_id, case_num, ps)
 
-def create_pdf(probe_id, probe_result, file_location):
+def create_pdf(probe_id, probe_result, file_location):    
     try:
         buffer = BytesIO()
         reportinfo = {
@@ -189,18 +205,31 @@ def create_pdf(probe_id, probe_result, file_location):
         }
 
         reportinfo["targets"] = []
-        for result in probe_result.json_result['results']:
+        if probe_result.case_info.is_used_old_cases:
+            db = DBConnection()
+            old_case_data_for_results = db.get_case_data(probe_result.json_result['results'])
+
+        for index, result in enumerate(probe_result.json_result['results']):
             conf_buff = result['confidence'][:len(result['confidence']) - 1]
-            reportinfo["targets"].append({
-                "path": result["image_path"],
-                "sim": float(conf_buff),
-                "caseno": probe_result.case_info.case_number,
-                "ps": probe_result.case_info.case_PS
-            })
+            if probe_result.case_info.is_used_old_cases:
+                reportinfo["targets"].append({
+                    "path": result["image_path"],
+                    "sim": float(conf_buff),
+                    "oldcase": probe_result.case_info.is_used_old_cases,
+                    "caseno": old_case_data_for_results[index][0],
+                    "ps": old_case_data_for_results[index][1]
+                })
+            else:
+                reportinfo["targets"].append({
+                    "path": result["image_path"],
+                    "sim": float(conf_buff),
+                    "oldcase": probe_result.case_info.is_used_old_cases
+                })
 
         report = GenReport(buffer, probe_id)
         pdf = report.print_reports(reportinfo)
         buffer.seek(0)
+    
         with open(file_location, 'wb') as f:
             f.write(buffer.read())
 

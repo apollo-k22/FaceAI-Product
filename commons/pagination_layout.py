@@ -45,7 +45,6 @@ class PaginationLayout(QHBoxLayout):
         btnPrevious.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnPrevious.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnPrevious.setStyleSheet("background-image: url(:/newPrefix/icon-back2.png); "
-                                  "background-size: cover;"
                                   "border: 1px solid #7F00E2;"
                                   "border-radius: 10px;"
                                   "background-repeat: no-repeat;"
@@ -56,7 +55,6 @@ class PaginationLayout(QHBoxLayout):
         btnNext.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnNext.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnNext.setStyleSheet("background-image: url(:/newPrefix/icon-next2.png); "
-                              "background-size: cover;"
                               "border: 1px solid #7F00E2;"
                               "border-radius: 10px;"
                               "background-repeat: no-repeat;"
@@ -112,7 +110,6 @@ class PaginationLayout(QHBoxLayout):
             self.hlyPaginationButtons.addSpacerItem(hspacer)
 
     def init_go_to_page_layout(self):
-
         lbl_go_label = QLabel("Go To")
         lbl_page_label = QLabel("Page")
         lbl_page_number = QLineEdit()
@@ -176,6 +173,7 @@ class PaginationLayout(QHBoxLayout):
         to_be_gone_page = int(go_page) - 1
         if to_be_gone_page < 0 or to_be_gone_page > self.page_count - 1:
             return
+
         self.changed_page_signal.emit(to_be_gone_page)
         leditGoPage.setText("")
 

@@ -423,4 +423,3 @@ class DBConnection:
                     self.connection.close()
                     encrypt_file_to(self.dec_db_file_path, self.connection_string)
         return cases
-
