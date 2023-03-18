@@ -1,8 +1,5 @@
-import pathlib
-
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon, QShowEvent
 from PyQt5.QtWidgets import QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel, \
     QSizePolicy, QWidget
 
@@ -49,15 +46,21 @@ class LoaderSelectTargetPhotoPage(QWidget):
 
     @pyqtSlot()
     def start_probe_slot(self):
-        if self.case_info.subject_image_url == '':
-            Common.show_message(QMessageBox.Warning, "Please select subject image.", "", "Empty Warning", "")
-            self.go_back_signal.emit()
-        else:
-            if len(self.image_urls) == 0:
-                Common.show_message(QMessageBox.Warning, "Please select target images.", "", "Empty Warning", "")
+        is_exist, root_path = Common.check_exist_data_storage()
+        if is_exist:
+            if self.case_info.subject_image_url == '':
+                Common.show_message(QMessageBox.Warning, "Please select subject image.", "", "Empty Warning", "")
+                self.go_back_signal.emit()
             else:
-                self.case_info.target_image_urls = self.image_urls
-                self.start_probe_signal.emit(self.case_info)
+                if len(self.image_urls) == 0:
+                    Common.show_message(QMessageBox.Warning, "Please select target images.", "", "Empty Warning", "")
+                else:
+                    self.case_info.target_image_urls = self.image_urls
+                    self.start_probe_signal.emit(self.case_info)
+        else:
+            Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                        "\nPlease make it and then retry.",
+                                "", "Folder Not Exist", "")
 
     @pyqtSlot()
     def return_home_slot(self):
@@ -112,12 +115,19 @@ class LoaderSelectTargetPhotoPage(QWidget):
                                     "Incorrect image selected.",
                                     "")
             else:
-                self.current_work_folder = Common.get_folder_path(url)
-                resized_image_path = Common.resize_image(url, self.btnSinglePhoto.size().width())
-                btn_style = "image:url(" + resized_image_path + ");height: auto;border: 1px solid rgb(53, 132, 228);"
-                self.btnSinglePhoto.setStyleSheet(btn_style)
-                self.btnSinglePhoto.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-                self.image_urls.append(resized_image_path)
+                # check "data storage" folder exist or not
+                is_exist, root_path = Common.check_exist_data_storage()
+                if is_exist:
+                    self.current_work_folder = Common.get_folder_path(url)
+                    resized_image_path = Common.resize_image(url, self.btnSinglePhoto.size().width())
+                    btn_style = "image:url(" + resized_image_path + ");height: auto;border: 1px solid rgb(53, 132, 228);"
+                    self.btnSinglePhoto.setStyleSheet(btn_style)
+                    self.btnSinglePhoto.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                    self.image_urls.append(resized_image_path)
+                else:
+                    Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                                "\nPlease make it and then retry.",
+                                        "", "Folder Not Exist", "")
         else:
             btn_style = "border: none;image:url(:/newPrefix/Group 67.png);"
             self.btnSinglePhoto.setStyleSheet(btn_style)
@@ -128,13 +138,20 @@ class LoaderSelectTargetPhotoPage(QWidget):
         urls, _ = QFileDialog.getOpenFileNames(self, 'Open Files', self.current_work_folder, Common.IMAGE_FILTER)
         length = len(urls)
         if length:
-            self.lblMultiPhotos.setText("")
-            self.setEnabled(False)
-            self.current_work_folder = Common.get_folder_path(urls[0])
-            self.get_images_thread.urls = urls
-            self.get_images_thread.is_urls = True
-            self.start_splash_signal.emit("data")
-            self.get_images_thread.start()
+            # check "data storage" folder exist or not
+            is_exist, root_path = Common.check_exist_data_storage()
+            if is_exist:
+                self.lblMultiPhotos.setText("")
+                self.setEnabled(False)
+                self.current_work_folder = Common.get_folder_path(urls[0])
+                self.get_images_thread.urls = urls
+                self.get_images_thread.is_urls = True
+                self.start_splash_signal.emit("data")
+                self.get_images_thread.start()
+            else:
+                Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                            "\nPlease make it and then retry.",
+                                    "", "Folder Not Exist", "")
         else:
             self.lblMultiPhotos.setText("Select target images.")
             self.lblMultiPhotoResult.setText("Raster image formats are accepted.")
@@ -145,13 +162,20 @@ class LoaderSelectTargetPhotoPage(QWidget):
         direct = QFileDialog.getExistingDirectory(self, 'Entire Folder')
 
         if direct:
-            self.lblEntireFolder.setText("")
-            self.current_work_folder = direct
-            self.get_images_thread.direct = direct
-            self.get_images_thread.is_direct = True
-            self.setEnabled(False)
-            self.start_splash_signal.emit("data")
-            self.get_images_thread.start()
+            # check "data storage" folder exist or not
+            is_exist, root_path = Common.check_exist_data_storage()
+            if is_exist:
+                self.lblEntireFolder.setText("")
+                self.current_work_folder = direct
+                self.get_images_thread.direct = direct
+                self.get_images_thread.is_direct = True
+                self.setEnabled(False)
+                self.start_splash_signal.emit("data")
+                self.get_images_thread.start()
+            else:
+                Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                            "\nPlease make it and then retry.",
+                                    "", "Folder Not Exist", "")
 
         else:
             self.lblEntireFolder.setText("Select target folder.")
@@ -159,22 +183,29 @@ class LoaderSelectTargetPhotoPage(QWidget):
 
     # get all images from old cases
     def select_from_old_cases(self):
-        self.refresh_view()
-        self.lblOldCaseResult.setText("Loading images from old cases.... ")
-        self.setEnabled(False)
-        # start splash
-        self.start_splash_signal.emit("data")
-        self.image_urls.clear()
-        self.case_info.is_used_old_cases = True
-        reg_val = Common.get_reg(Common.REG_KEY)
-        targets_path = ""
-        if reg_val:
-            targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/targets"
+        # check "data storage" folder exist or not
+        is_exist, root_path = Common.check_exist_data_storage()
+        if is_exist:
+            self.refresh_view()
+            self.lblOldCaseResult.setText("Loading images from old cases.... ")
+            self.setEnabled(False)
+            # start splash
+            self.start_splash_signal.emit("data")
+            self.image_urls.clear()
+            self.case_info.is_used_old_cases = True
+            reg_val = Common.get_reg(Common.REG_KEY)
+            targets_path = ""
+            if reg_val:
+                targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/targets"
+            else:
+                targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/targets"
+            self.get_images_thread.is_direct = True
+            self.get_images_thread.direct = targets_path
+            self.get_images_thread.start()
         else:
-            targets_path = Common.MEDIA_PATH + "/targets"
-        self.get_images_thread.is_direct = True
-        self.get_images_thread.direct = targets_path
-        self.get_images_thread.start()
+            Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                        "\nPlease make it and then retry.",
+                                "", "Folder Not Exist", "")
 
     # make file filter for QFileDialog from Common.EXTENSIONS
     def make_file_filter(self):

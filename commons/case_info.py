@@ -1,6 +1,3 @@
-from PyQt5.QtCore import QObject
-
-
 class CaseInfo(object):
 
     def __init__(self):

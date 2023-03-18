@@ -1,6 +1,8 @@
-import pyaes, pbkdf2, binascii, os, secrets
 import os
-import time
+
+import binascii
+import pbkdf2
+
 from cryptophic.aes256_crypto import encryptFile, decryptFile
 
 # AES supports multiple key sizes: 16 (AES128), 24 (AES192), or 32 (AES256).

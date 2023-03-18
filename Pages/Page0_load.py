@@ -1,15 +1,16 @@
+from datetime import timedelta
+from sys import exit
+
 import wmi
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QMessageBox
 from dateutil.relativedelta import relativedelta
-from datetime import timedelta
 
 from commons.common import Common
-from commons.verifying_license_thread import VerifyingLicenseThread
-from cryptophic.license import write_infomation_db, access_license_list
 from commons.ntptime import ntp_get_time
-from sys import exit
+from commons.verifying_license_thread import VerifyingLicenseThread
+from cryptophic.license import write_infomation_db
 
 
 class LicenseBoxPage(QWidget):

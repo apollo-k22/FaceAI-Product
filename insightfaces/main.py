@@ -1,17 +1,15 @@
+import math
 import os
 import os.path as osp
-import argparse
+import time
+
 import cv2
-import numpy as np
-import scipy.spatial.distance as distance
 import onnxruntime
 from PyQt5.QtCore import pyqtSignal, QObject
 
-from insightfaces.scrfd import SCRFD
-from insightfaces.arcface_onnx import ArcFaceONNX
-import math, time, json
-from pathlib import Path
 from cryptophic.main import generate_token
+from insightfaces.arcface_onnx import ArcFaceONNX
+from insightfaces.scrfd import SCRFD
 
 THRESHOLDS = [0.7, 0.8, 0.9]
 

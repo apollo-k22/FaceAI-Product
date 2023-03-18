@@ -12,6 +12,6 @@ def ntp_get_time():
         return today_dt
     except Exception as e:
         print("ntp_get_time: ", e)
-        # today_dt = datetime.strptime(ctime(time.time()), "%a %b %d %H:%M:%S %Y")
-        # return today_dt
-        return None
+        today_dt = datetime.strptime(ctime(time.time()), "%a %b %d %H:%M:%S %Y")
+        return today_dt
+        # return None

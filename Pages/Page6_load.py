@@ -2,22 +2,20 @@ import json
 import os
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot, pyqtSignal, QDateTime
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QGridLayout, QTextEdit, \
     QSizePolicy, QFileDialog, QWidget, QMessageBox
 
 from commons.common import Common
-from commons.db_connection import DBConnection
 from commons.gen_report import export_report_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 from commons.target_items_container_generator import TargetItemsContainerGenerator
-from cryptophic.main import encrypt_file_to
 
 
 class LoaderProbeReportPage(QWidget):
     return_home_signal = pyqtSignal(str)
-    go_back_signal = pyqtSignal(object, bool) # bool is true, if go back
+    go_back_signal = pyqtSignal(object, bool)  # bool is true, if go back
     export_pdf_signal = pyqtSignal(object)
     go_remaining_signal = pyqtSignal()
     start_splash_signal = pyqtSignal(str)
@@ -55,23 +53,29 @@ class LoaderProbeReportPage(QWidget):
                                 "", "Empty Data", "")
             self.return_home_signal.emit("")
         else:
-            filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
-            file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(Common.EXPORT_PATH, filename), ".pdf")
-            if file_location[0] == "":
-                return
-            dirs = file_location[0].split("/")
-            file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
-            exported = export_report_pdf(file_path, filename)
-            if exported:
-                Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice", "")
-                self.probe_result = ProbingResult()
-                self.refresh_views()
-                self.init_input_values()
-                self.return_home_signal.emit("")  # return to home page so that can start new case.
-                # self.export_pdf_signal.emit(self.probe_result)
+            is_exist, root_path = Common.check_exist_data_storage()
+            if is_exist:
+                filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
+                file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(Common.EXPORT_PATH, filename), ".pdf")
+                if file_location[0] == "":
+                    return
+                dirs = file_location[0].split("/")
+                file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
+                exported = export_report_pdf(file_path, filename)
+                if exported:
+                    Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice", "")
+                    self.probe_result = ProbingResult()
+                    self.refresh_views()
+                    self.init_input_values()
+                    self.return_home_signal.emit("")  # return to home page so that can start new case.
+                    # self.export_pdf_signal.emit(self.probe_result)
+                else:
+                    Common.show_message(QMessageBox.Information, "Exporting was failed.", "Report Generation", "Notice",
+                                        "")
             else:
-                Common.show_message(QMessageBox.Information, "Exporting was failed.", "Report Generation", "Notice",
-                                    "")
+                Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                            "\nPlease make it and then retry.",
+                                    "", "Folder Not Exist", "")
 
     @pyqtSlot()
     def on_clicked_return_home(self):
@@ -81,6 +85,7 @@ class LoaderProbeReportPage(QWidget):
     def on_clicked_go_back(self):
         # self.probe_result = ProbingResult()
         self.go_back_signal.emit(self.probe_result, True)
+
     def init_actions(self):
         self.btnExportPdf.clicked.connect(self.on_clicked_export_pdf)
         self.btnGoBack.clicked.connect(self.on_clicked_go_back)
@@ -130,9 +135,9 @@ class LoaderProbeReportPage(QWidget):
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
             self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
-            # image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
-            #               ");background:transparent;border: 1px solid rgb(53, 132, 228);"
-            image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
+            image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
+                          ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+            # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
             # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
             # lbl_x, lbl_y, pixmap = Common.make_pixmap_from_image(self.probe_result.case_info.subject_image_url,

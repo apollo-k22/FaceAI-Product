@@ -1,11 +1,6 @@
-# Creating indicators for Splash Screen animation
-# SplashScreen current frame indicator
-import sys
-
 from PyQt5.QtCore import QThread, Qt, pyqtSignal, QTimer, pyqtSlot
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QSplashScreen, QApplication, QDialog, QWidget, QMainWindow, QSizePolicy
-import images
+from PyQt5.QtWidgets import QSplashScreen, QApplication, QSizePolicy
 
 splash_i = 0
 splash_i_widget = 99
@@ -17,6 +12,8 @@ max_i = 0
 splash_i_buff = 0
 
 
+# Creating indicators for Splash Screen animation
+# SplashScreen current frame indicator
 # Thread to determine the completion of the SplashScreen
 class SplashThread(QThread):
     mysignal = pyqtSignal(int)  # create a signal that will inform about the stop of the timer
@@ -43,12 +40,10 @@ class SplashThread(QThread):
     def start_splash(self, data_type):
         global splash_i_widget, splash_i_data, max_i_data, max_i_widget, splash_stop, max_i, splash_i, splash_i_buff
         if data_type == "widget":
-            print("start splash with widget")
             splash_i_buff = splash_i_widget
             splash_i = splash_i_widget
             max_i = max_i_widget
         else:
-            print("start splash with data")
             splash_i = splash_i_data
             splash_i_buff = splash_i_data
             max_i = max_i_data
@@ -59,7 +54,6 @@ class SplashThread(QThread):
     def update_splash_screen(self):
         global splash_i_widget, splash_i_data, max_i_data, max_i_widget, splash_stop, max_i, splash_i, splash_i_buff
         # if the current frame is equal to the maximum, then we slow down the animation timer
-        # print("update splash screen")
         self.timer.setInterval(50)
         if splash_i == 583:
             splash_i = 0
@@ -74,64 +68,6 @@ class SplashThread(QThread):
         self.splash_screen.setPixmap(pixmap)
 
     def run(self):
-        # global splash_i, splash_stop, max_i  # connect indicators
-        #
-        # # Simulate processes
-        # start_time = time.time()  # calculate the start of the process
-        # time.sleep(3)  # 1 process (duration)
-        # t = round(time.time() - start_time)  # calculate the end of the process and its execution time
-        # if t < 3: # if the process took less time than we have prepared animation for it
-        #     max_i = 90  # stop the frame at the maximum allotted for it
-        # elif t >= 3:  # if the process took longer or the same as its animation duration
-        #     max_i = max_i + 90  # expand splash screen frames
-        #
-        # print('splash intro done')
-        #
-        # start_time = time.time()
-        # time.sleep(6)  # 2 process
-        # t = round(time.time() - start_time)
-        # if t < 3:
-        #     max_i = 180
-        # elif t >= 3:
-        #     max_i = max_i + 90
-        #
-        # print('loading widgets done')
-        #
-        # start_time = time.time()
-        # time.sleep(2)  # 3 process
-        # t = round(time.time() - start_time)
-        # if t < 3:
-        #     max_i = 270
-        # elif t >= 3:
-        #     max_i = max_i + 90
-        #
-        # print('loading data done')
-        #
-        # start_time = time.time()
-        # time.sleep(4)  # 4 process
-        # t = round(time.time() - start_time)
-        # if t < 3:
-        #     max_i = 360
-        # elif t >= 3:
-        #     max_i = max_i + 90
-        #
-        # print('loading settings done')
-        #
-        # start_time = time.time()
-        # time.sleep(1)  # 5 process
-        # t = round(time.time() - start_time)
-        # if t < 3:
-        #     max_i = 480
-        # elif t >= 3:
-        #     max_i = max_i + 103
-        #
-        # print('loading ram done')
-        #
-        # time.sleep(3)  # 6 process
-        # max_i = 583
-        #
-        # print('loading by cyberta done')
-
         # Wait for the entire animation to complete
         while splash_stop == 0:
             QApplication.processEvents()
@@ -142,7 +78,6 @@ class SplashThread(QThread):
     @pyqtSlot()
     def stop_splash(self, wdt):
         global splash_i, max_i, splash_i_buff
-        print("stop splash")
         splash_i = 0
         max_i = 0
         splash_i_buff = 0
@@ -151,4 +86,3 @@ class SplashThread(QThread):
             wdt.show()  # show form
             wdt.setFocus()
         self.splash_screen.hide()  # close SplashScreen
-

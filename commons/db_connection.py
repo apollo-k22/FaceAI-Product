@@ -1,17 +1,14 @@
 import json
 import os
-import pathlib
 import sqlite3
 import traceback
-from sqlite3 import OperationalError
-from typing import Union
 
 from PyQt5.QtWidgets import QMessageBox
 
 from commons.case_info import CaseInfo
 from commons.common import Common
 from commons.probing_result import ProbingResult
-from cryptophic.main import get_dec_file_path, decrypt_file, decrypt_file_to, encrypt_file_to
+from cryptophic.main import get_dec_file_path, decrypt_file_to, encrypt_file_to
 
 
 class DBConnection:

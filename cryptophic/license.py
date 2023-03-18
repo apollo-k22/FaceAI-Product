@@ -1,9 +1,11 @@
-import sqlite3, os
+import os
+import sqlite3
 from sqlite3 import OperationalError
 
-from cryptophic.main import encrypt_file, decrypt_file, get_dec_file_path
+import wmi
 from pyutil import filereplace
-import cpuinfo, wmi
+
+from cryptophic.main import encrypt_file, decrypt_file, get_dec_file_path
 
 license_file_name = r"license.dat"
 database_file_name = r"data.db"

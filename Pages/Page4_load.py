@@ -1,5 +1,3 @@
-from random import random
-
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QWidget

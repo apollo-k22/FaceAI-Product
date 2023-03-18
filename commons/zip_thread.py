@@ -1,13 +1,13 @@
+import os
+import uuid
+from pathlib import Path
+from zipfile import ZIP_DEFLATED, ZipFile
+
 from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QMessageBox
 
 from commons.common import Common
-from commons.probing_result import ProbingResult
 from commons.gen_report import export_report_pdf, gen_pdf_filename
-
-import os, uuid
-from zipfile import ZIP_DEFLATED, ZipFile
-from pathlib import Path
+from commons.probing_result import ProbingResult
 
 
 class ThreadResult(object):

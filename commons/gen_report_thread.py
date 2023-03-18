@@ -3,8 +3,6 @@ import os
 
 from PyQt5.QtCore import QThread, QDateTime, pyqtSignal
 
-# class to use generate report from probing result.
-# this class will use the GenReport class to write pdf file.
 from commons.common import Common
 from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
@@ -12,6 +10,8 @@ from commons.probing_result import ProbingResult
 from cryptophic.main import encrypt_file_to
 
 
+# class to use generate report from probing result.
+# this class will use the GenReport class to write pdf file.
 class GenReportThread(QThread):
     finished_generate_report_signal = pyqtSignal(object)
 

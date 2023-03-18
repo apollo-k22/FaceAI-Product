@@ -1,18 +1,14 @@
 import decimal
-import json
-import operator
 import os.path
 import pathlib
 import shutil
-import uuid
 import winreg
 
-import PIL.Image
 import cv2
+import numpy as np
 from PyQt5.QtCore import QFile
 from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtWidgets import QMessageBox, QLabel
-import numpy as np
+from PyQt5.QtWidgets import QMessageBox
 
 
 class Common:
@@ -34,10 +30,13 @@ class Common:
     CREATE_CASE_REGX = r'[a-zA-Z0-9]+'
     CREATE_CASE_REGX_FOR_REMOVE = r'[^a-zA-Z0-9]+'
     EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg', '.ico']
-    IMAGE_FILTER = "Image Files (*.cur *.icns *.ico *.jpeg" \
-                   " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
-                   " *.tif *.tiff *.wbmp" \
-                   " *.webp *.xbm *.xpm)"
+    # IMAGE_FILTER = "Image Files (*.cur *.icns *.ico *.jpeg *.HEIF *.heif" \
+    #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
+    #                " *.tif *.tiff *.wbmp" \
+    #                " *.webp *.xbm *.xpm)"
+    IMAGE_FILTER = "Image Files ( *.ico *.jpeg"  \
+                   " *.jpg *.png " \
+                   " *.tif)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
     LABEL_MAX_WIDTH_IN_ITEM = 170
     VALUE_MAX_HEIGHT_IN_ITEM = 30
@@ -65,6 +64,18 @@ class Common:
             print(ex)
 
     @staticmethod
+    def is_exist_folder(dir):
+        return os.path.exists(os.path.join(dir))
+
+    @staticmethod
+    def check_exist_data_storage():
+        root_path = Common.get_reg(Common.REG_KEY)
+        is_exist = False
+        if root_path:
+            is_exist = Common.is_exist_folder(root_path)
+        return is_exist, root_path
+
+    @staticmethod
     def copy_file(from_path, to_path):
         Common.create_path(Common.get_folder_path(to_path))
         if not QFile.exists(to_path):
@@ -83,7 +94,6 @@ class Common:
         if start_index < list_len:
             for index in range(start_index):
                 ret_list.append(removing_list[index])
-                print(removing_list[index])
         else:
             ret_list = removing_list.copy()
         return ret_list
@@ -180,13 +190,13 @@ class Common:
     @staticmethod
     def show_message(icon, text, information_text, title, detailed_text):
         msg = QMessageBox()
-        msg.setStyleSheet("background-color:lightblue")
+        msg.setStyleSheet("background-image: url(:/newPrefix/Background.png);")
         msg.setIcon(icon)
         msg.setText(text)
         msg.setInformativeText(information_text)
         msg.setWindowTitle(title)
         msg.setDetailedText(detailed_text)
-        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        msg.setStandardButtons(QMessageBox.Ok)
         msg.exec_()
 
     # this method make one integer with the number of integers,

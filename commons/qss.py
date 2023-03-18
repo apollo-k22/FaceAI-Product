@@ -60,6 +60,7 @@ QScrollArea  QWidget  QTextEdit
 QMessageBox{
     # background-color: rgb(98, 136, 178);
     background:transparent;
+    color: rgb(255, 255, 255);
 }
 QTableWidget::item{
     max-height:50px;

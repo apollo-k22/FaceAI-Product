@@ -1,19 +1,17 @@
 import json
-import os
 
 from PyQt5 import uic, QtGui
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QDateTime
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QLineEdit, QVBoxLayout, QGridLayout, \
-    QSizePolicy, QTextEdit, QWidget, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit, QVBoxLayout, QGridLayout, \
+    QSizePolicy, QTextEdit, QWidget, QMessageBox
+
 from commons.common import Common
 from commons.db_connection import DBConnection
-from commons.gen_report import create_pdf, gen_pdf_filename
 from commons.gen_report_thread import GenReportThread
 from commons.probe_result_item_widget import ProbeResultItemWidget
 from commons.probing_result import ProbingResult
 from commons.target_items_container_generator import TargetItemsContainerGenerator
-from cryptophic.main import encrypt_file_to
 
 
 class LoaderProbeReportPreviewPage(QWidget):
@@ -69,10 +67,17 @@ class LoaderProbeReportPreviewPage(QWidget):
                                 "", "Empty Data", "")
             self.return_home_signal.emit("")
         else:
-            self.start_splash_signal.emit("data")
-            self.generate_report_thread.probe_result = self.probe_result
-            self.setEnabled(False)
-            self.generate_report_thread.start()
+            # check "Data Storage" folder exist. if not stop to run.
+            is_exist, root_path = Common.check_exist_data_storage()
+            if is_exist:
+                self.start_splash_signal.emit("data")
+                self.generate_report_thread.probe_result = self.probe_result
+                self.setEnabled(False)
+                self.generate_report_thread.start()
+            else:
+                Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                            "\nPlease make it and then retry.",
+                                    "", "Folder Not Exist", "")
 
     @pyqtSlot()
     def on_clicked_return_home(self):
