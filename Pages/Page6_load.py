@@ -138,11 +138,7 @@ class LoaderProbeReportPage(QWidget):
             image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
                           ");background:transparent;border: 1px solid rgb(53, 132, 228);"
             # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
-            # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
-            # lbl_x, lbl_y, pixmap = Common.make_pixmap_from_image(self.probe_result.case_info.subject_image_url,
-            #                                                      self.lblSubjectImage)
-            # self.lblSubjectImage.setPixmap(pixmap)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.teditJsonResult.setPlainText(js_result)

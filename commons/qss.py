@@ -42,14 +42,7 @@ QStatusBar{
     # background-color: transparent; 
     font-family: "Arial";
 }
-# 
-# .QWidget{
-#     background-image: ":/newPrefix/Background.png";
-# }
-# .main-widget{
-#     background-image: url(":/newPrefix/Background.png");
-#     background-color:red;
-# }
+
 QScrollArea  QWidget  QTextEdit
 {
     background-color: rgb(98, 136, 178);
@@ -58,7 +51,6 @@ QScrollArea  QWidget  QTextEdit
     font: 12pt "Arial";
 }
 QMessageBox{
-    # background-color: rgb(98, 136, 178);
     background:transparent;
     color: rgb(255, 255, 255);
 }
