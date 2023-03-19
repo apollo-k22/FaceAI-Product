@@ -1,7 +1,11 @@
-from PyQt5 import uic, Qt
-from PyQt5.QtGui import QShowEvent, QCloseEvent, QPixmap, QPalette
+import datetime
+from sys import exit
+
+from PyQt5 import uic
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtGui import QShowEvent, QCloseEvent
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QStatusBar, QMessageBox
-from PyQt5.QtCore import QTimer, pyqtSlot, pyqtSignal
+
 from Pages.Page0_load import LicenseBoxPage
 from Pages.Page1_load import StartHome
 from Pages.Page2_load import LoaderCreateNewCasePage
@@ -10,23 +14,19 @@ from Pages.Page4_load import LoaderProbingPage
 from Pages.Page5_load import LoaderProbeReportPreviewPage
 from Pages.Page6_load import LoaderProbeReportPage
 from Pages.Page7_load import LoaderProbeReportListPage
-import datetime
-
-from commons.common import Common
-from commons.target_items_container_generator import TargetItemsContainerGenerator
-from cryptophic.license import read_information_db, get_cpu_info
-
-# start home page for probing
 from commons.case_info import CaseInfo
+from commons.common import Common
+from commons.ntptime import ntp_get_time
 from commons.probing_result import ProbingResult
-import images
+from commons.target_items_container_generator import TargetItemsContainerGenerator
 from cryptophic.dec_thread import DecThread
+from cryptophic.license import read_information_db, get_cpu_info
 from insightfaces.faceai_init_thread import FaceAIInitThread
 from insightfaces.main import FaceAI
-from commons.ntptime import ntp_get_time
-from sys import exit
+import images
 
 
+# start home page for probing
 class StartMain(QMainWindow):
     finished_initiating_widget_signal = pyqtSignal(object)
     update_progress_signal = pyqtSignal(int)
@@ -130,10 +130,6 @@ class StartMain(QMainWindow):
             lambda data_type: self.start_splash_for_subwidgets_slot(data_type)
         )
         self.ui_7_prove_report_list.stop_splash_signal.connect(self.finished_refreshing_slot)
-        #  when finished probing, the signal emitted so that let the system knows to start probe report preview page.
-        # self.ui_4_probing.probing_thread.start_splash_signal.connect(self.start_splash_for_subwidgets_slot)
-        #  when go to probe report page, the signal emitted
-        #  so that let the system knows to start probe report page.
 
     # set the connection between signal and slot for page transitions
     def set_page_transition(self):
@@ -240,15 +236,21 @@ class StartMain(QMainWindow):
 
     @pyqtSlot(ProbingResult)
     def show_p5_probe_report_preview(self, probe_result, is_go_back):
-        self.setWindowTitle("Probe Report Preview")
-        # init views
-        self.ui_4_probing.hide()
-        self.ui_6_probe_report.hide()
-        if not is_go_back:
-            # show probe report preview page
-            self.ui_5_probe_report_preview.probe_result = probe_result
-            self.ui_5_probe_report_preview.refresh_views()
-        self.ui_5_probe_report_preview.showMaximized()
+        is_exist, root_path = Common.check_exist_data_storage()
+        if is_exist:
+            self.setWindowTitle("Probe Report Preview")
+            # init views
+            self.ui_4_probing.hide()
+            self.ui_6_probe_report.hide()
+            if not is_go_back:
+                # show probe report preview page
+                self.ui_5_probe_report_preview.probe_result = probe_result
+                self.ui_5_probe_report_preview.refresh_views()
+            self.ui_5_probe_report_preview.showMaximized()
+        else:
+            Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                        "\nPlease make it and then retry.",
+                                "", "Folder Not Exist", "")
 
     @pyqtSlot(ProbingResult, list)
     def show_p6_probe_report(self, probe_result, case_data):
@@ -287,12 +289,18 @@ class StartMain(QMainWindow):
 
     @pyqtSlot()
     def show_p7_probe_report_list_without_param(self):
-        self.setWindowTitle("Probe Reports")
-        self.ui_1_home.hide()
-        self.ui_4_probing.hide()
-        self.ui_7_prove_report_list.refresh_view()
-        # show probe report list page
-        self.ui_7_prove_report_list.showMaximized()
+        is_exist, root_path = Common.check_exist_data_storage()
+        if is_exist:
+            self.setWindowTitle("Probe Reports")
+            self.ui_1_home.hide()
+            self.ui_4_probing.hide()
+            self.ui_7_prove_report_list.refresh_view()
+            # show probe report list page
+            self.ui_7_prove_report_list.showMaximized()
+        else:
+            Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                        "\nPlease make it and then retry.",
+                                "", "Folder Not Exist", "")
 
     def init_widgets(self):
         self.centralLayout.addWidget(self.ui_0_license)
@@ -349,10 +357,18 @@ class StartMain(QMainWindow):
                                 "")
             exit()
 
+    # when select create new case, refresh all child pages and then go to the create new case page
     def init_child_widgets(self):
-        self.ui_2_create_new_case.refresh_view()
-        self.ui_3_select_target_photo.init_views()
-        self.ui_5_probe_report_preview.init_views()
-        self.ui_6_probe_report.init_views()
-        self.show_p2_create_new_case()
-        Common.remove_temp_folder_for_resize_image()
+        # check "data storage" folder exist or not
+        is_exist, root_path = Common.check_exist_data_storage()
+        if is_exist:
+            self.ui_2_create_new_case.refresh_view()
+            self.ui_3_select_target_photo.init_views()
+            self.ui_5_probe_report_preview.init_views()
+            self.ui_6_probe_report.init_views()
+            self.show_p2_create_new_case()
+            Common.remove_temp_folder_for_resize_image()
+        else:
+            Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                        "\nPlease make it and then retry.",
+                                "", "Folder Not Exist", "")

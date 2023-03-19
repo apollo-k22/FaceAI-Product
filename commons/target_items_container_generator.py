@@ -2,7 +2,6 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QGridLayout
 
 from commons.db_connection import DBConnection
-from commons.probe_result_item_widget import ProbeResultItemWidget
 
 
 class TargetItemsContainerGenerator(QThread):

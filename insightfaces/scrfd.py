@@ -1,13 +1,12 @@
 
 from __future__ import division
-import datetime
-import numpy as np
-#import onnx
-import onnxruntime
-import os
+
+# import onnx
 import os.path as osp
+
 import cv2
-import sys
+import numpy as np
+
 
 def softmax(z):
     assert len(z.shape) == 2

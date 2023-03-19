@@ -1,8 +1,6 @@
 from PyQt5.QtCore import QRect
-from PyQt5.QtGui import QPaintEvent, QPainter, QColor, QPen, QRawFont
-from PyQt5.QtWidgets import QWidget, QStyleOption, QStyle
-
-from commons.probing_result import ProbingResult
+from PyQt5.QtGui import QPaintEvent, QPainter, QColor, QPen
+from PyQt5.QtWidgets import QWidget
 
 
 class ProbeResultItemImageWidget(QWidget):

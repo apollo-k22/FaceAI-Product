@@ -1,16 +1,16 @@
 import re
 
 from PyQt5 import uic
-from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QPlainTextEdit, QTextEdit, QLabel
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtCore import QRegularExpression, pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import pyqtSlot
-from sympy import false, true
-from commons.common import Common
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QTextEdit
+from PyQt5.QtWidgets import QPushButton
+
 from commons.case_info import CaseInfo
+from commons.common import Common
 from insightfaces.main import FaceAI
 
 
@@ -79,12 +79,19 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                 self.subject_photo_url = ""
                 self.get_subject_photo()
             else:
-                resized_image_path = Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
-                self.subject_photo_url = resized_image_path
-                btn_style = "image:url(" + resized_image_path + ");background:transparent;" \
-                             "border: 1px solid rgb(53, 132, 228);"
-                self.btnSelectPhoto.setStyleSheet(btn_style)
-                self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+                # check the "data storage" folder exist.
+                is_exist, root_path = Common.check_exist_data_storage()
+                if is_exist:
+                    resized_image_path = Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
+                    self.subject_photo_url = resized_image_path
+                    btn_style = "image:url(" + resized_image_path + ");background:transparent;" \
+                                 "border: 1px solid rgb(53, 132, 228);"
+                    self.btnSelectPhoto.setStyleSheet(btn_style)
+                    self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+                else:
+                    Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                             "\nPlease make it and then retry.",
+                                        "", "Folder Not Exist", "")
         else:
             self.subject_photo_url = ""
             btn_style = "border:none;background:transparent;" \
@@ -98,7 +105,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
     @pyqtSlot()
     def continue_probe_slot(self):
         is_empty, ledit_name = self.is_empty_input_values()
-        if is_empty == true:
+        if is_empty == True:
             Common.show_message(QMessageBox.Warning, "Please fill all fields", "", "Empty Warning",
                                 ledit_name + " is empty")
         else:
@@ -112,27 +119,27 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
             self.continue_probe_signal.emit(self.case_info)
 
     # check whether all input value is empty or not
-    # even if one value is empty, return false
+    # even if one value is empty, return False
     def is_empty_input_values(self):
         if self.leditCaseNumber.text() == '':
             self.leditCaseNumber.setFocus()
-            return true, 'Case Number'
+            return True, 'Case Number'
         if self.leditPS.text() == '':
             self.leditPS.setFocus()
-            return true, 'PS'
+            return True, 'PS'
         if self.leditExaminerNo.text() == '':
             self.leditExaminerNo.setFocus()
-            return true, "Examiner's NO"
+            return True, "Examiner's NO"
         if self.leditExaminerName.text() == '':
             self.leditExaminerName.setFocus()
-            return true, "Examiner's Name"
+            return True, "Examiner's Name"
         if self.leditRemarks.toPlainText() == '':
             self.leditRemarks.setFocus()
-            return true, "Remarks"
+            return True, "Remarks"
         if self.subject_photo_url == '':
             self.btnSelectPhoto.setFocus()
-            return true, "Subject Image Url"
-        return false, "All Fields are filled."
+            return True, "Subject Image Url"
+        return False, "All Fields are filled."
 
     # remove all invalid substring according to regx
     @pyqtSlot(str)

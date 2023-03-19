@@ -1,13 +1,10 @@
-import decimal
-
 import cv2
 import numpy as np
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QRect
-from PyQt5.QtGui import QPainter, QColor, QPen, QPaintEvent, QImage, QPixmap
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QPushButton, QFormLayout, QLabel
+
 from commons.common import Common
-from commons.db_connection import DBConnection
-from commons.probe_result_item_image_widget import ProbeResultItemImageWidget
 
 
 class ProbeResultItemWidget(QWidget):
@@ -132,7 +129,6 @@ class ProbeResultItemWidget(QWidget):
         bytesPerLine = 3 * width
         qimage = QImage(img.tobytes(), width, height, bytesPerLine, QImage.Format_RGB888).rgbSwapped()
         pixmap = QPixmap(qimage)
-        print(pixmap.size().width())
         lbl_x = 0
         lbl_y = 0
         if pixmap.size().width() > pixmap.size().height():

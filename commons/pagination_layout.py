@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QLabel, QWidget, QLayout, QSpacerItem, QSizePolicy, QLineEdit
+from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QLabel, QSpacerItem, QSizePolicy, QLineEdit
 
 from commons.common import Common
 from commons.pagination_button import PaginationButton
