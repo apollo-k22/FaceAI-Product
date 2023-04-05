@@ -180,8 +180,8 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
             # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
-            image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
-                          ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+            image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
+                          "');background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
@@ -242,8 +242,8 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.lblExaminerName.setText("")
         self.teditRemarks.setPlainText("")
         self.lblTimeOfReportGeneration.setText("")
-        image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
-                      ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+        image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
+                      "');background:transparent;border: 1px solid rgb(53, 132, 228);"
         self.lblSubjectImage.setStyleSheet(image_style)
         self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.etextJsonResult.setPlainText("")

@@ -214,8 +214,6 @@ class FaceAI(QObject):
 
             feat2 = self.rec.get(image2[index], kpss2[0])
             sim[index] = self.rec.compute_sim(feat1, feat2)
-            # sim[index] = findCosineDistance(feat1, feat2) * 2
-            if sim[index] > 1: sim[index] = 1
             print("sim: ", sim[index])
             if sim[index] >= 0.7:
                 self.success_probing_signal.emit()  # emit success signal for updating gif.

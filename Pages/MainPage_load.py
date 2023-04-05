@@ -334,8 +334,14 @@ class StartMain(QMainWindow):
         if not app_unlocked:
             self.status_bar.showMessage("The license is not available.")
             self.show_p0_license()
-        else:
-            app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
+        else:            
+            ntptime = ntp_get_time()
+            if ntptime is None:
+                Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
+                                    "NTP Error.",
+                                    "")
+                exit()
+            app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - ntptime
             # self.status_bar.showMessage("The license will be expired by "
             #                             + app_expire_date + ". You can use more this application for "
             #                             + str(app_expire) + ".")

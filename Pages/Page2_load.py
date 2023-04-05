@@ -84,7 +84,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                 if is_exist:
                     resized_image_path = Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
                     self.subject_photo_url = resized_image_path
-                    btn_style = "image:url(" + resized_image_path + ");background:transparent;" \
+                    btn_style = "image:url('" + resized_image_path + "');background:transparent;" \
                                  "border: 1px solid rgb(53, 132, 228);"
                     self.btnSelectPhoto.setStyleSheet(btn_style)
                     self.btnSelectPhoto.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
