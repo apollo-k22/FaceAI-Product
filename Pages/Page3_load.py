@@ -196,9 +196,9 @@ class LoaderSelectTargetPhotoPage(QWidget):
             reg_val = Common.get_reg(Common.REG_KEY)
             targets_path = ""
             if reg_val:
-                targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/targets"
+                targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/subjects"
             else:
-                targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/targets"
+                targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/subjects"
             self.get_images_thread.is_direct = True
             self.get_images_thread.direct = targets_path
             self.get_images_thread.start()

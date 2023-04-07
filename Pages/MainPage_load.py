@@ -222,9 +222,11 @@ class StartMain(QMainWindow):
     @pyqtSlot()
     def show_p2_create_new_case(self):
         self.setWindowTitle("Create Case")
+        Common.remove_target_images()
         self.ui_1_home.hide()
         self.ui_3_select_target_photo.hide()
         self.ui_2_create_new_case.showMaximized()
+        
 
     @pyqtSlot(CaseInfo)
     def show_p4_probing(self, case_info):

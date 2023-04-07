@@ -14,6 +14,7 @@ from insightfaces.main import FaceAI
 from commons.common import Common
 from cryptophic.main import decrypt_file_to
 from commons.db_connection import DBConnection
+from commons.ntptime import ntp_get_time
 
 class GenReport:
     def __init__(self, buffer, probid):
@@ -189,13 +190,14 @@ class NumberedCanvas(canvas.Canvas):
 def gen_pdf_filename(probe_id, case_num, ps):
     return 'probe_report_%s_%s_%s'%(probe_id, case_num, ps)
 
-def create_pdf(probe_id, probe_result, file_location):    
+def create_pdf(probe_id, probe_result, file_location):      
+    ntptime = ntp_get_time() 
     try:
         buffer = BytesIO()
         reportinfo = {
             "subject": probe_result.case_info.subject_image_url,
             "result": probe_result.matched,
-            "created": datetime.strftime(datetime.now(), "%d/%m/%Y %I:%M %p"),
+            "created": datetime.strftime(ntptime, "%d/%m/%Y %I:%M %p"),
             "casenum": probe_result.case_info.case_number,
             "ps": probe_result.case_info.case_PS,
             "examname": probe_result.case_info.examiner_name,

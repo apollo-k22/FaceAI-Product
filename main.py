@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication
 
 # start home page for probing
 from Pages.MainPage_load import StartMain
+from commons.common import Common
 from commons.qss import QSS
 from commons.splash_screen import SplashThread
 
@@ -25,4 +26,5 @@ if __name__ == '__main__':
         global_splash.start_splash("widget")
         app.exec_()
     finally:
+        Common.remove_target_images()
         print("exit")

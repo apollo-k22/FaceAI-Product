@@ -153,6 +153,18 @@ class Common:
         shutil.rmtree(temp_folder, ignore_errors=True)
 
     @staticmethod
+    def remove_target_images():
+        targets_path = Common.get_reg(Common.REG_KEY)
+        if targets_path:
+            targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/targets"
+        else:
+            targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/targets"
+
+        desktop = pathlib.Path(targets_path)
+        for url in desktop.glob(r'**/*'):
+            os.remove(url)
+
+    @staticmethod
     def make_pixmap_from_image(image_path, parent):
         img = cv2.imread(image_path)
         img = np.array(img)

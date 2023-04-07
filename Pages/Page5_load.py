@@ -81,6 +81,7 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_return_home(self):
+        Common.remove_target_images()
         self.return_home_signal.emit("")
 
     @pyqtSlot()
