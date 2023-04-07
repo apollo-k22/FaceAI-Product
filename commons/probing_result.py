@@ -24,10 +24,11 @@ class ProbingResult(object):
             results = self.json_result['results']
             for result in results:
                 # remove % symbol from confidence
-                conf_buff = result['confidence'][:len(result['confidence']) - 2]
+                conf_buff = result['confidence'][:len(result['confidence']) - 1]
                 if float(conf_buff) >= Common.MATCH_LEVEL:
                     self.matched = "Matched"
-                    return self.matched
+                else:
+                    self.matched = "Non Matched"
         return self.matched
 
     def remove_json_item(self, item):

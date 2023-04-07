@@ -172,8 +172,6 @@ class FaceAI(QObject):
     # Takes as input subject and target image paths and return json formated data
     # pair (path1, path2). "path1" is subject image path. "path2" is target image paths.
     def recognition(self, path1, paths2):
-        print(path1)
-        print(paths2)
         jsondata = {}
         angles1 = {}
         angles2 = {}
