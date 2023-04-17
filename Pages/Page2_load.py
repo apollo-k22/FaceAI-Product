@@ -72,8 +72,14 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', self.current_work_folder, Common.IMAGE_FILTER)
         if photo_url:
             self.current_work_folder = Common.get_folder_path(photo_url)
-            if not self.faceai.is_face(photo_url):
+            if self.faceai.is_face(photo_url) == 0:
                 Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
+                                    "Incorrect image selected.",
+                                    "")
+                self.subject_photo_url = ""
+                self.get_subject_photo()
+            elif self.faceai.is_face(photo_url) == 2:
+                Common.show_message(QMessageBox.Warning, "Subject photo must be a single photo", "",
                                     "Incorrect image selected.",
                                     "")
                 self.subject_photo_url = ""

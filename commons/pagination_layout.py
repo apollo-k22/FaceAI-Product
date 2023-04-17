@@ -160,7 +160,6 @@ class PaginationLayout(QHBoxLayout):
     @pyqtSlot(int)
     def clicked_slot(self, current_page):
         self.current_page = current_page
-        print("clicked button: current page is ", current_page)
         self.changed_page_signal.emit(self.current_page)
 
     @pyqtSlot()

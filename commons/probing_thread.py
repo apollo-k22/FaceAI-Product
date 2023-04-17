@@ -26,7 +26,6 @@ class ProbingThread(QThread, CaseInfo, FaceAI):
     def probe_images(self):
         json_data = self.faceai.recognition(self.probing_result.case_info.subject_image_url,
                                             self.probing_result.case_info.target_image_urls)
-        print(json_data)
         self.probing_result.json_result, self.probing_result.case_info.target_image_urls\
             = self.process_images_url(json_data)
         print("treated data:", self.probing_result.json_result)

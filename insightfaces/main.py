@@ -150,10 +150,12 @@ class FaceAI(QObject):
     # "path" is image path.
     def is_face(self, path):
         image = cv2.imread(path.__str__())
-        bboxes, kpss = self.detector.autodetect(image, max_num=1)
+        bboxes, kpss = self.detector.autodetect(image)
         if bboxes.shape[0] == 0:
-            return False
-        return True
+            return 0
+        if bboxes.shape[0] > 1:
+            return 2
+        return 1
 
     def is_models_exist(self):
         if (os.path.isfile(os.path.join(self.assets_dir, self.DETECT_ONNX_MODEL))) & (
@@ -199,20 +201,22 @@ class FaceAI(QObject):
 
         for index, path2 in enumerate(paths2):
             image2[index] = cv2.imread(path2.__str__())
-            bboxes2, kpss2 = self.detector.autodetect(image2[index], max_num=1)
+            bboxes2, kpss2 = self.detector.autodetect(image2[index])
             if bboxes2.shape[0] == 0:
                 jsondata = self.append_failed_json_data(jsondata, path2.__str__())
                 # return -1.0, "Face not found in Image-2"
                 self.failed_probing_signal.emit()
                 continue
 
-            x1, y1, x2, y2, z2 = bboxes2[0]
-            pt1, pt2, pt3, pt4, pt5 = kpss2[0]
-            angles2[index] = self.angle(self.slope(x1, y1, x2, y1), self.slope(pt1[0], pt1[1], pt2[0], pt2[1]))
-
-            feat2 = self.rec.get(image2[index], kpss2[0])
-            sim[index] = self.rec.compute_sim(feat1, feat2)
-            print("sim: ", sim[index])
+            for idx, bbox2 in enumerate(bboxes2):
+                x1, y1, x2, y2, z2 = bbox2
+                pt1, pt2, pt3, pt4, pt5 = kpss2[idx]
+                angles2[index] = self.angle(self.slope(x1, y1, x2, y1), self.slope(pt1[0], pt1[1], pt2[0], pt2[1]))
+                feat2 = self.rec.get(image2[index], kpss2[idx])
+                sim[index] = self.rec.compute_sim(feat1, feat2)
+                print("sim: ", sim[index])
+                if sim[index] >= 0.7:
+                    break
             if sim[index] >= 0.7:
                 self.success_probing_signal.emit()  # emit success signal for updating gif.
             else:
@@ -225,7 +229,6 @@ class FaceAI(QObject):
         time_used = end_time - start_time
 
         jsondata = self.build_json_data(jsondata, time_used)
-        print(jsondata)
 
         # self.draw_results(bboxes1, kpss1, image1, angles1)
 
