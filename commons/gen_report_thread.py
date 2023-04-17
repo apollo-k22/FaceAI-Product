@@ -10,6 +10,10 @@ from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
 from commons.probing_result import ProbingResult
 from cryptophic.main import encrypt_file_to
+from datetime import datetime
+from commons.systimer import SysTimer
+from commons.ntptime import ntp_get_time_from_object
+
 
 
 class GenReportThread(QThread):
@@ -60,7 +64,7 @@ class GenReportThread(QThread):
         cases_data = [(probe_result.probe_id, probe_result.matched, probe_result.json_result["time_used"],
                        case_info.case_number, case_info.case_PS, case_info.examiner_no, case_info.examiner_name,
                        case_info.remarks, case_info.subject_image_url, json.dumps(probe_result.json_result),
-                       QDateTime().currentDateTime().toString("yyyy-MM-dd hh-mm-ss"))]
+                       datetime.strftime(ntp_get_time_from_object(SysTimer.now()), "%Y-%m-%d %H-%M-%S"))]
         target_fields = ["target_url", "case_id"]
         target_data = []
         db = DBConnection()

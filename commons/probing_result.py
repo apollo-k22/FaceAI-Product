@@ -1,5 +1,5 @@
-from datetime import datetime
-
+from commons.systimer import SysTimer
+from commons.ntptime import ntp_get_time_from_object
 from commons.case_info import CaseInfo
 from commons.common import Common
 
@@ -10,7 +10,7 @@ class ProbingResult(object):
         self.case_info = CaseInfo()
         self.probe_id = ""
         self.matched = "Non Matched"
-        self.created_date = datetime.now()
+        self.created_date = ntp_get_time_from_object(SysTimer.now())
         self.json_result = {'time_used': 2, 'thresholds': {}, 'faces': [], 'results': []}
 
     def is_matched(self):

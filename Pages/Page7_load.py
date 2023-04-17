@@ -1,6 +1,8 @@
 import os
 import time
 from datetime import datetime
+from commons.systimer import SysTimer
+from commons.ntptime import ntp_get_time_from_object
 
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
@@ -228,7 +230,7 @@ class LoaderProbeReportListPage(QWidget):
                 report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH
             Common.create_path(report_path)
 
-            datestr = datetime.strftime(datetime.now(), "%d_%m_%Y")
+            datestr = datetime.strftime(ntp_get_time_from_object(SysTimer.now()), "%d_%m_%Y")
             zip_file = "%s/probe_reports_%s" % (Common.EXPORT_PATH, datestr)
             zip_location = QFileDialog.getSaveFileName(self, "Save report zip file", zip_file, ".zip")
             self.zip_time = time.time()

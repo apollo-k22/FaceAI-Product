@@ -14,7 +14,8 @@ from insightfaces.main import FaceAI
 from commons.common import Common
 from cryptophic.main import decrypt_file_to
 from commons.db_connection import DBConnection
-from commons.ntptime import ntp_get_time
+from commons.ntptime import ntp_get_time_from_object
+from commons.systimer import SysTimer
 
 class GenReport:
     def __init__(self, buffer, probid):
@@ -190,8 +191,9 @@ class NumberedCanvas(canvas.Canvas):
 def gen_pdf_filename(probe_id, case_num, ps):
     return 'probe_report_%s_%s_%s'%(probe_id, case_num, ps)
 
-def create_pdf(probe_id, probe_result, file_location):      
-    ntptime = ntp_get_time() 
+def create_pdf(probe_id, probe_result, file_location):   
+    systime = SysTimer.now()   
+    ntptime = ntp_get_time_from_object(systime) 
     try:
         buffer = BytesIO()
         reportinfo = {
