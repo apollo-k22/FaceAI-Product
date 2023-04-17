@@ -48,7 +48,7 @@ class ZipThread(QThread, ProbingResult):
 
             for report in self.reports:
                 filename = gen_pdf_filename(report.probe_id, report.case_info.case_number, report.case_info.case_PS)
-                export_report_pdf(temp_folder, filename)
+                export_report_pdf(temp_folder, filename, filename)
 
             with ZipFile(self.zip_location, 'w', ZIP_DEFLATED) as allzip:
                 for f in self._itertarget(Path(temp_folder)):

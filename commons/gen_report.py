@@ -242,7 +242,7 @@ def create_pdf(probe_id, probe_result, file_location):
         print(e)
         return False
 
-def export_report_pdf(file_path, file_name):    
+def export_report_pdf(file_path, ex_file_name, file_name):    
     report_path = Common.get_reg(Common.REG_KEY)
     if report_path:
         report_path = report_path + "/" + Common.REPORTS_PATH
@@ -251,7 +251,7 @@ def export_report_pdf(file_path, file_name):
     Common.create_path(report_path)  
 
     try:
-        decrypt_file_to(os.path.join(report_path, file_name), os.path.join(file_path, file_name+".pdf"))
+        decrypt_file_to(os.path.join(report_path, ex_file_name), os.path.join(file_path, file_name+".pdf"))
     except Exception as e:
         print("export_report_pdf: ", e)
         return False
