@@ -55,13 +55,17 @@ class LoaderProbeReportPage(QWidget):
         else:
             is_exist, root_path = Common.check_exist_data_storage()
             if is_exist:
-                filename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
-                file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", os.path.join(Common.EXPORT_PATH, filename), ".pdf")
+                exfilename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
+                filename = os.path.join(Common.EXPORT_PATH, exfilename)
+                is_exist, able_file = Common.get_available_appendix_num(filename, ".pdf")
+                if is_exist:
+                    filename = able_file
+                file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", filename, ".pdf")
                 if file_location[0] == "":
                     return
                 dirs = file_location[0].split("/")
                 file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
-                exported = export_report_pdf(file_path, filename)
+                exported = export_report_pdf(file_path, exfilename, filename)
                 if exported:
                     Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice", "")
                     self.probe_result = ProbingResult()
@@ -79,6 +83,7 @@ class LoaderProbeReportPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_return_home(self):
+        Common.remove_target_images()
         self.return_home_signal.emit("")
 
     @pyqtSlot()
@@ -135,8 +140,8 @@ class LoaderProbeReportPage(QWidget):
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
             self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
-            image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
-                          ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+            image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
+                          "');background:transparent;border: 1px solid rgb(53, 132, 228);"
             # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -151,8 +156,8 @@ class LoaderProbeReportPage(QWidget):
             self.lblExaminerName.setText("")
             self.teditRemarks.setPlainText("")
             self.lblTimeOfReportGeneration.setText("")
-            image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
-                          ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+            image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
+                          "');background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             self.teditJsonResult.setPlainText("")
@@ -182,8 +187,8 @@ class LoaderProbeReportPage(QWidget):
         self.lblExaminerName.setText("")
         self.teditRemarks.setPlainText("")
         self.lblTimeOfReportGeneration.setText("")
-        image_style = "image:url(" + self.probe_result.case_info.subject_image_url + \
-                      ");background:transparent;border: 1px solid rgb(53, 132, 228);"
+        image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
+                      "');background:transparent;border: 1px solid rgb(53, 132, 228);"
         self.lblSubjectImage.setStyleSheet(image_style)
         self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.teditRemarks.setPlainText("")

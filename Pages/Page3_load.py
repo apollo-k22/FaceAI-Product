@@ -120,7 +120,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
                 if is_exist:
                     self.current_work_folder = Common.get_folder_path(url)
                     resized_image_path = Common.resize_image(url, self.btnSinglePhoto.size().width())
-                    btn_style = "image:url(" + resized_image_path + ");height: auto;border: 1px solid rgb(53, 132, 228);"
+                    btn_style = "image:url('" + resized_image_path + "');height: auto;border: 1px solid rgb(53, 132, 228);"
                     self.btnSinglePhoto.setStyleSheet(btn_style)
                     self.btnSinglePhoto.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
                     self.image_urls.append(resized_image_path)
@@ -196,9 +196,9 @@ class LoaderSelectTargetPhotoPage(QWidget):
             reg_val = Common.get_reg(Common.REG_KEY)
             targets_path = ""
             if reg_val:
-                targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/targets"
+                targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/subjects"
             else:
-                targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/targets"
+                targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/subjects"
             self.get_images_thread.is_direct = True
             self.get_images_thread.direct = targets_path
             self.get_images_thread.start()

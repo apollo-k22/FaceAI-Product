@@ -17,6 +17,8 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle, Table, 
 from commons.common import Common
 from cryptophic.main import decrypt_file_to
 from commons.db_connection import DBConnection
+from commons.ntptime import ntp_get_time_from_object
+from commons.systimer import SysTimer
 
 
 class GenReport:
@@ -220,13 +222,15 @@ class NumberedCanvas(canvas.Canvas):
 def gen_pdf_filename(probe_id, case_num, ps):
     return 'probe_report_%s_%s_%s' % (probe_id, case_num, ps)
 
-def create_pdf(probe_id, probe_result, file_location):    
+def create_pdf(probe_id, probe_result, file_location):   
+    systime = SysTimer.now()   
+    ntptime = ntp_get_time_from_object(systime) 
     try:
         buffer = BytesIO()
         reportinfo = {
             "subject": probe_result.case_info.subject_image_url,
             "result": probe_result.matched,
-            "created": datetime.strftime(datetime.now(), "%d/%m/%Y %I:%M %p"),
+            "created": datetime.strftime(ntptime, "%d/%m/%Y %I:%M %p"),
             "casenum": probe_result.case_info.case_number,
             "ps": probe_result.case_info.case_PS,
             "examname": probe_result.case_info.examiner_name,
@@ -269,8 +273,7 @@ def create_pdf(probe_id, probe_result, file_location):
         print(e)
         return False
 
-
-def export_report_pdf(file_path, file_name):
+def export_report_pdf(file_path, ex_file_name, file_name):    
     report_path = Common.get_reg(Common.REG_KEY)
     if report_path:
         report_path = report_path + "/" + Common.REPORTS_PATH
@@ -279,7 +282,7 @@ def export_report_pdf(file_path, file_name):
     Common.create_path(report_path)
 
     try:
-        decrypt_file_to(os.path.join(report_path, file_name), os.path.join(file_path, file_name + ".pdf"))
+        decrypt_file_to(os.path.join(report_path, ex_file_name), os.path.join(file_path, file_name+".pdf"))
     except Exception as e:
         print("export_report_pdf: ", e)
         return False

@@ -70,8 +70,18 @@ class ArcFaceONNX:
         from numpy.linalg import norm
         feat1 = feat1.ravel()
         feat2 = feat2.ravel()
-        sim = np.dot(feat1, feat2) * 2 / (norm(feat1) * norm(feat2))
+        sim = np.dot(feat1, feat2) / (norm(feat1) * norm(feat2))
+        cos = self.cos_distance(feat1, feat2)
+        if cos < 0.7 : sim += cos / 2
+        if sim > 1 : sim = 1
+        if sim < 0 : sim = sim * (-1) / 5
         return sim
+    
+    def cos_distance(self, feat1, feat2):
+        a = np.matmul(np.transpose(feat1), feat2)
+        b = np.sum(np.multiply(feat1, feat1))
+        c = np.sum(np.multiply(feat2, feat2))
+        return 1 - (a / (np.sqrt(b) * np.sqrt(c)))
 
     def get_feat(self, imgs):
         if not isinstance(imgs, list):

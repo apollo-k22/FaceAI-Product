@@ -1,4 +1,3 @@
-import datetime
 from sys import exit
 
 from PyQt5 import uic
@@ -16,7 +15,9 @@ from Pages.Page6_load import LoaderProbeReportPage
 from Pages.Page7_load import LoaderProbeReportListPage
 from commons.case_info import CaseInfo
 from commons.common import Common
-from commons.ntptime import ntp_get_time
+from commons.ntptime import ntp_get_time, ntp_get_time_from_string
+from commons.systimer import SysTimer
+from commons.systimer_thread import SysTimerThread
 from commons.probing_result import ProbingResult
 from commons.target_items_container_generator import TargetItemsContainerGenerator
 from cryptophic.dec_thread import DecThread
@@ -41,6 +42,10 @@ class StartMain(QMainWindow):
                                 "NTP Error.",
                                 "")
             exit()
+        self.systimer = SysTimer(ntptime)
+        self.systimer_thread = SysTimerThread()
+        self.systimer_thread.reset(self.systimer)
+        self.systimer_thread.start()
 
         self.faceai = FaceAI()
         self.splash = splash
@@ -228,9 +233,11 @@ class StartMain(QMainWindow):
     @pyqtSlot()
     def show_p2_create_new_case(self):
         self.setWindowTitle("Create Case")
+        Common.remove_target_images()
         self.ui_1_home.hide()
         self.ui_3_select_target_photo.hide()
         self.ui_2_create_new_case.showMaximized()
+        
 
     @pyqtSlot(CaseInfo)
     def show_p4_probing(self, case_info):
@@ -340,8 +347,15 @@ class StartMain(QMainWindow):
         if not app_unlocked:
             self.status_bar.showMessage("The license is not available.")
             self.show_p0_license()
-        else:
-            app_expire = datetime.datetime.strptime(app_expire_date, "%d/%m/%Y") - datetime.datetime.today()
+        else:            
+            ntptime = ntp_get_time()
+            if ntptime is None:
+                Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
+                                    "NTP Error.",
+                                    "")
+                exit()
+            
+            app_expire = ntp_get_time_from_string(app_expire_date) - ntptime
             # self.status_bar.showMessage("The license will be expired by "
             #                             + app_expire_date + ". You can use more this application for "
             #                             + str(app_expire) + ".")

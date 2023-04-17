@@ -1,8 +1,10 @@
 import decimal
 import os.path
+import os
 import pathlib
 import shutil
 import winreg
+import time
 
 import cv2
 import numpy as np
@@ -110,6 +112,7 @@ class Common:
             temp_folder = temp_path + "/resize-temp/"
             Common.create_path(temp_folder)
             body_img = cv2.imread(img_path)
+            fsize = os.stat(img_path).st_size
             if body_img is None:
                 print('resize image: wrong path', img_path)
             else:
@@ -118,8 +121,9 @@ class Common:
                 width = img.shape[0]
                 height = img.shape[1]
                 # if the size of image is larger than 6MB, the image will be resized.
-                if (width * height) / (1000 * 1000) > 6:
-                    rate = (width * height) / (1000 * 1000 * 6)
+                megasize = (fsize) / (1024 * 1024)
+                if megasize > 6:
+                    rate = (int)(megasize/6 + 1)
                     dim = (int(img.shape[1] / rate), int(img.shape[0] / rate))
                     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
                     img_path = temp_folder + Common.get_file_name_from_path(img_path)
@@ -151,6 +155,18 @@ class Common:
         temp_folder = temp_path + "/resize-temp"
         Common.create_path(temp_folder)
         shutil.rmtree(temp_folder, ignore_errors=True)
+
+    @staticmethod
+    def remove_target_images():
+        targets_path = Common.get_reg(Common.REG_KEY)
+        if targets_path:
+            targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/targets"
+        else:
+            targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/targets"
+
+        desktop = pathlib.Path(targets_path)
+        for url in desktop.glob(r'**/*'):
+            os.remove(url)
 
     @staticmethod
     def make_pixmap_from_image(image_path, parent):
@@ -277,3 +293,20 @@ class Common:
         rounded = decimal_value.quantize(decimal.Decimal('0.00'))
         return str(rounded)
 
+    @staticmethod
+    def get_available_appendix_num(name, ext):
+        is_exist = os.path.isfile(name+ext)
+        if not is_exist:
+            return (is_exist, name)
+        else:
+            loop = True
+            appendix = 1
+            while loop:
+                name_ = "%s (%d)" % (name, appendix)
+                is_exist_ = os.path.isfile(name_+ext)
+                if not is_exist_:
+                    name = name_
+                    loop = False
+                time.sleep(0.01)
+                appendix+=1
+            return (is_exist, name)
