@@ -18,3 +18,7 @@ FaceAI Media
 Data Storage
 /.idea
 /forms/mainwindow.ui
+
+# Image work files
+images/AIFace_Failed.psd
+images/AIFace_Success.psd
