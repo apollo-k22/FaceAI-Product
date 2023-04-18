@@ -27,6 +27,7 @@ class ProbingResult(object):
                 conf_buff = result['confidence'][:len(result['confidence']) - 1]
                 if float(conf_buff) >= Common.MATCH_LEVEL:
                     self.matched = "Matched"
+                    break
                 else:
                     self.matched = "Non Matched"
         return self.matched

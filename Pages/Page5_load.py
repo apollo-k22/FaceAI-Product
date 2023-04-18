@@ -137,6 +137,15 @@ class LoaderProbeReportPreviewPage(QWidget):
         faces = self.probe_result.json_result['faces']
         self.case_data_for_results = case_data
         index = 0
+        
+        if len(results) > 0 and len(case_data):
+            results_ = results.copy()
+            for result in results_:
+                if float(result['confidence'][:len(result['confidence']) - 1]) < Common.MATCH_LEVEL:     
+                    self.probe_result.remove_json_item(result)
+
+        results = self.probe_result.json_result['results']
+        faces = self.probe_result.json_result['faces']
         if len(results) > 0 and len(case_data):
             for result in results:
                 case_information = case_data[index]
@@ -160,18 +169,24 @@ class LoaderProbeReportPreviewPage(QWidget):
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
-            if self.probe_result.probe_id == '':
+            probe_id = Common.generate_probe_id()
+            # check whether probe id exist on database
+            db = DBConnection()
+            while db.is_exist_value("cases", "probe_id", probe_id):
                 probe_id = Common.generate_probe_id()
-                # check whether probe id exist on database
-                db = DBConnection()
-                while db.is_exist_value("cases", "probe_id", probe_id):
-                    probe_id = Common.generate_probe_id()
-                self.probe_result.probe_id = probe_id
+            self.probe_result.probe_id = probe_id
+            # if self.probe_result.probe_id == '':
+            #     probe_id = Common.generate_probe_id()
+            #     # check whether probe id exist on database
+            #     db = DBConnection()
+            #     while db.is_exist_value("cases", "probe_id", probe_id):
+            #         probe_id = Common.generate_probe_id()
+            #     self.probe_result.probe_id = probe_id
             self.lblProbeId.setText(self.probe_result.probe_id)
             matched = self.probe_result.is_matched()
             if matched == 'Matched':
                 self.lblMatchedDescription.setText("The subject photo has matched to the following target photos."
-                                                   " Respective facial recognition similarity scores are attached herewith.")
+                                                   " Facial similarity score is attached herewith.")
             else:
                 self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
             self.lblProbeResult.setText(matched)

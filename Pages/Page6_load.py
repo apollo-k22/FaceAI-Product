@@ -67,14 +67,14 @@ class LoaderProbeReportPage(QWidget):
                 file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
                 exported = export_report_pdf(file_path, exfilename, filename)
                 if exported:
-                    Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice", "")
+                    Common.show_message(QMessageBox.Information, "Report has been exported to PDF.", "Report Generation", "Notice", "")
                     self.probe_result = ProbingResult()
                     self.refresh_views()
                     self.init_input_values()
                     self.return_home_signal.emit("")  # return to home page so that can start new case.
                     # self.export_pdf_signal.emit(self.probe_result)
                 else:
-                    Common.show_message(QMessageBox.Information, "Exporting was failed.", "Report Generation", "Notice",
+                    Common.show_message(QMessageBox.Information, "Report was not exported to PDF.", "Report Generation", "Notice",
                                         "")
             else:
                 Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
@@ -104,6 +104,8 @@ class LoaderProbeReportPage(QWidget):
         index = 0
         if len(results) > 0 and len(self.case_data_for_results):
             for result in results:
+                # if float(result['confidence'][:len(result['confidence']) - 1]) < Common.MATCH_LEVEL:
+                #     continue
                 face = faces[index]
                 case_info = self.case_data_for_results[index]
                 # set unable the cross button on image

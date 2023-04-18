@@ -28,7 +28,6 @@ class ProbingThread(QThread, CaseInfo, FaceAI):
                                             self.probing_result.case_info.target_image_urls)
         self.probing_result.json_result, self.probing_result.case_info.target_image_urls\
             = self.process_images_url(json_data)
-        print("treated data:", self.probing_result.json_result)
         self.start_splash_signal.emit()
         self.finished_probing_signal.emit(self.probing_result)
 

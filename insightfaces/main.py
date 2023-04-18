@@ -10,6 +10,9 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from cryptophic.main import generate_token
 from insightfaces.arcface_onnx import ArcFaceONNX
 from insightfaces.scrfd import SCRFD
+from commons.ntptime import ntp_get_time_from_object
+from commons.systimer import SysTimer
+from datetime import datetime
 
 THRESHOLDS = [0.7, 0.8, 0.9]
 
@@ -75,7 +78,7 @@ class FaceAI(QObject):
         result = {
             'image_path': path,
             'face_token': str(token),
-            'confidence': "%4f" % sim,
+            'confidence': "%.4f" % sim,
             'user_id': "",
         }
 
@@ -116,7 +119,8 @@ class FaceAI(QObject):
         return data
 
     def build_json_data(self, data, time):
-        data['time_used'] = int(time)
+        # data['time_used'] = int(time)
+        data['time_used'] = datetime.strftime(ntp_get_time_from_object(SysTimer.now()), "%d/%m/%Y %I:%M %p")
         data['thresholds'] = {
             'Low match': "%d%%" % int(THRESHOLDS[0] * 100),
             'High match': "%d%%" % int(THRESHOLDS[1] * 100),

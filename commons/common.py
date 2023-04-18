@@ -281,7 +281,7 @@ class Common:
                     item[attr] = float(item[attr])
             ret = sorted(sorting_list, key=lambda x: x[attr], reverse=reverse)
             for item in ret:
-                item[attr] = str(item[attr]) + "%"
+                item[attr] = Common.round_float_string_natural(item[attr]) + "%"
         return ret
 
     # round the float string up to 2 decimals
@@ -289,6 +289,14 @@ class Common:
     def round_float_string(float_string):
         sim = float(float_string) * 100
         decimal_value = decimal.Decimal(sim)
+        # rounding the number upto 2 digits after the decimal point
+        rounded = decimal_value.quantize(decimal.Decimal('0.00'))
+        return str(rounded)
+
+    # round the float string up to 2 decimals
+    @staticmethod
+    def round_float_string_natural(value):
+        decimal_value = decimal.Decimal(value)
         # rounding the number upto 2 digits after the decimal point
         rounded = decimal_value.quantize(decimal.Decimal('0.00'))
         return str(rounded)
