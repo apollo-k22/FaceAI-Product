@@ -13,7 +13,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle, Table, \
     Image
-
+from insightfaces.main import FaceAI
 from commons.common import Common
 from cryptophic.main import decrypt_file_to
 from commons.db_connection import DBConnection
