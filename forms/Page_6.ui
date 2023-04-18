@@ -178,8 +178,7 @@ border:none;</string>
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="styleSheet">
-                <string notr="true">
-background-repeat: no-repeat;
+                <string notr="true">background-repeat: no-repeat;
 background-color: rgb(127, 0, 226);
 border-radius: 10px;
 background:transparent;</string>
@@ -188,8 +187,8 @@ background:transparent;</string>
                 <string/>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>../images/icon-back2.png</normaloff>../images/icon-back2.png</iconset>
+                <iconset resource="../images/images.qrc">
+                 <normaloff>:/newPrefix/icon-back2.png</normaloff>:/newPrefix/icon-back2.png</iconset>
                </property>
                <property name="iconSize">
                 <size>

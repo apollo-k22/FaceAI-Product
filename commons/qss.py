@@ -6,12 +6,26 @@ QLabel {
     font-size: 14pt;
     font-family: Arial;
 }
+QLabel#pageTitle {
+    background: transparent; 
+    color: rgb(255,255,255);
+    font: bold;
+    font-size: 20pt;
+    font-family: Arial;
+}
 QLineEdit {
     color: rgb(255, 255, 255);
     font-size: 14pt;
     font-family: Arial;
     background:transparent;
     border: 1px solid rgb(53, 132, 228);
+}
+QHBoxLayout  QLabel
+{
+    background-color: rgb(98, 136, 178);
+    border-radius: 10px;
+    border: 1px solid rgb(53, 132, 228);
+    font: 12pt "Arial";
 }
 QRadioButton{
     color: rgb(255, 255, 255);

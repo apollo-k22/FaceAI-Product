@@ -29,7 +29,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.case_data_for_results = []
         self.probe_result = ProbingResult()
         self.generate_report_thread = GenReportThread()
-        self.window = uic.loadUi("./forms/Page_5.ui", self)
+        self.window = uic.loadUi("./forms/Page_5-copy.ui", self)
         self.btnGoBack = self.findChild(QPushButton, "btnGoBack")
         self.btnGoRemaining = self.findChild(QPushButton, "btnGoRemaining")
         self.btnGenerateReport = self.findChild(QPushButton, "btnGenerateReport")
@@ -171,7 +171,8 @@ class LoaderProbeReportPreviewPage(QWidget):
             matched = self.probe_result.is_matched()
             if matched == 'Matched':
                 self.lblMatchedDescription.setText("The subject photo has matched to the following target photos."
-                                                   " Respective facial recognition similarity scores are attached herewith.")
+                                                   "Respective facial recognition similarity scores are attached "
+                                                   "herewith.")
             else:
                 self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
             self.lblProbeResult.setText(matched)
@@ -233,7 +234,6 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     def showEvent(self, a0: QtGui.QShowEvent) -> None:
         super().showEvent(a0)
-        print("shown")
         self.show_window_signal.emit()
 
     def init_views(self):
