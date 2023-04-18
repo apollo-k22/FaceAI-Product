@@ -4,8 +4,9 @@ from PyQt5 import uic, QtGui
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit, QVBoxLayout, QGridLayout, \
-    QSizePolicy, QTextEdit, QWidget, QMessageBox
+    QSizePolicy, QTextEdit, QWidget, QMessageBox, QHBoxLayout
 
+from commons.GrowingTextEdit import GrowingTextEdit
 from commons.common import Common
 from commons.db_connection import DBConnection
 from commons.gen_report_thread import GenReportThread
@@ -29,12 +30,13 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.case_data_for_results = []
         self.probe_result = ProbingResult()
         self.generate_report_thread = GenReportThread()
-        self.window = uic.loadUi("./forms/Page_5-copy.ui", self)
+        self.window = uic.loadUi("./forms/Page_5.ui", self)
         self.btnGoBack = self.findChild(QPushButton, "btnGoBack")
         self.btnGoRemaining = self.findChild(QPushButton, "btnGoRemaining")
         self.btnGenerateReport = self.findChild(QPushButton, "btnGenerateReport")
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
         self.lblCaseNumber = self.findChild(QLabel, "lblCaseNumber")
+        self.lblPs = self.findChild(QLabel, "lblPS")
         self.lblExaminerNo = self.findChild(QLabel, "lblExaminerNo")
         self.lblExaminerName = self.findChild(QLabel, "lblExaminerName")
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
@@ -45,9 +47,15 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.leditRemainingPhotoNumber = self.findChild(QLineEdit, "leditRemainingPhotoNumber")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.lblMatchedDescription = self.findChild(QLabel, "lblMatchedDescription")
-        self.etextJsonResult = self.findChild(QTextEdit, "teditJsonResult")
+        self.wdtProbingResult = self.findChild(QWidget, "wdtProbingResult")
+        # self.etextJsonResult = self.findChild(QTextEdit, "teditJsonResult")
+        self.vlyJsonResult = self.findChild(QVBoxLayout, "JsonResp_layout")
+        self.etextJsonResult = GrowingTextEdit()
+        self.etextJsonResult.setObjectName("teditJsonResult")
+        self.vlyJsonResult.addWidget(self.etextJsonResult)
         self.vlyReportResultLayout = self.findChild(QVBoxLayout, "vlyTargetResults")
         self.glyReportBuff = QGridLayout()
+        self.vlyGoRemaining = self.findChild(QHBoxLayout, "hlyGoRemaining")
         self.init_actions()
         # self.init_input_values()
         # self.init_result_views()
@@ -137,7 +145,17 @@ class LoaderProbeReportPreviewPage(QWidget):
         faces = self.probe_result.json_result['faces']
         self.case_data_for_results = case_data
         index = 0
+        
         if len(results) > 0 and len(case_data):
+            results_ = results.copy()
+            for result in results_:
+                if float(result['confidence'][:len(result['confidence']) - 1]) < Common.MATCH_LEVEL:     
+                    self.probe_result.remove_json_item(result)
+
+        results = self.probe_result.json_result['results']
+        faces = self.probe_result.json_result['faces']
+        if len(results) > 0 and len(case_data):
+            self.wdtProbingResult.show()
             for result in results:
                 case_information = case_data[index]
                 face = faces[index]
@@ -149,9 +167,12 @@ class LoaderProbeReportPreviewPage(QWidget):
                 result_view_item.delete_item_signal.connect(self.delete_result_item)
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
                 index += 1
-        self.vlyReportResultLayout.addLayout(self.glyReportBuff)
-        js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-        self.etextJsonResult.setPlainText(js_result)
+            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+            js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            self.etextJsonResult.setPlainText(js_result)
+        else:
+            self.wdtProbingResult.hide()
+
         self.init_input_values()
         self.setEnabled(True)
         self.stop_splash_signal.emit(None)
@@ -160,23 +181,37 @@ class LoaderProbeReportPreviewPage(QWidget):
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
-            if self.probe_result.probe_id == '':
+            probe_id = Common.generate_probe_id()
+            # check whether probe id exist on database
+            db = DBConnection()
+            while db.is_exist_value("cases", "probe_id", probe_id):
                 probe_id = Common.generate_probe_id()
-                # check whether probe id exist on database
-                db = DBConnection()
-                while db.is_exist_value("cases", "probe_id", probe_id):
-                    probe_id = Common.generate_probe_id()
-                self.probe_result.probe_id = probe_id
+            self.probe_result.probe_id = probe_id
+            # if self.probe_result.probe_id == '':
+            #     probe_id = Common.generate_probe_id()
+            #     # check whether probe id exist on database
+            #     db = DBConnection()
+            #     while db.is_exist_value("cases", "probe_id", probe_id):
+            #         probe_id = Common.generate_probe_id()
+            #     self.probe_result.probe_id = probe_id
             self.lblProbeId.setText(self.probe_result.probe_id)
             matched = self.probe_result.is_matched()
+            target_type = self.probe_result.case_info.target_type
             if matched == 'Matched':
-                self.lblMatchedDescription.setText("The subject photo has matched to the following target photos."
-                                                   "Respective facial recognition similarity scores are attached "
-                                                   "herewith.")
+                if target_type == 1:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_SINGLE)
+                elif target_type == 2:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_MULTIPLE)
+                elif target_type == 3:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_ENTIRE)
+                elif target_type == 4:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_OLDCASE)
             else:
-                self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+                self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_NON_MATCHED)
+
             self.lblProbeResult.setText(matched)
             self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
+            self.lblPs.setText(self.probe_result.case_info.case_PS)
             self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
             self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
@@ -188,14 +223,12 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             # lbl_x, lbl_y, pixmap = Common.make_pixmap_from_image(self.probe_result.case_info.subject_image_url, self.lblSubjectImage)
             # self.lblSubjectImage.setPixmap(pixmap)
-
-            js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-            self.etextJsonResult.setPlainText(js_result)
         else:
             self.lblProbeId.setText("")
             self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
             self.lblProbeResult.setText("")
             self.lblCaseNumber.setText("")
+            self.lblPs.setText("")
             self.lblExaminerNo.setText("")
             self.lblExaminerName.setText("")
             self.teditRemarks.setPlainText("")
@@ -238,9 +271,10 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     def init_views(self):
         self.lblProbeId.setText("")
-        self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+        self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_NON_MATCHED)
         self.lblProbeResult.setText("")
         self.lblCaseNumber.setText("")
+        self.lblPs.setText("")
         self.lblExaminerNo.setText("")
         self.lblExaminerName.setText("")
         self.teditRemarks.setPlainText("")
@@ -253,3 +287,4 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.leditRemainingPhotoNumber.setText("")
         self.clear_result_list()
         self.probe_result = ProbingResult()
+        self.wdtProbingResult.hide()

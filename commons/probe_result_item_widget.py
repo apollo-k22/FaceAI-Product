@@ -5,7 +5,7 @@ from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy, QPushButton, QFormLayout, QLabel
 
 from commons.common import Common
-
+from insightfaces.main import FaceAI
 
 class ProbeResultItemWidget(QWidget):
     delete_item_signal = pyqtSignal(object)
@@ -103,7 +103,8 @@ class ProbeResultItemWidget(QWidget):
             # decimal_value = decimal.Decimal(sim)
             # # rounding the number upto 2 digits after the decimal point
             # rounded = decimal_value.quantize(decimal.Decimal('0.00'))
-            self.lbl_similarity_score.setText(self.result_item['confidence'])
+            fscore = float(self.result_item['confidence'][:len(self.result_item['confidence']) - 1])
+            self.lbl_similarity_score.setText(self.result_item['confidence'] + "(" + FaceAI.get_similarity_str([], fscore, "", 100) + ")")
         img = cv2.imread(self.result_item['image_path'])
         img = np.array(img)
 

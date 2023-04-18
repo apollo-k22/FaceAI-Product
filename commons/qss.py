@@ -6,6 +6,13 @@ QLabel {
     font-size: 14pt;
     font-family: Arial;
 }
+QTextEdit#teditJsonResult{
+    background:transparent;
+    border-radius: 10px;
+    border: 1px solid rgb(53, 132, 228);
+    color: rgb(255,255,255);
+    font: 10pt "Arial";
+}
 QLabel#pageTitle {
     background: transparent; 
     color: rgb(255,255,255);
@@ -46,6 +53,7 @@ QPushButton {
     font-size: 12pt;
     font: bold;
     font-family: Arial;
+    background:transparent;
 }
 QStatusBar{
     color: rgb(255, 255, 255);

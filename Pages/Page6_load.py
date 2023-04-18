@@ -6,6 +6,7 @@ from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QGridLayout, QTextEdit, \
     QSizePolicy, QFileDialog, QWidget, QMessageBox
 
+from commons.GrowingTextEdit import GrowingTextEdit
 from commons.common import Common
 from commons.gen_report import export_report_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
@@ -32,6 +33,7 @@ class LoaderProbeReportPage(QWidget):
         self.btnExportPdf = self.findChild(QPushButton, "btnExportPdf")
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
         self.lblCaseNumber = self.findChild(QLabel, "lblCaseNumber")
+        self.lblPs = self.findChild(QLabel, "lblPS")
         self.lblExaminerNo = self.findChild(QLabel, "lblExaminerNo")
         self.lblExaminerName = self.findChild(QLabel, "lblExaminerName")
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
@@ -40,7 +42,8 @@ class LoaderProbeReportPage(QWidget):
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.lblMatchedDescription = self.findChild(QLabel, "lblMatchedDescription")
-        self.teditJsonResult = self.findChild(QTextEdit, "teditJsonResult")
+        self.teditJsonResult = GrowingTextEdit()
+        self.teditJsonResult.setObjectName("teditJsonResult")
         self.vlyReportResult = self.findChild(QVBoxLayout, "vlyTargetResults")
         self.glyReportBuff = QGridLayout()
 
@@ -67,14 +70,14 @@ class LoaderProbeReportPage(QWidget):
                 file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
                 exported = export_report_pdf(file_path, exfilename, filename)
                 if exported:
-                    Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice", "")
+                    Common.show_message(QMessageBox.Information, "Report has been exported to PDF.", "Report Generation", "Notice", "")
                     self.probe_result = ProbingResult()
                     self.refresh_views()
                     self.init_input_values()
                     self.return_home_signal.emit("")  # return to home page so that can start new case.
                     # self.export_pdf_signal.emit(self.probe_result)
                 else:
-                    Common.show_message(QMessageBox.Information, "Exporting was failed.", "Report Generation", "Notice",
+                    Common.show_message(QMessageBox.Information, "Report was not exported to PDF.", "Report Generation", "Notice",
                                         "")
             else:
                 Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
@@ -105,6 +108,8 @@ class LoaderProbeReportPage(QWidget):
         index = 0
         if len(results) > 0 and len(self.case_data_for_results):
             for result in results:
+                # if float(result['confidence'][:len(result['confidence']) - 1]) < Common.MATCH_LEVEL:
+                #     continue
                 face = faces[index]
                 case_info = self.case_data_for_results[index]
                 # set unable the cross button on image
@@ -129,13 +134,21 @@ class LoaderProbeReportPage(QWidget):
         if not Common.is_empty(self.probe_result.case_info):
             self.lblProbeId.setText(self.probe_result.probe_id)
             matched = self.probe_result.is_matched()
+            target_type = self.probe_result.case_info.target_type
             if matched == 'Matched':
-                self.lblMatchedDescription.setText("The subject photo has matched to the following target photos."
-                                                   " Respective facial recognition similarity scores are attached herewith.")
+                if target_type == 1:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_SINGLE)
+                elif target_type == 2:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_MULTIPLE)
+                elif target_type == 3:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_ENTIRE)
+                elif target_type == 4:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_OLDCASE)
             else:
-                self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+                self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_NON_MATCHED)
             self.lblProbeResult.setText(matched)
             self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
+            self.lblPs.setText(self.probe_result.case_info.case_PS)
             self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
             self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
@@ -152,6 +165,7 @@ class LoaderProbeReportPage(QWidget):
             self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
             self.lblProbeResult.setText("")
             self.lblCaseNumber.setText("")
+            self.lblPs.setText("")
             self.lblExaminerNo.setText("")
             self.lblExaminerName.setText("")
             self.teditRemarks.setPlainText("")
@@ -180,9 +194,10 @@ class LoaderProbeReportPage(QWidget):
 
     def init_views(self):
         self.lblProbeId.setText("")
-        self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+        self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_NON_MATCHED)
         self.lblProbeResult.setText("")
         self.lblCaseNumber.setText("")
+        self.lblPs.setText("")
         self.lblExaminerNo.setText("")
         self.lblExaminerName.setText("")
         self.teditRemarks.setPlainText("")

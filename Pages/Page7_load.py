@@ -207,10 +207,10 @@ class LoaderProbeReportListPage(QWidget):
             file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
             exported = export_report_pdf(file_path, exfilename, filename)
             if exported:
-                Common.show_message(QMessageBox.Information, "Pdf report was exported.", "Report Generation", "Notice",
+                Common.show_message(QMessageBox.Information, "Report has been exported to PDF.", "Report Generation", "Notice",
                                     "")
             else:
-                Common.show_message(QMessageBox.Information, "Pdf report was not exported.", "Report Generation",
+                Common.show_message(QMessageBox.Information, "Report was not exported to PDF.", "Report Generation",
                                     "Notice",
                                     "")
         else:
@@ -257,9 +257,9 @@ class LoaderProbeReportListPage(QWidget):
         self.zip_thread.quit()
         self.setEnabled(True)
         if res.status:
-            Common.show_message(QMessageBox.Information, "Zip file included all pdfs was created.", "AllZip Generation",
+            Common.show_message(QMessageBox.Information, "PDF reports have been exported to ZIP.", "AllZip Generation",
                                 "Notice", "")
         else:
             Common.show_message(QMessageBox.Information,
-                                "Zip file included all pdfs was not created. Because %s" % res.message,
+                                "PDF reports have not been exported to ZIP. Because %s" % res.message,
                                 "AllZip Generation", "Notice", "")

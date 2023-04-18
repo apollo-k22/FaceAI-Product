@@ -8,6 +8,7 @@ class ProbingResult(object):
     def __init__(self):
         super().__init__()
         self.case_info = CaseInfo()
+
         self.probe_id = ""
         self.matched = "Non Matched"
         self.created_date = ntp_get_time_from_object(SysTimer.now())
@@ -27,6 +28,7 @@ class ProbingResult(object):
                 conf_buff = result['confidence'][:len(result['confidence']) - 1]
                 if float(conf_buff) >= Common.MATCH_LEVEL:
                     self.matched = "Matched"
+                    break
                 else:
                     self.matched = "Non Matched"
         return self.matched

@@ -63,7 +63,7 @@ class LoaderProbingPage(QWidget, FaceAI):
     def failed_probing_slot(self):
         self.stop_gif()
         self.current_gif = self.failed_gif
-        self.lblProbeResult.setText("Failed Probing for one image.")
+        self.lblProbeResult.setText("Recognized as different person.")
         self.start_gif()
         self.timer.singleShot(800, self.timeout_gif)
         self.timer.start()
@@ -71,7 +71,7 @@ class LoaderProbingPage(QWidget, FaceAI):
     def success_probing_slot(self):
         self.stop_gif()
         self.current_gif = self.success_gif
-        self.lblProbeResult.setText("Success Probing for one image.")
+        self.lblProbeResult.setText("Recognized as same person.")
         self.start_gif()
         self.timer.singleShot(800, self.timeout_gif)
         self.timer.start()

@@ -36,7 +36,7 @@ class Common:
     #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
     #                " *.tif *.tiff *.wbmp" \
     #                " *.webp *.xbm *.xpm)"
-    IMAGE_FILTER = "Image Files ( *.ico *.jpeg"  \
+    IMAGE_FILTER = "Image Files ( *.ico *.jpeg" \
                    " *.jpg *.png " \
                    " *.tif)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
@@ -47,6 +47,15 @@ class Common:
     PAGINATION_BUTTON_SIZE = 60
     NUMBER_PER_PAGE = 5
     RESULT_ITEM_WIDGET_SIZE = 330
+    REPORT_DESCRIPTION_MATCHED_FOR_SINGLE = "The subject photo has matched to the following target photo." \
+                                            " Facial similarity score is attached herewith."
+    REPORT_DESCRIPTION_MATCHED_FOR_MULTIPLE = "The subject photo has matched to the following target photos." \
+                                              " Facial similarity score is attached herewith."
+    REPORT_DESCRIPTION_MATCHED_FOR_ENTIRE = "The subject photo has matched to the following target photos." \
+                                            " Facial similarity score is attached herewith."
+    REPORT_DESCRIPTION_MATCHED_FOR_OLDCASE = "The subject photo has matched to the following old case photos." \
+                                             " Facial similarity score is attached herewith."
+    REPORT_DESCRIPTION_NON_MATCHED = "The subject photo hasn't matched to any target photo."
 
     @staticmethod
     def clear_layout(layout):
@@ -123,7 +132,7 @@ class Common:
                 # if the size of image is larger than 6MB, the image will be resized.
                 megasize = (fsize) / (1024 * 1024)
                 if megasize > 6:
-                    rate = (int)(megasize/6 + 1)
+                    rate = (int)(megasize / 6 + 1)
                     dim = (int(img.shape[1] / rate), int(img.shape[0] / rate))
                     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
                     img_path = temp_folder + Common.get_file_name_from_path(img_path)
@@ -281,7 +290,7 @@ class Common:
                     item[attr] = float(item[attr])
             ret = sorted(sorting_list, key=lambda x: x[attr], reverse=reverse)
             for item in ret:
-                item[attr] = str(item[attr]) + "%"
+                item[attr] = Common.round_float_string_natural(item[attr]) + "%"
         return ret
 
     # round the float string up to 2 decimals
@@ -293,9 +302,17 @@ class Common:
         rounded = decimal_value.quantize(decimal.Decimal('0.00'))
         return str(rounded)
 
+    # round the float string up to 2 decimals
+    @staticmethod
+    def round_float_string_natural(value):
+        decimal_value = decimal.Decimal(value)
+        # rounding the number upto 2 digits after the decimal point
+        rounded = decimal_value.quantize(decimal.Decimal('0.00'))
+        return str(rounded)
+
     @staticmethod
     def get_available_appendix_num(name, ext):
-        is_exist = os.path.isfile(name+ext)
+        is_exist = os.path.isfile(name + ext)
         if not is_exist:
             return (is_exist, name)
         else:
@@ -303,10 +320,10 @@ class Common:
             appendix = 1
             while loop:
                 name_ = "%s (%d)" % (name, appendix)
-                is_exist_ = os.path.isfile(name_+ext)
+                is_exist_ = os.path.isfile(name_ + ext)
                 if not is_exist_:
                     name = name_
                     loop = False
                 time.sleep(0.01)
-                appendix+=1
+                appendix += 1
             return (is_exist, name)

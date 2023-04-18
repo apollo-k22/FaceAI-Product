@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1310</width>
-    <height>800</height>
+    <width>814</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -54,9 +54,25 @@
        <property name="topMargin">
         <number>10</number>
        </property>
-       <property name="bottomMargin">
-        <number>10</number>
+       <property name="rightMargin">
+        <number>20</number>
        </property>
+       <property name="bottomMargin">
+        <number>20</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>400</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QLabel" name="lblLogo">
          <property name="sizePolicy">
@@ -67,8 +83,8 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>120</width>
-           <height>60</height>
+           <width>80</width>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -93,19 +109,6 @@
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>400</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </item>
