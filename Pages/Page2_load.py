@@ -4,11 +4,12 @@ from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QFormLayout
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QTextEdit
 from PyQt5.QtWidgets import QPushButton
 
+from commons.growing_text_edit import GrowingTextEdit
 from commons.case_info import CaseInfo
 from commons.common import Common
 from insightfaces.main import FaceAI
@@ -32,10 +33,26 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.btnReturnHome = self.findChild(QPushButton, 'btnReturnHome')
         self.btnContinueProbe = self.findChild(QPushButton, 'btnContinueProbe')
         self.leditCaseNumber = self.findChild(QLineEdit, 'leditCaseNumber')
-        self.leditPS = self.findChild(QLineEdit, 'leditPS')
-        self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
         self.leditExaminerNo = self.findChild(QLineEdit, 'leditExaminerNo')
-        self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
+
+        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+        # self.leditPS = self.findChild(QLineEdit, 'leditPS')
+        self.leditPS = GrowingTextEdit()
+        self.leditPS.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.leditPS.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        # self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
+        self.leditExaminerName = GrowingTextEdit()
+        self.leditExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.leditExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.leditRemarks = GrowingTextEdit()
+        self.leditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.leditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
+        self.flyCaseDetail.setWidget(1, QFormLayout.FieldRole, self.leditPS)
+        self.flyCaseDetail.setWidget(2, QFormLayout.FieldRole, self.leditExaminerName)
+        self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.leditRemarks)
 
         # set image url
         self.subject_photo_url = ''
@@ -52,8 +69,8 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
     # set regular expression for checking input data
     def set_regxs(self):
         self.set_regx_line_edit(self.leditCaseNumber, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_NUMBER_LENGTH)
-        self.set_regx_line_edit(self.leditPS, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_PS_LENGTH)
-        self.set_regx_line_edit(self.leditExaminerName, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_EXAMINER_NAME_LENGTH)
+        self.set_regx_plain_text_edit(self.leditPS, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_PS_LENGTH)
+        self.set_regx_plain_text_edit(self.leditExaminerName, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_EXAMINER_NAME_LENGTH)
         self.set_regx_line_edit(self.leditExaminerNo, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_EXAMINER_NO_LENGTH)
         self.set_regx_plain_text_edit(self.leditRemarks, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_REMARKS_LENGTH)
 
@@ -117,9 +134,9 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                                 ledit_name + " is empty")
         else:
             self.case_info.case_number = self.leditCaseNumber.text()
-            self.case_info.case_PS = self.leditPS.text()
+            self.case_info.case_PS = self.leditPS.toPlainText()
             self.case_info.examiner_no = self.leditExaminerNo.text()
-            self.case_info.examiner_name = self.leditExaminerName.text()
+            self.case_info.examiner_name = self.leditExaminerName.toPlainText()
             self.case_info.remarks = self.leditRemarks.toPlainText()
             self.case_info.subject_image_url = self.subject_photo_url
             # emit continue probe signal
@@ -131,13 +148,13 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         if self.leditCaseNumber.text() == '':
             self.leditCaseNumber.setFocus()
             return True, 'Case Number'
-        if self.leditPS.text() == '':
+        if self.leditPS.toPlainText() == '':
             self.leditPS.setFocus()
             return True, 'PS'
         if self.leditExaminerNo.text() == '':
             self.leditExaminerNo.setFocus()
             return True, "Examiner's NO"
-        if self.leditExaminerName.text() == '':
+        if self.leditExaminerName.toPlainText() == '':
             self.leditExaminerName.setFocus()
             return True, "Examiner's Name"
         if self.leditRemarks.toPlainText() == '':

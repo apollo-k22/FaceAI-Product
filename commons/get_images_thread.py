@@ -16,11 +16,12 @@ class GetImagesThread(QThread):
         self.direct = ""
         self.is_direct = False
         self.is_urls = False
+        self.is_old_cases = False
 
     def run(self):
         if self.is_urls:
             self.get_images_from_urls()
-        if self.is_direct:
+        if self.is_direct or self.is_old_cases:
             self.get_images_from_folder_path()
         self.finished_get_images_signal.emit(self.image_urls)
 
@@ -37,3 +38,8 @@ class GetImagesThread(QThread):
                 if self.faceai.is_face(url):
                     url = Common.resize_image(url.__str__(), 500)
                     self.image_urls.append(url)
+
+    def init_flags(self, val):
+        self.is_old_cases = val
+        self.is_urls = val
+        self.is_direct = val

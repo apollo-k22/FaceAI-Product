@@ -4,9 +4,9 @@ from PyQt5 import uic, QtGui
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit, QVBoxLayout, QGridLayout, \
-    QSizePolicy, QTextEdit, QWidget, QMessageBox, QHBoxLayout
+    QSizePolicy, QTextEdit, QWidget, QMessageBox, QHBoxLayout, QFormLayout
 
-from commons.GrowingTextEdit import GrowingTextEdit
+from commons.growing_text_edit import GrowingTextEdit
 from commons.common import Common
 from commons.db_connection import DBConnection
 from commons.gen_report_thread import GenReportThread
@@ -36,13 +36,34 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.btnGenerateReport = self.findChild(QPushButton, "btnGenerateReport")
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
         self.lblCaseNumber = self.findChild(QLabel, "lblCaseNumber")
-        self.lblPs = self.findChild(QLabel, "lblPS")
+        # self.lblPs = self.findChild(QLabel, "lblPS")
         self.lblExaminerNo = self.findChild(QLabel, "lblExaminerNo")
-        self.lblExaminerName = self.findChild(QLabel, "lblExaminerName")
+        # self.lblExaminerName = self.findChild(QLabel, "lblExaminerName")
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
         self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
-        self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
+        # self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
+
+        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+        # self.leditPS = self.findChild(QLineEdit, 'leditPS')
+        self.lblPs = GrowingTextEdit()
+        self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.lblPs.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        # self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
+        self.lblExaminerName = GrowingTextEdit()
+        self.lblExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.lblExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.teditRemarks = GrowingTextEdit()
+        self.teditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.teditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
+        self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.lblPs)
+        self.flyCaseDetail.setWidget(6, QFormLayout.FieldRole, self.lblExaminerName)
+        self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.teditRemarks)
+
+
         self.lbeSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.leditRemainingPhotoNumber = self.findChild(QLineEdit, "leditRemainingPhotoNumber")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")

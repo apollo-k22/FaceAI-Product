@@ -73,6 +73,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
     @pyqtSlot()
     def select_photo_mode_slot(self, checked, index):
         if checked:
+            self.get_images_thread.init_flags(False)
             self.stkwdtSelectPhotos.setCurrentIndex(index)
             # if selected old cases, select images from that folder
             if index == 3:
@@ -87,22 +88,22 @@ class LoaderSelectTargetPhotoPage(QWidget):
             if len(self.image_urls) == 0:
                 self.lblMultiPhotoResult.setText("There are no raster images in this folder.")
             else:
-                self.btnMultiPhoto2.setText(str(len(self.image_urls)) + " was selected.")
+                self.btnMultiPhoto2.setText(str(len(self.image_urls)) + Common.SELECTED_IMAGE_DESCRIPTION)
         if self.get_images_thread.is_direct:
             self.get_images_thread.is_direct = False
             if len(self.image_urls) == 0:
                 self.lblEntireResult.setText("There are no raster images in this folder.")
             else:
-                self.btnEntireFolder2.setText(str(len(self.image_urls)) + " was selected.")
-        if self.case_info.is_used_old_cases:
-            # self.case_info.is_used_old_cases = False
+                self.btnEntireFolder2.setText(str(len(self.image_urls)) + Common.SELECTED_IMAGE_DESCRIPTION)
+        if self.get_images_thread.is_old_cases:
+            self.get_images_thread.is_old_cases = False
             if not len(self.image_urls):
                 self.lblOldCaseSelectedNumber.setText("")
                 self.lblOldCaseResult.setText("There are no old cases images. Please select manually on other tab.")
             else:
                 self.lblOldCaseResult.setText(
                     "Click on the \"Start probe\" button below to continue the further process.")
-                self.lblOldCaseSelectedNumber.setText(str(len(self.image_urls)) + " was selected.")
+                self.lblOldCaseSelectedNumber.setText(str(len(self.image_urls)) + Common.SELECTED_IMAGE_DESCRIPTION)
         self.stop_splash_signal.emit(None)
 
     @pyqtSlot()
@@ -196,13 +197,14 @@ class LoaderSelectTargetPhotoPage(QWidget):
             self.start_splash_signal.emit("data")
             self.image_urls.clear()
             self.case_info.is_used_old_cases = True
+
             reg_val = Common.get_reg(Common.REG_KEY)
             targets_path = ""
             if reg_val:
                 targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/subjects"
             else:
                 targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/subjects"
-            self.get_images_thread.is_direct = True
+            self.get_images_thread.is_old_cases = True
             self.get_images_thread.direct = targets_path
             self.case_info.target_type = 4
             self.get_images_thread.start()

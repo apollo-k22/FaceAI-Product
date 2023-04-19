@@ -14,6 +14,8 @@ from PyQt5.QtWidgets import QMessageBox
 
 
 class Common:
+    CASE_DETAIL_LINE_EDIT_HEIGHT = 40
+    CASE_DETAIL_LINE_EDIT_WIDTH = 400
     REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\FaceAI\main.exe"
     STORAGE_PATH = "Data Storage"
     MEDIA_PATH = "Media"
@@ -56,6 +58,7 @@ class Common:
     REPORT_DESCRIPTION_MATCHED_FOR_OLDCASE = "The subject photo has matched to the following old case photos." \
                                              " Facial similarity score is attached herewith."
     REPORT_DESCRIPTION_NON_MATCHED = "The subject photo hasn't matched to any target photo."
+    SELECTED_IMAGE_DESCRIPTION = " photos have been selected as target."
 
     @staticmethod
     def clear_layout(layout):
