@@ -79,17 +79,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusBar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-image: url(:/newPrefix/Background.png);
-      background-repeat: no-repeat;
-      background-position: center;
-    </string>
-   </property>
-  </widget>
  </widget>
  <resources>
   <include location="../images/images.qrc"/>

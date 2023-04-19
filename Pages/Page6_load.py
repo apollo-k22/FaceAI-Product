@@ -33,34 +33,39 @@ class LoaderProbeReportPage(QWidget):
         self.btnExportPdf = self.findChild(QPushButton, "btnExportPdf")
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
         self.lblCaseNumber = self.findChild(QLabel, "lblCaseNumber")
-        # self.lblPs = self.findChild(QLabel, "lblPS")
         self.lblExaminerNo = self.findChild(QLabel, "lblExaminerNo")
-        # self.lblExaminerName = self.findChild(QLabel, "lblExaminerName")
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
         self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
-        # self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
+
+        self.lblPs = self.findChild(QTextEdit, "teditPS")
+        self.lblExaminerName = self.findChild(QTextEdit, "teditExaminerName")
+        self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
+
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.lblMatchedDescription = self.findChild(QLabel, "lblMatchedDescription")
 
-
-        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
-        # self.leditPS = self.findChild(QLineEdit, 'leditPS')
-        self.lblPs = GrowingTextEdit()
-        self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.lblPs.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
-
-        self.lblExaminerName = GrowingTextEdit()
-        self.lblExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.lblExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
-
-        self.teditRemarks = GrowingTextEdit()
-        self.teditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.teditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
-        # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
-        self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.lblPs)
-        self.flyCaseDetail.setWidget(6, QFormLayout.FieldRole, self.lblExaminerName)
-        self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.teditRemarks)
+        # self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+        # # self.leditPS = self.findChild(QLineEdit, 'leditPS')
+        # self.lblPs = GrowingTextEdit()
+        # self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.lblPs.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        #
+        # self.lblExaminerName = GrowingTextEdit()
+        # self.lblExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.lblExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        #
+        # self.teditRemarks = GrowingTextEdit()
+        # self.teditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.teditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        # # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
+        # self.lblPs.setObjectName("caseDetail")
+        # self.lblExaminerName.setObjectName("caseDetail")
+        # self.teditRemarks.setObjectName("caseDetail")
+        #
+        # self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.lblPs)
+        # self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.lblExaminerName)
+        # self.flyCaseDetail.setWidget(8, QFormLayout.FieldRole, self.teditRemarks)
 
         self.teditJsonResult = GrowingTextEdit()
         self.teditJsonResult.setObjectName("teditJsonResult")
@@ -70,6 +75,10 @@ class LoaderProbeReportPage(QWidget):
         self.glyReportBuff = QGridLayout()
 
         self.init_actions()
+        self.lblStatus = self.findChild(QLabel, "lblStatus")
+
+    def set_statusbar(self, status):
+        self.lblStatus.setText(status)
 
     @pyqtSlot()
     def on_clicked_export_pdf(self):
@@ -140,8 +149,8 @@ class LoaderProbeReportPage(QWidget):
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
                 index += 1
         self.vlyReportResult.addLayout(self.glyReportBuff)
-        js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-        self.teditJsonResult.setPlainText(js_result)
+        # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+        self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         self.init_input_values()
         self.setEnabled(True)
         self.stop_splash_signal.emit(None)
@@ -173,15 +182,15 @@ class LoaderProbeReportPage(QWidget):
             self.lblPs.setText(self.probe_result.case_info.case_PS)
             self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
-            self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
+            self.teditRemarks.setText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
             image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
                           "');background:transparent;border: 1px solid rgb(53, 132, 228);"
             # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-            self.teditJsonResult.setPlainText(js_result)
+            # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         else:
             self.lblProbeId.setText("")
             self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
@@ -190,7 +199,7 @@ class LoaderProbeReportPage(QWidget):
             self.lblPs.setText("")
             self.lblExaminerNo.setText("")
             self.lblExaminerName.setText("")
-            self.teditRemarks.setPlainText("")
+            self.teditRemarks.setText("")
             self.lblTimeOfReportGeneration.setText("")
             image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
                           "');background:transparent;border: 1px solid rgb(53, 132, 228);"
@@ -222,12 +231,11 @@ class LoaderProbeReportPage(QWidget):
         self.lblPs.setText("")
         self.lblExaminerNo.setText("")
         self.lblExaminerName.setText("")
-        self.teditRemarks.setPlainText("")
+        self.teditRemarks.setText("")
         self.lblTimeOfReportGeneration.setText("")
         image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
                       "');background:transparent;border: 1px solid rgb(53, 132, 228);"
         self.lblSubjectImage.setStyleSheet(image_style)
         self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.teditRemarks.setPlainText("")
         self.clear_result_list()
         self.probe_result = ProbingResult()

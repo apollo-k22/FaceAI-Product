@@ -49,6 +49,9 @@ background-position: center;
      <property name="spacing">
       <number>0</number>
      </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="leftMargin">
@@ -274,6 +277,9 @@ border-radius:20px;</string>
            <height>40</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background:transparent;</string>
+         </property>
          <property name="text">
           <string>Probing images...</string>
          </property>
@@ -309,6 +315,26 @@ border-radius:20px;</string>
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="hlyStatus">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="lblStatus">
+         <property name="styleSheet">
+          <string notr="true">background:transparent;</string>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

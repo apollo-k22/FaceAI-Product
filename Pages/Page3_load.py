@@ -43,6 +43,10 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.stkwdtSelectPhotos = self.findChild(QStackedWidget, "stkwdtSelectPhotos")
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.init_actions()
+        self.lblStatus = self.findChild(QLabel, "lblStatus")
+
+    def set_statusbar(self, status):
+        self.lblStatus.setText(status)
 
     @pyqtSlot()
     def start_probe_slot(self):
@@ -68,6 +72,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
 
     @pyqtSlot()
     def go_back_slot(self):
+        self.image_urls.clear()  # clear image urls before back to the "create case page"
         self.go_back_signal.emit()
 
     @pyqtSlot()

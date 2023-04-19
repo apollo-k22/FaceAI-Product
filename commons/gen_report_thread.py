@@ -13,7 +13,6 @@ from commons.systimer import SysTimer
 from commons.ntptime import ntp_get_time_from_object
 
 
-
 # class to use generate report from probing result.
 # this class will use the GenReport class to write pdf file.
 class GenReportThread(QThread):
@@ -26,7 +25,7 @@ class GenReportThread(QThread):
     def run(self) -> None:
         self.generate_report()
         self.finished_generate_report_signal.emit(self.probe_result)
-        
+
     # save probe result and make probe report file as pdf.
     def generate_report(self):
         report_path = Common.get_reg(Common.REG_KEY)

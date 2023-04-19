@@ -36,33 +36,34 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.btnGenerateReport = self.findChild(QPushButton, "btnGenerateReport")
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
         self.lblCaseNumber = self.findChild(QLabel, "lblCaseNumber")
-        # self.lblPs = self.findChild(QLabel, "lblPS")
+        self.lblPs = self.findChild(QTextEdit, "teditPS")
         self.lblExaminerNo = self.findChild(QLabel, "lblExaminerNo")
-        # self.lblExaminerName = self.findChild(QLabel, "lblExaminerName")
+        self.lblExaminerName = self.findChild(QTextEdit, "teditExaminerName")
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
         self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
-        # self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
+        self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
 
         self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
-        # self.leditPS = self.findChild(QLineEdit, 'leditPS')
-        self.lblPs = GrowingTextEdit()
-        self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.lblPs.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        # self.lblPs = GrowingTextEdit()
+        # self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.lblPs.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
 
-        # self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
-        self.lblExaminerName = GrowingTextEdit()
-        self.lblExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.lblExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        # self.lblExaminerName = GrowingTextEdit()
+        # self.lblExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.lblExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
 
-        self.teditRemarks = GrowingTextEdit()
-        self.teditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.teditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
-        # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
-        self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.lblPs)
-        self.flyCaseDetail.setWidget(6, QFormLayout.FieldRole, self.lblExaminerName)
-        self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.teditRemarks)
+        # self.teditRemarks = GrowingTextEdit()
+        # self.teditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.teditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
 
+        # self.lblPs.setObjectName("caseDetail")
+        # self.lblExaminerName.setObjectName("caseDetail")
+        # self.teditRemarks.setObjectName("caseDetail")
+        #
+        # self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.lblPs)
+        # self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.lblExaminerName)
+        # self.flyCaseDetail.setWidget(8, QFormLayout.FieldRole, self.teditRemarks)
 
         self.lbeSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.leditRemainingPhotoNumber = self.findChild(QLineEdit, "leditRemainingPhotoNumber")
@@ -73,6 +74,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.vlyJsonResult = self.findChild(QVBoxLayout, "JsonResp_layout")
         self.etextJsonResult = GrowingTextEdit()
         self.etextJsonResult.setObjectName("teditJsonResult")
+        self.etextJsonResult.setReadOnly(True)
         self.vlyJsonResult.addWidget(self.etextJsonResult)
         self.vlyReportResultLayout = self.findChild(QVBoxLayout, "vlyTargetResults")
         self.glyReportBuff = QGridLayout()
@@ -81,6 +83,10 @@ class LoaderProbeReportPreviewPage(QWidget):
         # self.init_input_values()
         # self.init_result_views()
         self.set_validate_input_data()
+        self.lblStatus = self.findChild(QLabel, "lblStatus")
+
+    def set_statusbar(self, status):
+        self.lblStatus.setText(status)
 
     @pyqtSlot(ProbingResult)
     def finished_generate_report_slot(self, probe_result):
@@ -124,6 +130,8 @@ class LoaderProbeReportPreviewPage(QWidget):
         if self.leditRemainingPhotoNumber.text() == '':
             return
         remaining_number = int(self.leditRemainingPhotoNumber.text())
+        if len(self.probe_result.json_result['results']) <= remaining_number:
+            return
         if remaining_number > 0:
             # remove some items from json results except remaining number
             result_images = \
@@ -189,8 +197,8 @@ class LoaderProbeReportPreviewPage(QWidget):
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
                 index += 1
             self.vlyReportResultLayout.addLayout(self.glyReportBuff)
-            js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-            self.etextJsonResult.setPlainText(js_result)
+            # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         else:
             self.wdtProbingResult.hide()
 
@@ -235,7 +243,8 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.lblPs.setText(self.probe_result.case_info.case_PS)
             self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
-            self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
+            self.teditRemarks.setText(self.probe_result.case_info.remarks)
+
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
             # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
             image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
@@ -252,7 +261,7 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.lblPs.setText("")
             self.lblExaminerNo.setText("")
             self.lblExaminerName.setText("")
-            self.teditRemarks.setPlainText("")
+            self.teditRemarks.setText("")
             self.lblTimeOfReportGeneration.setText("")
             image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
@@ -280,6 +289,9 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     @pyqtSlot(object)
     def delete_result_item(self, item):
+        json_result = self.probe_result.json_result['results']
+        if not len(json_result) > 1:
+            return
         self.probe_result.remove_json_item(item)
         self.init_target_images_view()
 
@@ -298,7 +310,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.lblPs.setText("")
         self.lblExaminerNo.setText("")
         self.lblExaminerName.setText("")
-        self.teditRemarks.setPlainText("")
+        self.teditRemarks.setText("")
         self.lblTimeOfReportGeneration.setText("")
         image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
                       "');background:transparent;border: 1px solid rgb(53, 132, 228);"
@@ -309,3 +321,4 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.clear_result_list()
         self.probe_result = ProbingResult()
         self.wdtProbingResult.hide()
+

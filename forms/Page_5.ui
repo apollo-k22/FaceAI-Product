@@ -226,7 +226,7 @@ background:transparent;</string>
           <x>0</x>
           <y>0</y>
           <width>1012</width>
-          <height>761</height>
+          <height>759</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -251,6 +251,9 @@ background:transparent;</string>
          </property>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_8">
+           <property name="spacing">
+            <number>6</number>
+           </property>
            <property name="bottomMargin">
             <number>0</number>
            </property>
@@ -277,13 +280,13 @@ background:transparent;</string>
                 <number>0</number>
                </property>
                <property name="topMargin">
-                <number>10</number>
+                <number>5</number>
                </property>
                <property name="rightMargin">
                 <number>0</number>
                </property>
                <property name="bottomMargin">
-                <number>10</number>
+                <number>0</number>
                </property>
                <item>
                 <spacer name="horizontalSpacer_7">
@@ -323,10 +326,16 @@ background:transparent;</string>
                    <item row="0" column="0">
                     <widget class="QLabel" name="label">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
                      </property>
                      <property name="font">
                       <font>
@@ -340,6 +349,9 @@ background:none;
                      </property>
                      <property name="text">
                       <string>Probe ID:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -382,10 +394,22 @@ background:transparent;</string>
                    <item row="1" column="0">
                     <widget class="QLabel" name="label_2">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
                      </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
@@ -393,6 +417,9 @@ background:none;</string>
                      </property>
                      <property name="text">
                       <string>Probe result:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -404,12 +431,27 @@ background:none;</string>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>250</width>
+                       <height>40</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
 background:none;</string>
                      </property>
                      <property name="text">
                       <string>Time of report generation:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -451,12 +493,27 @@ color: white;</string>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
 background:none;</string>
                      </property>
                      <property name="text">
                       <string>Case number</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -492,12 +549,27 @@ color: white;</string>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
 background:none;</string>
                      </property>
                      <property name="text">
                       <string>Examiner's no.:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -539,12 +611,27 @@ color: white;</string>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
 background:none;</string>
                      </property>
                      <property name="text">
                       <string>Examiner's name:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -556,12 +643,27 @@ background:none;</string>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
 background:none;</string>
                      </property>
                      <property name="text">
                       <string>Remarks:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -603,12 +705,135 @@ color: white;</string>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
 background:none;</string>
                      </property>
                      <property name="text">
                       <string>        PS</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="7" column="1">
+                    <widget class="QTextEdit" name="teditExaminerName">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>400</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>400</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background:transparent;
+border: 1px solid rgb(53, 132, 228);</string>
+                     </property>
+                     <property name="verticalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
+                     </property>
+                     <property name="horizontalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QAbstractScrollArea::AdjustToContents</enum>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="1">
+                    <widget class="QTextEdit" name="teditRemarks">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>400</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background:transparent;
+border: 1px solid rgb(53, 132, 228);</string>
+                     </property>
+                     <property name="verticalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
+                     </property>
+                     <property name="horizontalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QAbstractScrollArea::AdjustToContents</enum>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QTextEdit" name="teditPS">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>400</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>400</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background:transparent;
+border: 1px solid rgb(53, 132, 228);</string>
+                     </property>
+                     <property name="verticalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
+                     </property>
+                     <property name="horizontalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QAbstractScrollArea::AdjustToContents</enum>
+                     </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -751,7 +976,7 @@ background:transparent;</string>
                        <number>0</number>
                       </property>
                       <property name="bottomMargin">
-                       <number>10</number>
+                       <number>3</number>
                       </property>
                       <item>
                        <spacer name="horizontalSpacer_5">
@@ -786,14 +1011,14 @@ background:transparent;</string>
                        <widget class="QLineEdit" name="leditRemainingPhotoNumber">
                         <property name="minimumSize">
                          <size>
-                          <width>50</width>
-                          <height>50</height>
+                          <width>30</width>
+                          <height>30</height>
                          </size>
                         </property>
                         <property name="maximumSize">
                          <size>
-                          <width>50</width>
-                          <height>50</height>
+                          <width>30</width>
+                          <height>30</height>
                          </size>
                         </property>
                         <property name="font">
@@ -832,14 +1057,14 @@ background:transparent;</string>
                        <widget class="QPushButton" name="btnGoRemaining">
                         <property name="minimumSize">
                          <size>
-                          <width>50</width>
-                          <height>50</height>
+                          <width>40</width>
+                          <height>40</height>
                          </size>
                         </property>
                         <property name="maximumSize">
                          <size>
-                          <width>70</width>
-                          <height>100</height>
+                          <width>40</width>
+                          <height>40</height>
                          </size>
                         </property>
                         <property name="font">
@@ -873,7 +1098,7 @@ background:transparent;</string>
                      <number>0</number>
                     </property>
                     <property name="topMargin">
-                     <number>30</number>
+                     <number>10</number>
                     </property>
                     <property name="bottomMargin">
                      <number>0</number>
@@ -906,6 +1131,9 @@ background:transparent;</string>
                       </property>
                       <property name="text">
                        <string>      Facial Recognition JSON results</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
                       </property>
                      </widget>
                     </item>
@@ -1074,6 +1302,26 @@ background:transparent;</string>
                 </size>
                </property>
               </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="hlyStatus">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="lblStatus">
+               <property name="styleSheet">
+                <string notr="true">background:transparent;</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>

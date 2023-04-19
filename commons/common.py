@@ -1,7 +1,9 @@
 import decimal
+import json
 import os.path
 import os
 import pathlib
+import re
 import shutil
 import winreg
 import time
@@ -14,6 +16,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 
 class Common:
+    STATUS_BAR_HEIGHT = 20
     CASE_DETAIL_LINE_EDIT_HEIGHT = 40
     CASE_DETAIL_LINE_EDIT_WIDTH = 400
     REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\FaceAI\main.exe"
@@ -330,3 +333,19 @@ class Common:
                 time.sleep(0.01)
                 appendix += 1
             return (is_exist, name)
+
+    @staticmethod
+    def convert_json_for_page(json_data):
+        json_buff = {'subject_face_rectangle': {}, 'subject_headpose': {}}
+        faces = json_data['faces']
+        if len(faces):
+            for face in faces:
+                json_buff['subject_face_rectangle'] = face['face_rectangle']
+                roll = face['face_angle']
+                roll_buff = re.sub('Roll: ', '', roll)
+                roll_buff = re.sub(' degree', '', roll_buff)
+                json_buff['subject_headpose'] = {"roll_angle": float(roll_buff)}
+
+        js_result = json.dumps(json_buff, indent=4, sort_keys=True)
+        print(js_result)
+        return js_result

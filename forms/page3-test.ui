@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>662</width>
-    <height>624</height>
+    <height>639</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -131,6 +131,9 @@ background:transparent;</string>
            <property name="leftMargin">
             <number>35</number>
            </property>
+           <property name="topMargin">
+            <number>35</number>
+           </property>
            <item>
             <widget class="QLabel" name="pageTitle">
              <property name="sizePolicy">
@@ -138,6 +141,9 @@ background:transparent;</string>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background:transparent;</string>
              </property>
              <property name="text">
               <string>Select target photo(s)</string>
@@ -208,7 +214,7 @@ background:transparent;</string>
        <item>
         <widget class="QStackedWidget" name="stkwdtSelectPhotos">
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="wdtSinglePhoto">
           <property name="enabled">
@@ -374,6 +380,9 @@ image:url(:/newPrefix/Group 67.png);</string>
                      <height>120</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">background:transparent;</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -406,12 +415,41 @@ image:url(:/newPrefix/Group 67.png);</string>
                   <number>10</number>
                  </property>
                  <item>
+                  <spacer name="verticalSpacer_6">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="btnMultiPhoto2">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimumSize">
                     <size>
-                     <width>400</width>
-                     <height>90</height>
+                     <width>200</width>
+                     <height>50</height>
                     </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>400</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background:transparent;
+text-align:left;</string>
                    </property>
                    <property name="text">
                     <string>Select target photos</string>
@@ -431,6 +469,9 @@ image:url(:/newPrefix/Group 67.png);</string>
                      <width>400</width>
                      <height>20</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background:transparent;</string>
                    </property>
                    <property name="text">
                     <string>Raster image formats are accepted</string>
@@ -562,12 +603,41 @@ image:url(:/newPrefix/Group 67.png);</string>
                   <number>10</number>
                  </property>
                  <item>
+                  <spacer name="verticalSpacer_7">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="btnEntireFolder2">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>400</width>
-                     <height>90</height>
+                     <height>50</height>
                     </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>400</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background:transparent;
+text-align:left;</string>
                    </property>
                    <property name="text">
                     <string>Select target folder</string>
@@ -587,6 +657,9 @@ image:url(:/newPrefix/Group 67.png);</string>
                      <width>400</width>
                      <height>20</height>
                     </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background:transparent;</string>
                    </property>
                    <property name="text">
                     <string>Raster image formats are accepted</string>
@@ -647,8 +720,17 @@ image:url(:/newPrefix/Group 67.png);</string>
                  <property name="minimumSize">
                   <size>
                    <width>520</width>
-                   <height>100</height>
+                   <height>50</height>
                   </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>520</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background:transparent;</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -668,16 +750,25 @@ image:url(:/newPrefix/Group 67.png);</string>
                <item>
                 <widget class="QLabel" name="lblOldCaseResult">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>520</width>
-                   <height>100</height>
+                   <width>600</width>
+                   <height>50</height>
                   </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>1200</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background:transparent;</string>
                  </property>
                  <property name="text">
                   <string>Click on the &quot;Start probe&quot; button below to continue the further process.</string>
@@ -688,19 +779,6 @@ image:url(:/newPrefix/Group 67.png);</string>
                 </widget>
                </item>
               </layout>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
              </item>
             </layout>
            </item>
@@ -733,6 +811,9 @@ image:url(:/newPrefix/Group 67.png);</string>
        </item>
        <item>
         <widget class="QRadioButton" name="rdobtnSinglePhoto">
+         <property name="styleSheet">
+          <string notr="true">background:transparent;</string>
+         </property>
          <property name="text">
           <string>Single Photo</string>
          </property>
@@ -743,6 +824,9 @@ image:url(:/newPrefix/Group 67.png);</string>
        </item>
        <item>
         <widget class="QRadioButton" name="rdobtnMultiPhoto">
+         <property name="styleSheet">
+          <string notr="true">background:transparent;</string>
+         </property>
          <property name="text">
           <string>Multi Photo</string>
          </property>
@@ -750,6 +834,9 @@ image:url(:/newPrefix/Group 67.png);</string>
        </item>
        <item>
         <widget class="QRadioButton" name="rdobtnEntireFolder">
+         <property name="styleSheet">
+          <string notr="true">background:transparent;</string>
+         </property>
          <property name="text">
           <string>Entire Folder</string>
          </property>
@@ -758,7 +845,7 @@ image:url(:/newPrefix/Group 67.png);</string>
        <item>
         <widget class="QRadioButton" name="rdobtnOldCasePhoto">
          <property name="styleSheet">
-          <string notr="true"/>
+          <string notr="true">background:transparent;</string>
          </property>
          <property name="text">
           <string>Old Case</string>
@@ -867,6 +954,26 @@ image:url(:/newPrefix/Group 67.png);</string>
           </widget>
          </item>
         </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="hlyStatus">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="lblStatus">
+         <property name="styleSheet">
+          <string notr="true">background:transparent;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

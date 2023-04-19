@@ -7,7 +7,7 @@ from commons.ntptime import ntp_get_time_from_object
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QTableWidget, QHBoxLayout, QLineEdit, QComboBox, QTableWidgetItem, \
-    QFileDialog, QMessageBox, QWidget
+    QFileDialog, QMessageBox, QWidget, QLabel
 
 from commons.common import Common
 from commons.export_pdf_button import ExportPdfButton
@@ -54,6 +54,10 @@ class LoaderProbeReportListPage(QWidget):
         self.leditSearchString = self.findChild(QLineEdit, "leditSearchString")
         self.zip_time = time.time()
         self.init_actions()
+        self.lblStatus = self.findChild(QLabel, "lblStatus")
+
+    def set_statusbar(self, status):
+        self.lblStatus.setText(status)
 
     @pyqtSlot()
     def on_clicked_go_back(self):

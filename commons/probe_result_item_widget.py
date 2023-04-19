@@ -44,6 +44,9 @@ class ProbeResultItemWidget(QWidget):
 
         self.lbl_ps = QLabel()
 
+        self.lbl_probe_id_lable = QLabel()
+        self.lbl_probe_id = QLabel()
+
         self.init_view()
 
     @pyqtSlot()
@@ -77,8 +80,9 @@ class ProbeResultItemWidget(QWidget):
         self.lbl_similarity_score.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
         self.fly_info_container.addRow(self.lbl_similarity_score_label, self.lbl_similarity_score)
 
-        self.lbl_case_number_label.setText("Case Number: ")
+        self.lbl_case_number_label.setText("Old Case Number: ")
         self.lbl_ps_label.setText("PS: ")
+        self.lbl_probe_id_lable.setText("Probe id")
         if self.is_used_old_cases:
 
             self.lbl_case_number.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
@@ -89,9 +93,11 @@ class ProbeResultItemWidget(QWidget):
 
             self.fly_info_container.addRow(self.lbl_case_number_label, self.lbl_case_number)
             self.fly_info_container.addRow(self.lbl_ps_label, self.lbl_ps)
+            self.fly_info_container.addRow(self.lbl_probe_id_lable, self.lbl_probe_id)
             if len(self.case_information):
                 self.lbl_case_number.setText(self.case_information[0])
                 self.lbl_ps.setText(self.case_information[1])
+                self.lbl_probe_id.setText(self.case_information[2])
 
         self.vly_info_container.addLayout(self.fly_info_container)
 

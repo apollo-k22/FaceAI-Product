@@ -3,7 +3,7 @@ QLabel {
     background: transparent; 
     color: rgb(255,255,255);
     font: bold;
-    font-size: 14pt;
+    font-size: 13pt;
     font-family: Arial;
 }
 QTextEdit#teditJsonResult{
@@ -14,41 +14,63 @@ QTextEdit#teditJsonResult{
     font-size: 10pt;
     font-family: Arial;
 }
-QLabel#pageTitle {
+QLabel#pageTitle{
     background: transparent; 
     color: rgb(255,255,255);
     font: bold;
     font-size: 20pt;
     font-family: Arial;
 }
+QLabel#lblStatus{
+    background: transparent; 
+    color: rgb(255,255,255);
+    font-size: 10pt;
+    font-family: Arial;
+}
 QLineEdit {
     color: rgb(255, 255, 255);
-    font-size: 14pt;
+    font-size: 13pt;
     font-family: Arial;
     background:transparent;
     border: 1px solid rgb(53, 132, 228);
 }
 QRadioButton{
+    background:transparent;
     color: rgb(255, 255, 255);
     font-size: 12pt;
-    font-family: Arial;
-    background:transparent;
+    font-family: Arial;    
 }
-QTextEdit{
-    color: rgb(255, 255, 255);
-    font-size: 14pt;
-    font-family: Arial;
+QRadioButton::checked{
     background:transparent;
+    color: rgb(255, 255, 255);
+    font-size: 13pt;
+    fond: bold;
+    font-family: Arial;    
+}
+
+QTextEdit{
+    background:transparent;
+    color: rgb(255, 255, 255);
+    font-size: 13pt;
+    font-family: Arial;
+    border: 1px solid rgb(53, 132, 228);
+}
+QTextEdit#caseDetail{
+    background:transparent;
+    color: rgb(255, 255, 255);
+    font-size: 13pt;
+    font-family: Arial;
     border: 1px solid rgb(53, 132, 228);
 }
 QPushButton {
+    background:transparent;
     color: rgb(255, 255, 255);
     font-size: 12pt;
     font: bold;
     font-family: Arial;
-    background:transparent;
 }
 QStatusBar{
+    background:transparent;
     color: rgb(255, 255, 255);
     font-size: 10pt;
     font-family: Arial;

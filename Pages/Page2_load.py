@@ -4,7 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QFileDialog, QFormLayout
+from PyQt5.QtWidgets import QFileDialog, QFormLayout, QLabel
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QTextEdit
 from PyQt5.QtWidgets import QPushButton
@@ -40,16 +40,24 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditPS = GrowingTextEdit()
         self.leditPS.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.leditPS.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        self.leditPS.setMaximumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
 
         # self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
         self.leditExaminerName = GrowingTextEdit()
         self.leditExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.leditExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        # self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        self.leditExaminerName.setMaximumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
 
         self.leditRemarks = GrowingTextEdit()
         self.leditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.leditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        self.leditRemarks.setMaximumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
         # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
+        self.leditPS.setObjectName("caseDetail")
+        self.leditExaminerName.setObjectName("caseDetail")
+        self.leditRemarks.setObjectName("caseDetail")
         self.flyCaseDetail.setWidget(1, QFormLayout.FieldRole, self.leditPS)
         self.flyCaseDetail.setWidget(2, QFormLayout.FieldRole, self.leditExaminerName)
         self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.leditRemarks)
@@ -59,6 +67,10 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.set_event_actions()
         self.set_regxs()
         # self.mock_view()
+        self.lblStatus = self.findChild(QLabel, "lblStatus")
+
+    def set_statusbar(self, status):
+        self.lblStatus.setText(status)
 
     # set slots to each widget
     def set_event_actions(self):

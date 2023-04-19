@@ -253,7 +253,7 @@ color: rgb(255, 255, 255);</string>
           <number>10</number>
          </property>
          <property name="bottomMargin">
-          <number>10</number>
+          <number>0</number>
          </property>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,0,0,0,0">
@@ -531,17 +531,12 @@ color: rgb(90, 105, 128);
                </property>
                <item>
                 <property name="text">
-                 <string>5</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
                  <string>10</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>15</string>
+                 <string>20</string>
                 </property>
                </item>
                <item>
@@ -685,8 +680,8 @@ border:none;</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>951</width>
-              <height>384</height>
+              <width>968</width>
+              <height>382</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -694,6 +689,18 @@ border:none;</string>
 border:none;</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_5">
                <property name="spacing">
@@ -1069,6 +1076,26 @@ border:none;</string>
                     </size>
                    </property>
                   </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="hlyStatus">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="lblStatus">
+                   <property name="styleSheet">
+                    <string notr="true">background:transparent;</string>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>

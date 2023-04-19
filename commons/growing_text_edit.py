@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QTextEdit
+from PyQt5.QtWidgets import QTextEdit, QSizePolicy
+
+from commons.common import Common
 
 
 class GrowingTextEdit(QTextEdit):
@@ -10,9 +12,9 @@ class GrowingTextEdit(QTextEdit):
         self.heightMin = 0
         self.heightMax = 65000
         self.setVerticalScrollBarPolicy(1)
+        self.setStyleSheet("background:transparent;")
 
     def size_change(self):
         doc_height = self.document().size().height()
-        print(self.document().toPlainText())
         if self.heightMin <= doc_height <= self.heightMax:
             self.setMinimumHeight(doc_height)
