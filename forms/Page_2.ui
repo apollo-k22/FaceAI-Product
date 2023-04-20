@@ -756,8 +756,8 @@ background:none;</string>
             <string/>
            </property>
            <property name="icon">
-            <iconset>
-             <normaloff>../images/continuetoprobe.png</normaloff>../images/continuetoprobe.png</iconset>
+            <iconset resource="../images/images.qrc">
+             <normaloff>:/newPrefix/continuetoprobe.png</normaloff>:/newPrefix/continuetoprobe.png</iconset>
            </property>
            <property name="iconSize">
             <size>

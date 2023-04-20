@@ -399,8 +399,9 @@ class DBConnection:
                 for result in results:
                     img_path = result['image_path']
                     query_string = "select " \
-                                   "case_no,PS,probe_id from cases " \
-                                   " where id=(select case_id from targets where target_url='" + img_path + "')"
+                                   "case_no,ps,probe_id from cases " \
+                                   " where subject_url='" + img_path + "'"
+                                #    " where id=(select case_id from targets where target_url='" + img_path + "')"
                     cursor = self.connection.cursor()
                     cursor.execute(query_string)
                     rows = cursor.fetchall()

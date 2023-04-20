@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/newPrefix/Background.png);
-      background-repeat: no-repeat;
+   <string notr="true">      background-repeat: no-repeat;
       background-position: center;
+background:transparent;
     </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
@@ -285,7 +285,7 @@ background: none;</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../images/images.qrc">
+          <iconset>
            <normaloff>:/newPrefix/confirm.png</normaloff>:/newPrefix/confirm.png</iconset>
          </property>
          <property name="iconSize">

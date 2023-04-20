@@ -14,7 +14,7 @@
    <string>Page_3</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/newPrefix/Background.png);
+   <string notr="true">background:transparent;
       background-repeat: no-repeat;
       background-position: center;</string>
   </property>

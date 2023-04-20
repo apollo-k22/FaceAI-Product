@@ -54,7 +54,7 @@ border:none;</string>
       <number>0</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,0,0">
+      <layout class="QHBoxLayout" name="hlyHeader" stretch="0,0,0,0,0">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -110,7 +110,7 @@ background:transparent;</string>
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>../images/icon-back2.png</normaloff>../images/icon-back2.png</iconset>
+             <normaloff>C:/Users/ss/.designer/images/icon-back2.png</normaloff>C:/Users/ss/.designer/images/icon-back2.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -234,7 +234,7 @@ color: rgb(255, 255, 255);</string>
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>../images/FaceAI-Logo.png</pixmap>
+          <pixmap>C:/Users/ss/.designer/images/FaceAI-Logo.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>

@@ -10,9 +10,13 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.graphics import shapes
+from datetime import datetime
+import json, os
+
 from reportlab.pdfgen import canvas
-from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle, Table, \
-    Image
+from reportlab.platypus import Paragraph, SimpleDocTemplate, TableStyle, Image, Table
+
 from insightfaces.main import FaceAI
 from commons.common import Common
 from cryptophic.main import decrypt_file_to
@@ -90,25 +94,13 @@ class GenReport:
             ('ALIGN', (0, 0), (-1, -1), 'CENTER')
         ])
         nested1 = [
-            Paragraph('Time of report generation: ' + reportinfo["created"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('Case no.:' + reportinfo["casenum"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('PS: ' + reportinfo["ps"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('Examiner’s name: ' + reportinfo["examname"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('BP no.: ' + reportinfo["bpnum"],
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading)),
-            Paragraph('Remarks: ' + reportinfo["remarks"] * 5,
-                      ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                     textColor=black, leading=leading))
-        ]
+            Paragraph('Time of report generation: ' + reportinfo["created"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('Case no.:' + reportinfo["casenum"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('PS: ' + reportinfo["ps"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('Examiner’s name: ' + reportinfo["examname"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('Examiner’s no.: ' + reportinfo["examnum"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+            Paragraph('Remarks: ' + reportinfo["remarks"] * 5, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+        ]   
         img = Image(reportinfo["subject"])
         img._restrictSize(3.6*inch, 3.0*inch)
         img.hAlign = TA_CENTER
@@ -142,17 +134,30 @@ class GenReport:
             img._restrictSize(3.6*inch, 3.0*inch)
             img.hAlign = TA_CENTER
             img.vAlign = TA_CENTER
+
+            if img.imageWidth > img.imageHeight:
+                rate = img.drawWidth / img.imageWidth
+            else:
+                rate = img.drawHeight / img.imageHeight
+
+            draw = shapes.Drawing(img.drawWidth, 0)
+            rect = shapes.Rect(target['face_rect']['left']*rate, (img.drawHeight-target['face_rect']['top']*rate-target['face_rect']['height']*rate), target['face_rect']['width']*rate, target['face_rect']['height']*rate, fillColor=None, strokeColor=red)
+            draw.add(rect)
+
             if target['oldcase']:
                 nested[index % 2] = [
                     img,
-                    Paragraph('Similarity score: %.2f%%(%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                    draw,
+                    Paragraph('Similarity score: %.2f%% (%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                     Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
-                    Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+                    Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                    Paragraph('Probe ID: %s'%target['probeid'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
                 ]
             else:
                 nested[index % 2] = [
                     img,
-                    Paragraph('Similarity score: %.2f%%(%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+                    draw,
+                    Paragraph('Similarity score: %.2f%% (%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
                 ]
             if ((targets_len % 2 != 0) & (index == targets_len - 1)):
                 table = Table([[nested[0]]],
@@ -234,7 +239,7 @@ def create_pdf(probe_id, probe_result, file_location):
             "casenum": probe_result.case_info.case_number,
             "ps": probe_result.case_info.case_PS,
             "examname": probe_result.case_info.examiner_name,
-            "bpnum": "bpnum",
+            "examnum": probe_result.case_info.examiner_no,
             "remarks": probe_result.case_info.remarks,
             "json": probe_result.json_result
         }
@@ -252,14 +257,18 @@ def create_pdf(probe_id, probe_result, file_location):
                     "sim": float(conf_buff),
                     "oldcase": probe_result.case_info.is_used_old_cases,
                     "caseno": old_case_data_for_results[index][0],
-                    "ps": old_case_data_for_results[index][1]
+                    "ps": old_case_data_for_results[index][1],
+                    "probeid": old_case_data_for_results[index][2],
+                    "face_rect": probe_result.json_result['faces'][index]['face_rectangle']
                 })
             else:
                 reportinfo["targets"].append({
                     "path": result["image_path"],
                     "sim": float(conf_buff),
-                    "oldcase": probe_result.case_info.is_used_old_cases
+                    "oldcase": probe_result.case_info.is_used_old_cases,
+                    "face_rect": probe_result.json_result['faces'][index]['face_rectangle']
                 })
+            
 
         report = GenReport(buffer, probe_id)
         pdf = report.print_reports(reportinfo)
