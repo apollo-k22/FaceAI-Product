@@ -399,18 +399,21 @@ class DBConnection:
                 for result in results:
                     img_path = result['image_path']
                     query_string = "select " \
-                                   "case_no,PS from cases " \
-                                   " where id=(select case_id from targets where target_url='" + img_path + "')"
+                                   "case_no,ps,probe_id from cases " \
+                                   " where subject_url='" + img_path + "'"
+                                #    " where id=(select case_id from targets where target_url='" + img_path + "')"
                     cursor = self.connection.cursor()
                     cursor.execute(query_string)
                     rows = cursor.fetchall()
                     self.connection.commit()
                     case_no = ""
                     ps = ""
+                    probe_id = ""
                     for row in rows:
                         case_no = row[0]
                         ps = row[1]
-                    case = (case_no, ps)
+                        probe_id = row[2]
+                    case = (case_no, ps, probe_id)
                     cases.append(case)
             except sqlite3.IntegrityError as e:
                 print('INTEGRITY ERROR\n')
