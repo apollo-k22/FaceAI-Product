@@ -139,7 +139,7 @@ class GenReport:
                 nested[index % 2] = [
                     img,
                     draw,
-                    Paragraph('Similarity score: %.2f%%(%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
+                    Paragraph('Similarity score: %.2f%% (%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
                 ]
             if ((targets_len % 2 != 0) & (index == targets_len - 1)):
                 table = Table([[nested[0]]],

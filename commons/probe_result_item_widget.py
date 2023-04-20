@@ -33,16 +33,13 @@ class ProbeResultItemWidget(QWidget):
         self.fly_info_container = QFormLayout()
 
         self.lbl_similarity_score_label = QLabel()
-
         self.lbl_similarity_score = QLabel()
-
         self.lbl_case_number_label = QLabel()
-
         self.lbl_case_number = QLabel()
-
         self.lbl_ps_label = QLabel()
-
         self.lbl_ps = QLabel()
+        self.lbl_probe_id_label = QLabel()
+        self.lbl_probe_id = QLabel()
 
         self.init_view()
 
@@ -79,19 +76,23 @@ class ProbeResultItemWidget(QWidget):
 
         self.lbl_case_number_label.setText("Case Number: ")
         self.lbl_ps_label.setText("PS: ")
+        self.lbl_probe_id_label.setText("Probe ID: ")
         if self.is_used_old_cases:
 
             self.lbl_case_number.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
             self.lbl_case_number_label.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
-
             self.lbl_ps.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
             self.lbl_ps_label.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
+            self.lbl_probe_id.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
+            self.lbl_probe_id_label.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
 
             self.fly_info_container.addRow(self.lbl_case_number_label, self.lbl_case_number)
             self.fly_info_container.addRow(self.lbl_ps_label, self.lbl_ps)
+            self.fly_info_container.addRow(self.lbl_probe_id_label, self.lbl_probe_id)
             if len(self.case_information):
                 self.lbl_case_number.setText(self.case_information[0])
                 self.lbl_ps.setText(self.case_information[1])
+                self.lbl_probe_id.setText(self.case_information[2])
 
         self.vly_info_container.addLayout(self.fly_info_container)
 
@@ -104,7 +105,7 @@ class ProbeResultItemWidget(QWidget):
             # # rounding the number upto 2 digits after the decimal point
             # rounded = decimal_value.quantize(decimal.Decimal('0.00'))
             fscore = float(self.result_item['confidence'][:len(self.result_item['confidence']) - 1])
-            self.lbl_similarity_score.setText(self.result_item['confidence'] + "(" + FaceAI.get_similarity_str([], fscore, "", 100) + ")")
+            self.lbl_similarity_score.setText(self.result_item['confidence'] + " (" + FaceAI.get_similarity_str([], fscore, "", 100) + ")")
         img = cv2.imread(self.result_item['image_path'])
         img = np.array(img)
 
