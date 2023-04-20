@@ -13,10 +13,7 @@ class PaginationButton(QPushButton):
         self.setText(str(current_page + 1))
         self.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         self.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-        self.setStyleSheet("border-radius: 10px;"
-                           "color: rgb(255, 255, 255);"
-                           "border: 1px solid white;"
-                           "background:transparent;")
+        self.setStyleSheet(Common.PAGINATION_BUTTON_STYLE)
         self.clicked.connect(self.button_clicked_slot)
 
     def button_clicked_slot(self):

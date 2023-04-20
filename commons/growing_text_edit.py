@@ -12,7 +12,6 @@ class GrowingTextEdit(QTextEdit):
         self.heightMin = 0
         self.heightMax = 65000
         self.setVerticalScrollBarPolicy(1)
-        self.setStyleSheet("background:transparent;")
 
     def size_change(self):
         doc_height = self.document().size().height()

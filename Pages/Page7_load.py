@@ -30,7 +30,7 @@ class LoaderProbeReportListPage(QWidget):
         self.zip_thread = None
         self.probe_result = ProbingResult()
         self.current_page = 0
-        self.number_per_page = 5
+        self.number_per_page = 10
         self.search_string = '%'
         self.is_searching_result = False
         self.reports = []
@@ -114,15 +114,30 @@ class LoaderProbeReportListPage(QWidget):
         if self.is_searching_result:
             self.shown_reports = self.get_search_results(self.search_string, report_len, self.current_page,
                                                          self.number_per_page)
-
+            # if the number of data is more than showing number per page, show pagination layout.
+            shown_len = len(self.shown_reports)
+            if shown_len > self.number_per_page:
+                self.set_pagination(shown_len)
         else:
             self.shown_reports = self.get_pagination_results(report_len, self.current_page, self.number_per_page)
-        if report_len:
-            hly_pagination = PaginationLayout(report_len, self.number_per_page, self.current_page)
+            # if the number of data is more than showing number per page, show pagination layout.
+            if report_len > self.number_per_page:
+                self.set_pagination(report_len)
+
+        # if report_len:
+        #     hly_pagination = PaginationLayout(report_len, self.number_per_page, self.current_page)
+        #     # connect signals
+        #     hly_pagination.changed_page_signal.connect(self.refresh_table)
+        #     self.hlyPaginationContainer.addLayout(hly_pagination)
+        self.init_table(self.shown_reports)
+
+    # set pagination layout with the number of shown data on table.
+    def set_pagination(self, data_len):
+        if data_len:
+            hly_pagination = PaginationLayout(data_len, self.number_per_page, self.current_page)
             # connect signals
             hly_pagination.changed_page_signal.connect(self.refresh_table)
             self.hlyPaginationContainer.addLayout(hly_pagination)
-        self.init_table(self.shown_reports)
 
     def get_search_results(self, search_string, report_len, current_page, number_per_page):
         searched = []

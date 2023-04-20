@@ -70,7 +70,7 @@ class ProbeResultItemWidget(QWidget):
             image_geo = self.wdt_image.geometry()
             self.btn_delete.setGeometry(image_geo.width() - Common.CROSS_BUTTON_SIZE,
                                         0, Common.CROSS_BUTTON_SIZE, Common.CROSS_BUTTON_SIZE)
-            self.btn_delete.setStyleSheet("image: url(:/newPrefix/cross-icon.png);background:transparent;border:none")
+            self.btn_delete.setStyleSheet("image: url(:/newPrefix/error.png);background:transparent;border:none")
             self.btn_delete.clicked.connect(self.on_clicked_delete)
 
         self.vly_img_container.addWidget(self.wdt_image)

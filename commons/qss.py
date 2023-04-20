@@ -57,10 +57,10 @@ QTextEdit{
 }
 QTextEdit#caseDetail{
     background:transparent;
+    border: 1px solid rgb(53, 132, 228);
     color: rgb(255, 255, 255);
     font-size: 13pt;
-    font-family: Arial;
-    border: 1px solid rgb(53, 132, 228);
+    font-family: Arial;    
 }
 QPushButton {
     background:transparent;

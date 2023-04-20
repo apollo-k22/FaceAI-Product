@@ -2,7 +2,7 @@ import json
 import os
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt
 from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QGridLayout, QTextEdit, \
     QSizePolicy, QFileDialog, QWidget, QMessageBox, QFormLayout
 
@@ -37,40 +37,43 @@ class LoaderProbeReportPage(QWidget):
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
         self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
 
-        self.lblPs = self.findChild(QTextEdit, "teditPS")
-        self.lblExaminerName = self.findChild(QTextEdit, "teditExaminerName")
-        self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
+        # self.lblPs = self.findChild(QTextEdit, "teditPS")
+        # self.lblExaminerName = self.findChild(QTextEdit, "teditExaminerName")
+        # self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
 
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.lblMatchedDescription = self.findChild(QLabel, "lblMatchedDescription")
 
-        # self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
-        # # self.leditPS = self.findChild(QLineEdit, 'leditPS')
-        # self.lblPs = GrowingTextEdit()
-        # self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        # self.lblPs.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
-        #
-        # self.lblExaminerName = GrowingTextEdit()
-        # self.lblExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        # self.lblExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
-        #
-        # self.teditRemarks = GrowingTextEdit()
-        # self.teditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        # self.teditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
-        # # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
-        # self.lblPs.setObjectName("caseDetail")
-        # self.lblExaminerName.setObjectName("caseDetail")
-        # self.teditRemarks.setObjectName("caseDetail")
-        #
-        # self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.lblPs)
-        # self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.lblExaminerName)
-        # self.flyCaseDetail.setWidget(8, QFormLayout.FieldRole, self.teditRemarks)
+        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+
+        self.lblPs = GrowingTextEdit()
+        self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.lblPs.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.lblExaminerName = GrowingTextEdit()
+        self.lblExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.lblExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.teditRemarks = GrowingTextEdit()
+        self.teditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.teditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.lblPs.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT)
+        self.lblExaminerName.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT)
+        self.teditRemarks.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT)
+
+        self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.lblPs)
+        self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.lblExaminerName)
+        self.flyCaseDetail.setWidget(8, QFormLayout.FieldRole, self.teditRemarks)
 
         self.teditJsonResult = GrowingTextEdit()
         self.teditJsonResult.setObjectName("teditJsonResult")
+        self.teditJsonResult.setReadOnly(True)
+        self.teditJsonResult.setAlignment(Qt.AlignHCenter)
         self.vlyJsonResp = self.findChild(QVBoxLayout, "vlyJsonResp")
         self.vlyJsonResp.addWidget(self.teditJsonResult)
+
         self.vlyReportResult = self.findChild(QVBoxLayout, "vlyTargetResults")
         self.glyReportBuff = QGridLayout()
 

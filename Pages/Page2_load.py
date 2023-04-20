@@ -32,6 +32,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.btnSelectPhoto = self.findChild(QPushButton, 'btnSelectTargetPhoto')
         self.btnReturnHome = self.findChild(QPushButton, 'btnReturnHome')
         self.btnContinueProbe = self.findChild(QPushButton, 'btnContinueProbe')
+        self.btnGoBack = self.findChild(QPushButton, 'btnGoBack')
         self.leditCaseNumber = self.findChild(QLineEdit, 'leditCaseNumber')
         self.leditExaminerNo = self.findChild(QLineEdit, 'leditExaminerNo')
 
@@ -55,9 +56,10 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
         self.leditRemarks.setMaximumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
         # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
-        self.leditPS.setObjectName("caseDetail")
-        self.leditExaminerName.setObjectName("caseDetail")
-        self.leditRemarks.setObjectName("caseDetail")
+        self.leditPS.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
+        self.leditExaminerName.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
+        self.leditRemarks.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
+
         self.flyCaseDetail.setWidget(1, QFormLayout.FieldRole, self.leditPS)
         self.flyCaseDetail.setWidget(2, QFormLayout.FieldRole, self.leditExaminerName)
         self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.leditRemarks)
@@ -77,6 +79,7 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.btnSelectPhoto.clicked.connect(self.get_subject_photo)
         self.btnReturnHome.clicked.connect(self.return_home)
         self.btnContinueProbe.clicked.connect(self.continue_probe_slot)
+        self.btnGoBack.clicked.connect(self.return_home)
 
     # set regular expression for checking input data
     def set_regxs(self):
@@ -181,27 +184,29 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
     @pyqtSlot(str)
     def check_ledit_string_validation(self, line_edit, regx, txt, max_length):
         sub_string = re.sub(regx, '', txt)
+        len_text = len(txt)
         if not txt == sub_string:
             txt = sub_string
             line_edit.setText(txt)
-        if len(txt) > max_length:
-            txt = txt[:max_length - 1]
+        if len_text > max_length:
+            txt = txt[:len_text - 1]
             line_edit.setText(txt)
 
     # remove all invalid substring according to regx
     @pyqtSlot(str)
     def check_ptedit_string_validation(self, text_edit, regx, max_length):
-        string = text_edit.toPlainText()
-        if string == '':
+        txt = text_edit.toPlainText()
+        len_txt = len(txt)
+        if txt == '':
             return
-        sub_string = re.sub(regx, '', string)
-        if not string == sub_string:
-            string = sub_string
-            text_edit.setPlainText(string)
+        sub_string = re.sub(regx, '', txt)
+        if not txt == sub_string:
+            txt = sub_string
+            text_edit.setPlainText(txt)
             return
-        if len(string) > max_length:
-            string = string[:max_length - 1]
-            text_edit.setPlainText(string)
+        if len_txt > max_length:
+            txt = txt[:len_txt - 1]
+            text_edit.setPlainText(txt)
             return
         cursor = text_edit.textCursor()
         cursor.movePosition(QTextCursor.End)

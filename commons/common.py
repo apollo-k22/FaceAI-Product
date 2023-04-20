@@ -34,9 +34,13 @@ class Common:
     CASE_REMARKS_LENGTH = 139
     # CREATE_CASE_REGX = "\w"
     # CREATE_CASE_REGX = "[\u0020-\u007E]"
-    CREATE_CASE_REGX = r'[a-zA-Z0-9]+'
-    CREATE_CASE_REGX_FOR_REMOVE = r'[^a-zA-Z0-9]+'
-    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg', '.ico']
+    # CREATE_CASE_REGX = r'[a-zA-Z0-9]+'
+    # CREATE_CASE_REGX_FOR_REMOVE = r'[^a-zA-Z0-9]+'  #"/[ -~]/"
+    # CREATE_CASE_REGX = r'/[ -~]/+'
+    CREATE_CASE_REGX = r'[\u0020-\u007E]+'
+    CREATE_CASE_REGX_FOR_REMOVE = r'[^\u0020-\u007E]+'  # "/[ -~]/"
+
+    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg']
     # IMAGE_FILTER = "Image Files (*.cur *.icns *.ico *.jpeg *.HEIF *.heif" \
     #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
     #                " *.tif *.tiff *.wbmp" \
@@ -49,7 +53,26 @@ class Common:
     VALUE_MAX_HEIGHT_IN_ITEM = 30
     VALUE_MAX_WIDTH_IN_ITEM = 230
     CROSS_BUTTON_SIZE = 30
-    PAGINATION_BUTTON_SIZE = 60
+    PAGINATION_BUTTON_SIZE = 40
+    PAGINATION_NEXT_BUTTON_STYLE = "image: url(:/newPrefix/icon-next2.png); " \
+                                   "border: 1px solid #7F00E2;" \
+                                   "border-radius: 10px;" \
+                                   "background-repeat: no-repeat;" \
+                                   "background-color: rgb(127, 0, 226);"
+    PAGINATION_PREVIOUS_BUTTON_STYLE = "image: url(:/newPrefix/icon-back2.png); " \
+                                       "border: 1px solid #7F00E2;" \
+                                       "border-radius: 10px;" \
+                                       "background-repeat: no-repeat;" \
+                                       "background-color: rgb(127, 0, 226);"
+    PAGINATION_BUTTON_STYLE = "border-radius: 10px;" \
+                              "color: rgb(255, 255, 255);" \
+                              "border: 1px solid white;" \
+                              "background:transparent;"
+    PAGINATION_BUTTON_ACTIVE_STYLE = "border-radius: 10px;" \
+                                     "color: rgb(255, 255, 255);" \
+                                     "border: 1px solid white;" \
+                                     "background:transparent;" \
+                                     "background-color:blue;"
     NUMBER_PER_PAGE = 5
     RESULT_ITEM_WIDGET_SIZE = 330
     REPORT_DESCRIPTION_MATCHED_FOR_SINGLE = "The subject photo has matched to the following target photo." \
@@ -62,6 +85,15 @@ class Common:
                                              " Facial similarity score is attached herewith."
     REPORT_DESCRIPTION_NON_MATCHED = "The subject photo hasn't matched to any target photo."
     SELECTED_IMAGE_DESCRIPTION = " photos have been selected as target."
+    GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT = "background:transparent;" \
+                                             "border: 1px solid rgb(53, 132, 228);" \
+                                             "color: rgb(255, 255, 255);font-size: 13pt;" \
+                                             "font:bold;" \
+                                             "font-family: Arial; "
+    GROWING_TEXT_EDIT_STYLE_CREATE_CASE = "background:transparent;" \
+                                          "border: 1px solid rgb(53, 132, 228);" \
+                                          "color: rgb(255, 255, 255);font-size: 13pt;" \
+                                          "font-family: Arial; "
 
     @staticmethod
     def clear_layout(layout):

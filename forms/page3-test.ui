@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>662</width>
-    <height>639</height>
+    <height>647</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -124,7 +124,7 @@ background:transparent;</string>
           </spacer>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="spacing">
             <number>0</number>
            </property>
@@ -132,21 +132,36 @@ background:transparent;</string>
             <number>35</number>
            </property>
            <property name="topMargin">
-            <number>35</number>
+            <number>20</number>
            </property>
            <item>
             <widget class="QLabel" name="pageTitle">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>40</height>
+              </size>
              </property>
              <property name="styleSheet">
               <string notr="true">background:transparent;</string>
              </property>
              <property name="text">
               <string>Select target photo(s)</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignBottom|Qt::AlignHCenter</set>
              </property>
             </widget>
            </item>
@@ -904,7 +919,8 @@ text-align:left;</string>
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:transparent;</string>
+            <string notr="true">background:transparent;
+border-radius:15px;</string>
            </property>
            <property name="text">
             <string/>
@@ -967,11 +983,32 @@ text-align:left;</string>
        </property>
        <item>
         <widget class="QLabel" name="lblStatus">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true">background:transparent;</string>
          </property>
          <property name="text">
           <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
          </property>
         </widget>
        </item>
