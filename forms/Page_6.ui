@@ -226,7 +226,7 @@ background:transparent;</string>
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>../images/FaceAI-Logo.png</pixmap>
+          <pixmap resource="../images/images.qrc">:/newPrefix/FaceAI-Logo.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -353,7 +353,7 @@ background:transparent;</string>
        <widget class="QWidget" name="scrollAreaWidgetContents">
         <property name="geometry">
          <rect>
-          <x>-439</x>
+          <x>0</x>
           <y>0</y>
           <width>999</width>
           <height>623</height>

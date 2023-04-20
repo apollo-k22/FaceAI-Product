@@ -139,9 +139,12 @@ class LoaderProbeReportPreviewPage(QWidget):
         if self.leditRemainingPhotoNumber.text() == '':
             return
         remaining_number = int(self.leditRemainingPhotoNumber.text())
+        self.leditRemainingPhotoNumber.setText("")
         if len(self.probe_result.json_result['results']) <= remaining_number:
             return
         if remaining_number > 0:
+            self.setEnabled(False)
+            self.start_splash_signal.emit("data")
             # remove some items from json results except remaining number
             result_images = \
                 Common.remove_elements_from_list_tail(self.probe_result.json_result['results'], remaining_number)
@@ -153,7 +156,8 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.probe_result.json_result['faces'] = result_faces
             self.leditRemainingPhotoNumber.setText("")
             # repaint view
-            self.refresh_views()
+            # self.refresh_views()
+            self.refresh_target_view()
 
     # set validator to input box
     def set_validate_input_data(self):
@@ -179,9 +183,10 @@ class LoaderProbeReportPreviewPage(QWidget):
     @pyqtSlot(list)
     def finished_refresh_target_widget_slot(self, case_data):
         self.glyReportBuff = QGridLayout(self)
+        case_data_buff = []
         results = self.probe_result.json_result['results']
         faces = self.probe_result.json_result['faces']
-        self.case_data_for_results = case_data
+
         index = 0
         
         if len(results) > 0 and len(case_data):
@@ -189,7 +194,15 @@ class LoaderProbeReportPreviewPage(QWidget):
             for result in results_:
                 if float(result['confidence'][:len(result['confidence']) - 1]) < Common.MATCH_LEVEL:     
                     self.probe_result.remove_json_item(result)
-
+                    case_data_buff.append(case_data[index])
+                index += 1
+        # if there are cases that match level is lower than 70,
+        # those will be removed from case data
+        if len(case_data_buff) > 0:
+            for case_buff in case_data_buff:
+                case_data.remove(case_buff)
+        index = 0
+        self.case_data_for_results = case_data
         results = self.probe_result.json_result['results']
         faces = self.probe_result.json_result['faces']
         if len(results) > 0 and len(case_data):
@@ -298,11 +311,47 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     @pyqtSlot(object)
     def delete_result_item(self, item):
+        self.start_splash_signal.emit("data")
+        self.setEnabled(False)
         json_result = self.probe_result.json_result['results']
         if not len(json_result) > 1:
+            self.setEnabled(True)
+            self.stop_splash_signal.emit(None)
             return
         self.probe_result.remove_json_item(item)
-        self.init_target_images_view()
+        # self.init_target_images_view()
+        self.refresh_target_view()
+
+    def refresh_target_view(self):
+        # clear all child on result container layout
+        self.clear_result_list()
+        self.etextJsonResult.setPlainText("")
+
+        self.glyReportBuff = QGridLayout(self)
+        results = self.probe_result.json_result['results']
+        faces = self.probe_result.json_result['faces']
+        case_data = self.case_data_for_results
+        index = 0
+        if len(results) > 0 and len(case_data):
+            self.wdtProbingResult.show()
+            for result in results:
+                case_information = case_data[index]
+                face = faces[index]
+                # show the cross button on image
+                result_view_item = ProbeResultItemWidget(result, face, True,
+                                                         self.probe_result.case_info.is_used_old_cases,
+                                                         case_information)
+                # connect delete signal from delete button on target image.
+                result_view_item.delete_item_signal.connect(self.delete_result_item)
+                self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+                index += 1
+            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+            # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
+        else:
+            self.wdtProbingResult.hide()
+        self.setEnabled(True)
+        self.stop_splash_signal.emit(None)
 
     def clear_result_list(self):
         Common.clear_layout(self.vlyReportResultLayout)

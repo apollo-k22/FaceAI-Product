@@ -217,6 +217,7 @@ class StartMain(QMainWindow):
     @pyqtSlot(str)
     def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
+        self.init_child_widgets()
         if self.ui_0_license.expired_date:
             self.init_status_bar("The license will be expired by " + self.ui_0_license.expired_date + ".")
         self.ui_0_license.hide()
@@ -274,8 +275,8 @@ class StartMain(QMainWindow):
         # return page to initial status
         self.ui_6_probe_report.probe_result = probe_result
         self.ui_6_probe_report.case_data_for_results = case_data
-        self.ui_2_create_new_case.refresh_view()
-        self.ui_3_select_target_photo.refresh_view()
+        # self.ui_2_create_new_case.refresh_view()
+        # self.ui_3_select_target_photo.refresh_view()
         self.ui_6_probe_report.refresh_views()
         self.ui_6_probe_report.showMaximized()
 

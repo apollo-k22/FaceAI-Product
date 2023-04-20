@@ -45,17 +45,15 @@ class Common:
     #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
     #                " *.tif *.tiff *.wbmp" \
     #                " *.webp *.xbm *.xpm)"
-    IMAGE_FILTER = "Image Files ( *.ico *.jpeg" \
-                   " *.jpg *.png " \
-                   " *.tif)"
+    IMAGE_FILTER = "Image Files (*.jpeg *.jpg *.png *.tif)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
     LABEL_MAX_WIDTH_IN_ITEM = 170
     VALUE_MAX_HEIGHT_IN_ITEM = 30
     VALUE_MAX_WIDTH_IN_ITEM = 230
     CROSS_BUTTON_SIZE = 30
     PAGINATION_BUTTON_SIZE = 40
+    PAGINATION_GO_LABEL_SIZE = 90
     PAGINATION_NEXT_BUTTON_STYLE = "image: url(:/newPrefix/icon-next2.png); " \
-                                   "border: 1px solid #7F00E2;" \
                                    "border-radius: 10px;" \
                                    "background-repeat: no-repeat;" \
                                    "background-color: rgb(127, 0, 226);"

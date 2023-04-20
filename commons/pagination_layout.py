@@ -110,15 +110,15 @@ class PaginationLayout(QHBoxLayout):
             self.hlyPaginationButtons.addSpacerItem(hspacer)
 
     def init_go_to_page_layout(self):
-        lbl_go_label = QLabel("Go to ")
+        lbl_go_label = QLabel("Go to page ")
         lbl_page_label = QLabel("page ")
         lbl_page_number = QLineEdit()
         lbl_page_number.setObjectName("leditGoPageNumber")
         btn_go = QPushButton("Go")
         btn_go.clicked.connect(self.clicked_go_button)
         lbl_go_label.setStyleSheet("background: transparent;color: rgb(255, 255, 255);")
-        lbl_go_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE + 20, Common.PAGINATION_BUTTON_SIZE)
-        lbl_go_label.setMaximumSize(Common.PAGINATION_BUTTON_SIZE + 20, Common.PAGINATION_BUTTON_SIZE)
+        lbl_go_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE * 2, Common.PAGINATION_BUTTON_SIZE)
+        lbl_go_label.setMaximumSize(Common.PAGINATION_GO_LABEL_SIZE, Common.PAGINATION_BUTTON_SIZE)
 
         lbl_page_label.setStyleSheet("background: transparent;color: rgb(255, 255, 255);")
         lbl_page_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE + 15, Common.PAGINATION_BUTTON_SIZE)
@@ -135,7 +135,7 @@ class PaginationLayout(QHBoxLayout):
         btn_go.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btn_go.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         self.hlyGo2Page.addWidget(lbl_go_label)
-        self.hlyGo2Page.addWidget(lbl_page_label)
+        # self.hlyGo2Page.addWidget(lbl_page_label)
         self.hlyGo2Page.addWidget(lbl_page_number)
         self.hlyGo2Page.addSpacerItem(hspacer)
         self.hlyGo2Page.addWidget(btn_go)
@@ -168,6 +168,7 @@ class PaginationLayout(QHBoxLayout):
         leditGoPage = self.hlyGo2Page.itemAt(1).widget()
         print(self.hlyGo2Page.count())
         go_page = leditGoPage.text()
+        leditGoPage.setText("")
         if go_page == '':
             return
         to_be_gone_page = int(go_page) - 1
@@ -175,7 +176,6 @@ class PaginationLayout(QHBoxLayout):
             return
 
         self.changed_page_signal.emit(to_be_gone_page)
-        leditGoPage.setText("")
 
     def create_pagination_button(self, current):
         button = PaginationButton(current)
@@ -186,4 +186,4 @@ class PaginationLayout(QHBoxLayout):
     # set validator to input box
     def set_validate_input_data(self):
         go_page_number_validator = QIntValidator(self.hlyGo2Page.itemAt(1).widget())
-        self.hlyGo2Page.itemAt(2).widget().setValidator(go_page_number_validator)
+        self.hlyGo2Page.itemAt(1).widget().setValidator(go_page_number_validator)

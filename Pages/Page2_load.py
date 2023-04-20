@@ -1,7 +1,7 @@
 import re
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QTextCursor
 from PyQt5.QtWidgets import QFileDialog, QFormLayout, QLabel
@@ -59,11 +59,16 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditPS.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
         self.leditExaminerName.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
         self.leditRemarks.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
+        self.leditPS.setAlignment(Qt.AlignVCenter)
 
         self.flyCaseDetail.setWidget(1, QFormLayout.FieldRole, self.leditPS)
         self.flyCaseDetail.setWidget(2, QFormLayout.FieldRole, self.leditExaminerName)
         self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.leditRemarks)
 
+        self.setTabOrder(self.leditCaseNumber, self.leditPS)
+        self.setTabOrder(self.leditPS, self.leditExaminerName)
+        self.setTabOrder(self.leditExaminerName, self.leditExaminerNo)
+        self.setTabOrder(self.leditExaminerNo, self.leditRemarks)
         # set image url
         self.subject_photo_url = ''
         self.set_event_actions()

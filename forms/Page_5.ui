@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1051</width>
-    <height>606</height>
+    <width>716</width>
+    <height>597</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -219,7 +219,7 @@ background:transparent;</string>
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>C:/Users/ss/.designer/images/FaceAI-Logo.png</pixmap>
+          <pixmap resource="../images/images.qrc">:/newPrefix/FaceAI-Logo.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -246,8 +246,8 @@ background:transparent;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-309</y>
-          <width>1012</width>
+          <y>-45</y>
+          <width>1001</width>
           <height>802</height>
          </rect>
         </property>

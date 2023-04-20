@@ -757,7 +757,7 @@ background:none;</string>
            </property>
            <property name="icon">
             <iconset resource="../images/images.qrc">
-             <normaloff>:/newPrefix/continuetoprobe.png</normaloff>:/newPrefix/continuetoprobe.png</iconset>
+             <normaloff>:/newPrefix/start_prob_button_img.png</normaloff>:/newPrefix/start_prob_button_img.png</iconset>
            </property>
            <property name="iconSize">
             <size>
