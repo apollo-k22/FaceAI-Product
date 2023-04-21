@@ -102,7 +102,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.probe_result = probe_result
         self.generate_report_signal.emit(self.probe_result, self.case_data_for_results)
         self.stop_splash_signal.emit(None)
-        self.setEnabled(True)
+        self.set_enabled(True)
 
     @pyqtSlot()
     def on_clicked_generate_report(self):
@@ -116,7 +116,7 @@ class LoaderProbeReportPreviewPage(QWidget):
             if is_exist:
                 self.start_splash_signal.emit("data")
                 self.generate_report_thread.probe_result = self.probe_result
-                self.setEnabled(False)
+                self.set_enabled(False)
                 self.generate_report_thread.start()
             else:
                 Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
@@ -131,6 +131,7 @@ class LoaderProbeReportPreviewPage(QWidget):
     @pyqtSlot()
     def on_clicked_go_back(self):
         case_info = self.probe_result.case_info
+        self.init_views()
         # self.probe_result = ProbingResult()
         self.go_back_signal.emit(case_info)
 
@@ -143,7 +144,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         if len(self.probe_result.json_result['results']) <= remaining_number:
             return
         if remaining_number > 0:
-            self.setEnabled(False)
+            self.set_enabled(False)
             self.start_splash_signal.emit("data")
             # remove some items from json results except remaining number
             result_images = \
@@ -176,7 +177,7 @@ class LoaderProbeReportPreviewPage(QWidget):
     def refresh_views(self):
         # self.init_input_values()
         self.start_splash_signal.emit("data")
-        self.setEnabled(False)
+        self.set_enabled(False)
         self.init_target_images_view()
         # self.repaint()
 
@@ -226,7 +227,7 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.wdtProbingResult.hide()
 
         self.init_input_values()
-        self.setEnabled(True)
+        self.set_enabled(True)
         self.stop_splash_signal.emit(None)
 
     def init_input_values(self):
@@ -270,7 +271,10 @@ class LoaderProbeReportPreviewPage(QWidget):
 
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
             # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
-            image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
+            resized_image_path = Common.resize_image(self.probe_result.case_info.subject_image_url,
+                                                     self.lbeSubjectImage.size().width())
+            self.probe_result.case_info.subject_image_url = resized_image_path
+            image_style = "image:url('" + resized_image_path + \
                           "');background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -297,7 +301,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.clear_result_list()
         self.etextJsonResult.setPlainText("")
         if not self.probe_result:
-            self.setEnabled(True)
+            self.set_enabled(True)
             self.stop_splash_signal.emit(None)
             return
         if not Common.is_empty(self.probe_result.case_info):
@@ -307,16 +311,16 @@ class LoaderProbeReportPreviewPage(QWidget):
                                                         self.probe_result.case_info.is_used_old_cases)
             self.target_items_generator_thread.start()
         else:
-            self.setEnabled(True)
+            self.set_enabled(True)
             self.stop_splash_signal.emit(None)
 
     @pyqtSlot(object)
     def delete_result_item(self, item):
         self.start_splash_signal.emit("data")
-        self.setEnabled(False)
+        self.set_enabled(False)
         json_result = self.probe_result.json_result['results']
         if not len(json_result) > 1:
-            self.setEnabled(True)
+            self.set_enabled(True)
             self.stop_splash_signal.emit(None)
             return
         self.probe_result.remove_json_item(item)
@@ -351,7 +355,7 @@ class LoaderProbeReportPreviewPage(QWidget):
             self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         else:
             self.wdtProbingResult.hide()
-        self.setEnabled(True)
+        self.set_enabled(True)
         self.stop_splash_signal.emit(None)
 
     def clear_result_list(self):
@@ -371,8 +375,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.lblExaminerName.setText("")
         self.teditRemarks.setText("")
         self.lblTimeOfReportGeneration.setText("")
-        image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
-                      "');background:transparent;border: 1px solid rgb(53, 132, 228);"
+        image_style = "image:url('');background:transparent;border: 1px solid rgb(53, 132, 228);"
         self.lblSubjectImage.setStyleSheet(image_style)
         self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.etextJsonResult.setPlainText("")
@@ -380,4 +383,10 @@ class LoaderProbeReportPreviewPage(QWidget):
         self.clear_result_list()
         self.probe_result = ProbingResult()
         self.wdtProbingResult.hide()
+
+    def set_enabled(self, enabled):
+        self.btnGoBack.setEnabled(enabled)
+        self.btnReturnHome.setEnabled(enabled)
+        self.btnGenerateReport.setEnabled(enabled)
+        self.btnGoRemaining.setEnabled(enabled)
 

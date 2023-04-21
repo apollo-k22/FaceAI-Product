@@ -155,7 +155,7 @@ class LoaderProbeReportPage(QWidget):
         # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
         self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         self.init_input_values()
-        self.setEnabled(True)
+        self.set_enabled(True)
         self.stop_splash_signal.emit(None)
 
     def refresh_views(self):
@@ -218,9 +218,8 @@ class LoaderProbeReportPage(QWidget):
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
-            self.setEnabled(False)
+            self.set_enabled(False)
             self.start_splash_signal.emit("data")
-            self.setEnabled(False)
             self.target_items_generator_thread.start()
 
     def clear_result_list(self):
@@ -236,9 +235,17 @@ class LoaderProbeReportPage(QWidget):
         self.lblExaminerName.setText("")
         self.teditRemarks.setText("")
         self.lblTimeOfReportGeneration.setText("")
-        image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
+        resized_image_path = Common.resize_image(self.probe_result.case_info.subject_image_url,
+                                                 self.lblSubjectImage.size().width())
+        self.probe_result.case_info.subject_image_url = resized_image_path
+        image_style = "image:url('" + resized_image_path + \
                       "');background:transparent;border: 1px solid rgb(53, 132, 228);"
         self.lblSubjectImage.setStyleSheet(image_style)
         self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.clear_result_list()
         self.probe_result = ProbingResult()
+
+    def set_enabled(self, enabled):
+        self.btnGoBack.setEnabled(enabled)
+        self.btnReturnHome.setEnabled(enabled)
+        self.btnExportPdf.setEnabled(enabled)

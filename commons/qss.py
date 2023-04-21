@@ -68,6 +68,10 @@ QPushButton {
     font-size: 12pt;
     font: bold;
     font-family: Arial;
+    border:none;
+}
+QPushButton#btnGoBack{
+border-image:url(":/newPrefix/icon-back2.png");
 }
 QStatusBar{
     background:transparent;

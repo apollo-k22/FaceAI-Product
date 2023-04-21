@@ -39,7 +39,7 @@ class LoaderProbeReportListPage(QWidget):
 
         self.window = uic.loadUi("./forms/Page_7.ui", self)
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
-        self.btnGoBack = self.findChild(QPushButton, "btnGoBack")
+        self.btnGoBack = self.findChild(QPushButton, "btnGoBack1")
         self.btnExportAllZip = self.findChild(QPushButton, "btnExportAllZip")
         self.btnGoRemainingPage = self.findChild(QPushButton, "btnGoRemainingPage")
         self.vlyTableContainer = self.findChild(QVBoxLayout, "vlyTableContainer")
@@ -61,11 +61,11 @@ class LoaderProbeReportListPage(QWidget):
 
     @pyqtSlot()
     def on_clicked_go_back(self):
-        pass
-        # if self.probe_result.probe_id == '':
-        #     self.go_back_empty_signal.emit()
-        # else:
-        #     self.go_back_signal.emit(self.probe_result)
+        # pass
+        if self.probe_result.probe_id == '':
+            self.go_back_empty_signal.emit()
+        else:
+            self.go_back_signal.emit(self.probe_result)
 
     @pyqtSlot()
     def on_clicked_return_home(self):
@@ -101,12 +101,12 @@ class LoaderProbeReportListPage(QWidget):
     def finished_get_reports_slot(self, reports):
         self.reports = reports
         self.init_views()
-        self.setEnabled(True)
+        self.set_enabled(True)
         self.stop_splash_signal.emit(None)
 
     def refresh_view(self):
         self.get_reports_thread.start()
-        self.setEnabled(False)
+        self.set_enabled(False)
         self.start_splash_signal.emit("data")
 
     def init_views(self):
@@ -266,7 +266,7 @@ class LoaderProbeReportListPage(QWidget):
             self.zip_thread = ZipThread(self.reports, zip_location[0] + zip_location[1])
             self.zip_thread.finished_zip_signal.connect(self.finished_zip_slot)
             self.zip_thread.start()
-            self.setEnabled(False)  # set screen to be unable to operate
+            self.set_enabled(False)  # set screen to be unable to operate
         else:
             Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
                                                                         "\nPlease make it and then retry.",
@@ -275,11 +275,16 @@ class LoaderProbeReportListPage(QWidget):
     @pyqtSlot(ThreadResult)
     def finished_zip_slot(self, res):
         self.zip_thread.quit()
-        self.setEnabled(True)
+        self.set_enabled(True)
         if res.status:
-            Common.show_message(QMessageBox.Information, "PDF reports have been exported to ZIP.", "AllZip Generation",
+            Common.show_message(QMessageBox.Information, "PDF reports have been exported to ZIP.", "",
                                 "Notice", "")
         else:
             Common.show_message(QMessageBox.Information,
                                 "PDF reports have not been exported to ZIP. Because %s" % res.message,
-                                "AllZip Generation", "Notice", "")
+                                "", "Notice", "")
+
+    def set_enabled(self, enabled):
+        self.btnGoBack.setEnabled(enabled)
+        self.btnReturnHome.setEnabled(enabled)
+        self.btnExportAllZip.setEnabled(enabled)

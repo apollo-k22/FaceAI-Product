@@ -24,7 +24,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.image_urls = []
         self.get_images_thread = GetImagesThread(faceai, [])
         self.current_work_folder = ""
-        self.cmdbtnGoBack = self.findChild(QPushButton, "cmdbtnGoBack")
+        self.cmdbtnGoBack = self.findChild(QPushButton, "btnGoBack")
         self.btnStartProbe = self.findChild(QPushButton, "btnStartProbe")
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
         self.rdobtnSinglePhoto = self.findChild(QRadioButton, "rdobtnSinglePhoto")
@@ -162,7 +162,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
                                     "", "Folder Not Exist", "")
         else:
             self.btnMultiPhoto2.setText("Select target images.")
-            self.lblMultiPhotoResult.setText("Raster image formats are accepted.")
+            self.lblMultiPhotoResult.setText(Common.RASTER_IMAGE_ACCEPTED_NOTICE)
 
     @pyqtSlot()
     def select_entire_folder_slot(self):
@@ -187,7 +187,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
 
         else:
             self.btnEntireFolder2.setText("Select target folder.")
-            self.lblEntireResult.setText("Raster image formats are accepted.")
+            self.lblEntireResult.setText(Common.RASTER_IMAGE_ACCEPTED_NOTICE)
 
     # get all images from old cases
     def select_from_old_cases(self):
@@ -260,9 +260,9 @@ class LoaderSelectTargetPhotoPage(QWidget):
         btn_style = "background:transparent;border:0px;image:url(:/newPrefix/Group 67.png);"
         self.btnSinglePhoto.setStyleSheet(btn_style)
         self.btnMultiPhoto2.setText("Select target images.")
-        self.lblMultiPhotoResult.setText("Raster image formats are accepted.")
+        self.lblMultiPhotoResult.setText(Common.RASTER_IMAGE_ACCEPTED_NOTICE)
         self.btnEntireFolder2.setText("Select target folder.")
-        self.lblEntireResult.setText("Raster image formats are accepted.")
+        self.lblEntireResult.setText(Common.RASTER_IMAGE_ACCEPTED_NOTICE)
         self.lblOldCaseSelectedNumber.setText("")
         self.lblOldCaseResult.setText("Click on the \"Start probe\" button below to continue the further process.")
         self.repaint()

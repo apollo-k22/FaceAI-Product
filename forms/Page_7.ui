@@ -82,7 +82,7 @@ border:none;</string>
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="btnGoBack">
+          <widget class="QPushButton" name="btnGoBack1">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -805,6 +805,9 @@ background:transparent;</string>
                        </property>
                        <property name="autoScroll">
                         <bool>false</bool>
+                       </property>
+                       <property name="autoScrollMargin">
+                        <number>10</number>
                        </property>
                        <property name="editTriggers">
                         <set>QAbstractItemView::NoEditTriggers</set>

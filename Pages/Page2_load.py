@@ -228,4 +228,5 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.leditExaminerNo.setText("")
         self.leditRemarks.setText("")
         self.case_info = CaseInfo()
+        self.subject_photo_url = ""
 

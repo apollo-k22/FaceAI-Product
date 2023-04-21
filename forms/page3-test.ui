@@ -71,7 +71,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="cmdbtnGoBack">
+          <widget class="QPushButton" name="btnGoBack">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -91,21 +91,18 @@
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-repeat: no-repeat;
+            <string notr="true">background:transparent;
 border-radius: 10px;
-background:transparent;</string>
+
+background-position: center;</string>
            </property>
            <property name="text">
             <string/>
            </property>
-           <property name="icon">
-            <iconset resource="../images/images.qrc">
-             <normaloff>:/newPrefix/icon-back2.png</normaloff>:/newPrefix/icon-back2.png</iconset>
-           </property>
            <property name="iconSize">
             <size>
-             <width>55</width>
-             <height>55</height>
+             <width>16</width>
+             <height>16</height>
             </size>
            </property>
           </widget>
@@ -896,7 +893,7 @@ text-align:left;</string>
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <layout class="QVBoxLayout" name="vlyButtonGroup">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -939,19 +936,16 @@ text-align:left;</string>
            </property>
            <property name="styleSheet">
             <string notr="true">background:transparent;
-border-radius:15px;</string>
+border-radius:15px;
+border-image:url(&quot;:/newPrefix/start_prob_button_img.png&quot;);</string>
            </property>
            <property name="text">
             <string/>
            </property>
-           <property name="icon">
-            <iconset resource="../images/images.qrc">
-             <normaloff>:/newPrefix/start_prob_button_img.png</normaloff>:/newPrefix/start_prob_button_img.png</iconset>
-           </property>
            <property name="iconSize">
             <size>
-             <width>200</width>
-             <height>50</height>
+             <width>16</width>
+             <height>16</height>
             </size>
            </property>
           </widget>

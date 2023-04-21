@@ -71,6 +71,8 @@ class Common:
                                      "border: 1px solid white;" \
                                      "background:transparent;" \
                                      "background-color:blue;"
+    GO_BUTTON_STYLE = "border-radius: 10px;background: transparent;" \
+                      "color: rgb(255, 255, 255);border: 1px solid white;"
     NUMBER_PER_PAGE = 5
     RESULT_ITEM_WIDGET_SIZE = 330
     REPORT_DESCRIPTION_MATCHED_FOR_SINGLE = "The subject photo has matched to the following target photo." \
@@ -92,6 +94,7 @@ class Common:
                                           "border: 1px solid rgb(53, 132, 228);" \
                                           "color: rgb(255, 255, 255);font-size: 13pt;" \
                                           "font-family: Arial; "
+    RASTER_IMAGE_ACCEPTED_NOTICE = "The PNG, JPEG and bmp image formats are accepted."
 
     @staticmethod
     def clear_layout(layout):
