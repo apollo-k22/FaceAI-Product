@@ -173,7 +173,6 @@ class LoaderSelectTargetPhotoPage(QWidget):
             # check "data storage" folder exist or not
             is_exist, root_path = Common.check_exist_data_storage()
             if is_exist:
-                self.btnEntireFolder2.setText("")
                 self.current_work_folder = direct
                 self.get_images_thread.direct = direct
                 self.get_images_thread.is_direct = True

@@ -192,7 +192,8 @@ class LoaderProbeReportPreviewPage(QWidget):
         if len(results) > 0 and len(case_data):
             results_ = results.copy()
             for result in results_:
-                if float(result['confidence'][:len(result['confidence']) - 1]) < Common.MATCH_LEVEL:     
+                confidence = float(result['confidence'][:len(result['confidence']) - 2])
+                if confidence < Common.MATCH_LEVEL:
                     self.probe_result.remove_json_item(result)
                     case_data_buff.append(case_data[index])
                 index += 1

@@ -26,7 +26,7 @@ class Common:
     TEMP_PATH = "Temporary Data"
     REG_KEY = "DataFolder"
     EXPORT_PATH = r"C:\\Users\\" + os.getlogin() + r"\\Documents"
-    MATCH_LEVEL = 70
+    MATCH_LEVEL = 70.00
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
     CASE_EXAMINER_NAME_LENGTH = 63
@@ -76,11 +76,11 @@ class Common:
     REPORT_DESCRIPTION_MATCHED_FOR_SINGLE = "The subject photo has matched to the following target photo." \
                                             " Facial similarity score is attached herewith."
     REPORT_DESCRIPTION_MATCHED_FOR_MULTIPLE = "The subject photo has matched to the following target photos." \
-                                              " Facial similarity score is attached herewith."
+                                              " Facial similarity scores are attached herewith."
     REPORT_DESCRIPTION_MATCHED_FOR_ENTIRE = "The subject photo has matched to the following target photos." \
-                                            " Facial similarity score is attached herewith."
+                                            " Facial similarity scores are attached herewith."
     REPORT_DESCRIPTION_MATCHED_FOR_OLDCASE = "The subject photo has matched to the following old case photos." \
-                                             " Facial similarity score is attached herewith."
+                                             " Facial similarity scores and old case details are attached herewith."
     REPORT_DESCRIPTION_NON_MATCHED = "The subject photo hasn't matched to any target photo."
     SELECTED_IMAGE_DESCRIPTION = " photos have been selected as target."
     GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT = "background:transparent;" \
@@ -326,7 +326,7 @@ class Common:
                     item[attr] = float(item[attr])
             ret = sorted(sorting_list, key=lambda x: x[attr], reverse=reverse)
             for item in ret:
-                item[attr] = Common.round_float_string_natural(item[attr]) + "%"
+                item[attr] = Common.round_float_string_natural(item[attr]) + " %"
         return ret
 
     # round the float string up to 2 decimals
@@ -368,6 +368,7 @@ class Common:
     def convert_json_for_page(json_data):
         json_buff = {'subject_face_rectangle': {}, 'subject_headpose': {}}
         faces = json_data['faces']
+        faces_buff = []
         if len(faces):
             for face in faces:
                 json_buff['subject_face_rectangle'] = face['face_rectangle']
@@ -375,7 +376,8 @@ class Common:
                 roll_buff = re.sub('Roll: ', '', roll)
                 roll_buff = re.sub(' degree', '', roll_buff)
                 json_buff['subject_headpose'] = {"roll_angle": float(roll_buff)}
+                faces_buff.append(json_buff)
 
-        js_result = json.dumps(json_buff, indent=4, sort_keys=True)
+        js_result = json.dumps(faces_buff, indent=4, sort_keys=True)
         print(js_result)
         return js_result

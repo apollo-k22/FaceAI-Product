@@ -15,6 +15,7 @@ class ProbingResult(object):
         self.json_result = {'time_used': 2, 'thresholds': {}, 'faces': [], 'results': []}
 
     def is_matched(self):
+        self.matched = "Non Matched"
         if self.json_result:
             # if type(self.json_result).__name__ == "tuple":
             #     ret_error = ""

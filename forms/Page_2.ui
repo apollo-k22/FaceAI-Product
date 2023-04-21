@@ -243,7 +243,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
          <property name="spacing">
-          <number>0</number>
+          <number>6</number>
          </property>
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
@@ -262,17 +262,20 @@
          </property>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="spacing">
+            <number>0</number>
+           </property>
            <property name="leftMargin">
-            <number>5</number>
+            <number>0</number>
            </property>
            <property name="topMargin">
-            <number>5</number>
+            <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>5</number>
+            <number>0</number>
            </property>
            <property name="bottomMargin">
-            <number>5</number>
+            <number>0</number>
            </property>
            <item>
             <spacer name="verticalSpacer_6">
@@ -305,16 +308,16 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="horizontalSpacing">
-              <number>10</number>
+              <number>6</number>
              </property>
              <property name="verticalSpacing">
               <number>10</number>
              </property>
              <property name="leftMargin">
-              <number>0</number>
+              <number>20</number>
              </property>
              <property name="rightMargin">
-              <number>10</number>
+              <number>5</number>
              </property>
              <item row="0" column="0">
               <widget class="QLabel" name="label_3">
@@ -352,7 +355,7 @@ background: none;</string>
                 <string>Case number: </string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -421,7 +424,7 @@ background: none;</string>
                 <string>PS: </string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -460,7 +463,7 @@ background: none;</string>
                 <string>Examiner's name:</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -499,7 +502,7 @@ background: none;</string>
                 <string>Examiner's No:</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -565,7 +568,7 @@ background: none;</string>
                 <string>Remarks:</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -592,7 +595,7 @@ background: none;</string>
             <number>0</number>
            </property>
            <property name="leftMargin">
-            <number>5</number>
+            <number>0</number>
            </property>
            <property name="topMargin">
             <number>5</number>
@@ -622,7 +625,7 @@ background: none;</string>
               <number>0</number>
              </property>
              <property name="leftMargin">
-              <number>5</number>
+              <number>0</number>
              </property>
              <property name="topMargin">
               <number>5</number>
@@ -706,6 +709,9 @@ background:none;</string>
        </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="topMargin">
           <number>5</number>
          </property>
@@ -736,13 +742,13 @@ background:none;</string>
            <property name="minimumSize">
             <size>
              <width>200</width>
-             <height>70</height>
+             <height>50</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>200</width>
-             <height>70</height>
+             <height>50</height>
             </size>
            </property>
            <property name="cursor">
@@ -762,7 +768,7 @@ background:none;</string>
            <property name="iconSize">
             <size>
              <width>200</width>
-             <height>70</height>
+             <height>50</height>
             </size>
            </property>
           </widget>
@@ -784,6 +790,9 @@ background:none;</string>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="topMargin">
           <number>5</number>
          </property>
@@ -832,9 +841,10 @@ background:none;</string>
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: rgb(255, 255, 255);
-border-radius:10px;
-background: none;</string>
+            <string notr="true">border-radius: 10px;
+border: none;
+color: rgb(243, 243, 243);
+background:transparent;</string>
            </property>
            <property name="text">
             <string>Return to Home</string>

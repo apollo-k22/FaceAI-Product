@@ -194,12 +194,13 @@ class StartMain(QMainWindow):
 
     @pyqtSlot(CaseInfo)
     def show_p3_select_target_photos(self, case_info):
+        self.setWindowTitle("Select Target(s)")
         # hide other window
         self.ui_1_home.hide()
         self.ui_2_create_new_case.hide()
         self.ui_5_probe_report_preview.hide()
         # return page to initial status.
-        # self.ui_3_select_target_photo.init_views()
+        self.ui_3_select_target_photo.init_views()
         # set case information to page
         self.ui_3_select_target_photo.case_info = case_info
         self.ui_3_select_target_photo.showMaximized()
@@ -234,7 +235,7 @@ class StartMain(QMainWindow):
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
-        self.setWindowTitle("Create Case")
+        self.setWindowTitle("Create a Case")
         Common.remove_target_images()
         self.ui_1_home.hide()
         self.ui_3_select_target_photo.hide()
