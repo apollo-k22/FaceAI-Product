@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>884</width>
+    <width>1184</width>
     <height>627</height>
    </rect>
   </property>
@@ -348,9 +348,9 @@ background:transparent;</string>
        <widget class="QWidget" name="scrollAreaWidgetContents">
         <property name="geometry">
          <rect>
-          <x>-154</x>
-          <y>0</y>
-          <width>999</width>
+          <x>0</x>
+          <y>-5</y>
+          <width>1145</width>
           <height>642</height>
          </rect>
         </property>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>903</width>
-    <height>597</height>
+    <width>1211</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -242,8 +242,8 @@ background:transparent;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
-          <width>1016</width>
+          <y>-241</y>
+          <width>1172</width>
           <height>840</height>
          </rect>
         </property>
@@ -994,14 +994,14 @@ background:transparent;</string>
                          <widget class="QLineEdit" name="leditRemainingPhotoNumber">
                           <property name="minimumSize">
                            <size>
-                            <width>30</width>
-                            <height>30</height>
+                            <width>40</width>
+                            <height>40</height>
                            </size>
                           </property>
                           <property name="maximumSize">
                            <size>
-                            <width>30</width>
-                            <height>30</height>
+                            <width>40</width>
+                            <height>40</height>
                            </size>
                           </property>
                           <property name="font">

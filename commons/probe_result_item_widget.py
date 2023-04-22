@@ -41,9 +41,6 @@ class ProbeResultItemWidget(QWidget):
         self.lbl_probe_id_label = QLabel()
         self.lbl_probe_id = QLabel()
 
-        self.lbl_probe_id_lable = QLabel()
-        self.lbl_probe_id = QLabel()
-
         self.init_view()
 
     @pyqtSlot()
@@ -80,8 +77,17 @@ class ProbeResultItemWidget(QWidget):
         self.lbl_case_number_label.setText("Old Case Number: ")
         self.lbl_ps_label.setText("PS: ")
         self.lbl_probe_id_label.setText("Probe ID: ")
-        if self.is_used_old_cases:
 
+        self.lbl_similarity_score.setStyleSheet(Common.TARGET_LIST_STYLE_LABEL)
+        self.lbl_similarity_score_label.setStyleSheet(Common.TARGET_LIST_STYLE_LABEL)
+        self.lbl_ps.setStyleSheet(Common.TARGET_LIST_STYLE_LABEL)
+        self.lbl_ps_label.setStyleSheet(Common.TARGET_LIST_STYLE_LABEL)
+        self.lbl_probe_id.setStyleSheet(Common.TARGET_LIST_STYLE_LABEL)
+        self.lbl_probe_id_label.setStyleSheet(Common.TARGET_LIST_STYLE_LABEL)
+        self.lbl_image.setStyleSheet(Common.TARGET_LIST_STYLE_LABEL)
+        # self.wdt_image.setStyleSheet(Common.TARGET_LIST_STYLE_LABEL)
+
+        if self.is_used_old_cases:
             self.lbl_case_number.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
             self.lbl_case_number_label.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
             self.lbl_ps.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)

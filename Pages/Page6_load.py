@@ -69,6 +69,7 @@ class LoaderProbeReportPage(QWidget):
 
         self.teditJsonResult = GrowingTextEdit()
         self.teditJsonResult.setObjectName("teditJsonResult")
+        self.teditJsonResult.setStyleSheet(Common.JSON_RESULT_STYLE)
         self.teditJsonResult.setReadOnly(True)
         self.teditJsonResult.setAlignment(Qt.AlignHCenter)
         self.vlyJsonResp = self.findChild(QVBoxLayout, "vlyJsonResp")
@@ -151,7 +152,10 @@ class LoaderProbeReportPage(QWidget):
                                                          case_info)
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
                 index += 1
-        self.vlyReportResult.addLayout(self.glyReportBuff)
+        wdtContainer = QWidget()  # container for bordering.
+        wdtContainer.setLayout(self.glyReportBuff)
+        wdtContainer.setStyleSheet(Common.TARGET_LIST_STYLE)
+        self.vlyReportResult.addWidget(wdtContainer)
         # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
         self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         self.init_input_values()

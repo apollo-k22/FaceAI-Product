@@ -347,7 +347,7 @@ class StartMain(QMainWindow):
 
     def check_license(self, app_unlocked, app_expire_date):
         if not app_unlocked:
-            self.status_bar.showMessage("The license is not available.")
+            self.init_status_bar("The license is not available.")
             self.show_p0_license()
         else:            
             ntptime = ntp_get_time()

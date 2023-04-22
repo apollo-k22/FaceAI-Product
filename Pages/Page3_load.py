@@ -1,5 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QShowEvent
 from PyQt5.QtWidgets import QPushButton, QRadioButton, QStackedWidget, QFileDialog, QMessageBox, QLabel, \
     QSizePolicy, QWidget
 
@@ -271,3 +272,6 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.refresh_view()
         self.stkwdtSelectPhotos.setCurrentIndex(0)
         self.rdobtnSinglePhoto.setChecked(True)
+
+    def showEvent(self, a0: QShowEvent) -> None:
+        print("3.width:", self.btnSinglePhoto.size().width(), self.btnSinglePhoto.size().height())

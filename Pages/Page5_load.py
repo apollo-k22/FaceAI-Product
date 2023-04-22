@@ -80,6 +80,7 @@ class LoaderProbeReportPreviewPage(QWidget):
 
         self.vlyJsonResult = self.findChild(QVBoxLayout, "JsonResp_layout")
         self.etextJsonResult = GrowingTextEdit()
+        self.etextJsonResult.setStyleSheet(Common.JSON_RESULT_STYLE)
         self.etextJsonResult.setObjectName("teditJsonResult")
         self.etextJsonResult.setReadOnly(True)
         self.etextJsonResult.setAlignment(Qt.AlignHCenter)
@@ -219,8 +220,12 @@ class LoaderProbeReportPreviewPage(QWidget):
                 # connect delete signal from delete button on target image.
                 result_view_item.delete_item_signal.connect(self.delete_result_item)
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+
                 index += 1
-            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+            wdtContainer = QWidget()  # container for bordering.
+            wdtContainer.setLayout(self.glyReportBuff)
+            wdtContainer.setStyleSheet(Common.TARGET_LIST_STYLE)
+            self.vlyReportResultLayout.addWidget(wdtContainer)
             # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         else:

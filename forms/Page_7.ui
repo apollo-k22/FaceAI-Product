@@ -473,13 +473,13 @@ padding:12px 20px 12px 20px;</string>
                <property name="minimumSize">
                 <size>
                  <width>80</width>
-                 <height>41</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>80</width>
-                 <height>41</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="font">
@@ -514,13 +514,13 @@ background:transparent;</string>
                <property name="minimumSize">
                 <size>
                  <width>50</width>
-                 <height>30</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>50</width>
-                 <height>30</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="font">
@@ -576,13 +576,13 @@ color: rgb(90, 105, 128);
                <property name="minimumSize">
                 <size>
                  <width>150</width>
-                 <height>30</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>80</width>
-                 <height>30</height>
+                 <height>40</height>
                 </size>
                </property>
                <property name="font">

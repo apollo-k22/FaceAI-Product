@@ -3,7 +3,7 @@ import re
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtGui import QTextCursor
+from PyQt5.QtGui import QTextCursor, QShowEvent
 from PyQt5.QtWidgets import QFileDialog, QFormLayout, QLabel
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QTextEdit
@@ -230,3 +230,5 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.case_info = CaseInfo()
         self.subject_photo_url = ""
 
+    def showEvent(self, a0: QShowEvent) -> None:
+        print("2.width:", self.btnSelectPhoto.size().width(), self.btnSelectPhoto.size().height())
