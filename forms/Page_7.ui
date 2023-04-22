@@ -103,7 +103,8 @@ border:none;</string>
            </property>
            <property name="styleSheet">
             <string notr="true">border-radius: 10px;
-background:transparent;</string>
+background:transparent;
+border:none;</string>
            </property>
            <property name="text">
             <string/>
