@@ -70,12 +70,10 @@ class SCRFD:
         self.session = session
         self.taskname = 'detection'
         self.batched = False
-        print("session: ", self.session)
         if self.session is None:
             assert self.model_file is not None
             assert osp.exists(self.model_file)
             self.session = onnxruntime.InferenceSession(self.model_file, providers=['CUDAExecutionProvider'])
-        print("session: ", self.session)
         self.center_cache = {}
         self.nms_thresh = 0.4
         self.det_thresh = 0.5
