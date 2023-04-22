@@ -242,7 +242,7 @@ background:transparent;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-361</y>
+          <y>0</y>
           <width>1172</width>
           <height>840</height>
          </rect>
@@ -779,6 +779,9 @@ background:none;</string>
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_4">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
                    <property name="topMargin">
                     <number>5</number>
                    </property>
@@ -790,10 +793,22 @@ background:none;</string>
                    </property>
                    <item>
                     <widget class="QLabel" name="lblSubjectImage">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="minimumSize">
                       <size>
                        <width>390</width>
                        <height>390</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>700</width>
+                       <height>700</height>
                       </size>
                      </property>
                      <property name="styleSheet">

@@ -101,7 +101,7 @@ class Common:
                                           "border: 1px solid rgb(53, 132, 228);" \
                                           "color: rgb(255, 255, 255);font-size: 13pt;" \
                                           "font-family: Arial; "
-    RASTER_IMAGE_ACCEPTED_NOTICE = "The png, jpeg and bmp image formats are accepted."
+    RASTER_IMAGE_ACCEPTED_NOTICE = "The png, jpeg, bmp and tif image formats are accepted."
 
     @staticmethod
     def clear_layout(layout):
