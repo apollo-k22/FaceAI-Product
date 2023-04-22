@@ -62,10 +62,6 @@ class LoaderProbeReportListPage(QWidget):
     @pyqtSlot()
     def on_clicked_go_back(self):
         pass
-        # if self.probe_result.probe_id == '':
-        #     self.go_back_empty_signal.emit()
-        # else:
-        #     self.go_back_signal.emit(self.probe_result)
 
     @pyqtSlot()
     def on_clicked_return_home(self):

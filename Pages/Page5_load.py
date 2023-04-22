@@ -44,7 +44,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         # self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
 
-        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail5")
         self.lblPs = GrowingTextEdit()
         self.lblPs.setReadOnly(True)
         self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -80,6 +80,7 @@ class LoaderProbeReportPreviewPage(QWidget):
 
         self.vlyJsonResult = self.findChild(QVBoxLayout, "JsonResp_layout")
         self.etextJsonResult = GrowingTextEdit()
+        self.etextJsonResult.setStyleSheet(Common.JSON_RESULT_STYLE)
         self.etextJsonResult.setObjectName("teditJsonResult")
         self.etextJsonResult.setReadOnly(True)
         self.etextJsonResult.setAlignment(Qt.AlignHCenter)
@@ -187,13 +188,13 @@ class LoaderProbeReportPreviewPage(QWidget):
         case_data_buff = []
         results = self.probe_result.json_result['results']
         faces = self.probe_result.json_result['faces']
-        self.case_data_for_results = case_data
+
         index = 0
         
         if len(results) > 0 and len(case_data):
             results_ = results.copy()
             for result in results_:
-                confidence = float(result['confidence'][:len(result['confidence']) - 1])
+                confidence = float(result['confidence'][:len(result['confidence']) - 2])
                 if confidence < Common.MATCH_LEVEL:
                     self.probe_result.remove_json_item(result)
                     case_data_buff.append(case_data[index])
@@ -219,8 +220,12 @@ class LoaderProbeReportPreviewPage(QWidget):
                 # connect delete signal from delete button on target image.
                 result_view_item.delete_item_signal.connect(self.delete_result_item)
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
+
                 index += 1
-            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+            wdtContainer = QWidget()  # container for bordering.
+            wdtContainer.setLayout(self.glyReportBuff)
+            wdtContainer.setStyleSheet(Common.TARGET_LIST_STYLE)
+            self.vlyReportResultLayout.addWidget(wdtContainer)
             # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         else:
@@ -350,7 +355,10 @@ class LoaderProbeReportPreviewPage(QWidget):
                 result_view_item.delete_item_signal.connect(self.delete_result_item)
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
                 index += 1
-            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+            wdtContainer = QWidget()  # container for bordering.
+            wdtContainer.setLayout(self.glyReportBuff)
+            wdtContainer.setStyleSheet(Common.TARGET_LIST_STYLE)
+            self.vlyReportResultLayout.addWidget(wdtContainer)
             # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         else:

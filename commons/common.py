@@ -16,6 +16,13 @@ from PyQt5.QtWidgets import QMessageBox
 
 
 class Common:
+    JSON_RESULT_STYLE = "background:transparent; border-radius: 10px; " \
+                        "border: 1px solid rgb(53, 132, 228); " \
+                        "color: rgb(255,255,255); " \
+                        "font-size: 10pt; font-family: Arial;"
+    TARGET_LIST_STYLE = "background:transparent; border-radius: 10px; " \
+                        "border: 1px solid rgb(53, 132, 228); "
+    TARGET_LIST_STYLE_LABEL = "border:none"
     STATUS_BAR_HEIGHT = 20
     CASE_DETAIL_LINE_EDIT_HEIGHT = 40
     CASE_DETAIL_LINE_EDIT_WIDTH = 400
@@ -94,7 +101,7 @@ class Common:
                                           "border: 1px solid rgb(53, 132, 228);" \
                                           "color: rgb(255, 255, 255);font-size: 13pt;" \
                                           "font-family: Arial; "
-    RASTER_IMAGE_ACCEPTED_NOTICE = "The PNG, JPEG and bmp image formats are accepted."
+    RASTER_IMAGE_ACCEPTED_NOTICE = "The png, jpeg, bmp and tif image formats are accepted."
 
     @staticmethod
     def clear_layout(layout):
@@ -368,12 +375,11 @@ class Common:
             return (is_exist, name)
     @staticmethod
     def convert_json_for_page(json_data):
-        json_buff = {'subject_face_rectangle': {}, 'subject_headpose': {}}
         faces = json_data['faces']
         faces_buff = []
         if len(faces):
             for face in faces:
-                json_buff['subject_face_rectangle'] = face['face_rectangle']
+                json_buff = {'subject_face_rectangle': face['face_rectangle'], 'subject_headpose': {}}
                 roll = face['face_angle']
                 roll_buff = re.sub('Roll: ', '', roll)
                 roll_buff = re.sub(' degree', '', roll_buff)

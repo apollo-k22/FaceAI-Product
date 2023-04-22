@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>884</width>
-    <height>627</height>
+    <width>1322</width>
+    <height>707</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -348,9 +348,9 @@ background:transparent;</string>
        <widget class="QWidget" name="scrollAreaWidgetContents">
         <property name="geometry">
          <rect>
-          <x>-154</x>
+          <x>0</x>
           <y>0</y>
-          <width>999</width>
+          <width>1283</width>
           <height>642</height>
          </rect>
         </property>
@@ -413,7 +413,7 @@ background:transparent;</string>
               </spacer>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
                <property name="leftMargin">
                 <number>10</number>
                </property>
@@ -429,12 +429,15 @@ background:transparent;</string>
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_5">
                  <item>
-                  <layout class="QFormLayout" name="flyCaseDetail">
+                  <layout class="QFormLayout" name="flyCaseDetail6">
                    <property name="fieldGrowthPolicy">
                     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                    </property>
                    <property name="rowWrapPolicy">
                     <enum>QFormLayout::DontWrapRows</enum>
+                   </property>
+                   <property name="horizontalSpacing">
+                    <number>0</number>
                    </property>
                    <property name="verticalSpacing">
                     <number>10</number>
@@ -460,6 +463,12 @@ background:transparent;</string>
                       </sizepolicy>
                      </property>
                      <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
                       <size>
                        <width>140</width>
                        <height>40</height>
@@ -545,38 +554,6 @@ background:none;</string>
                      </property>
                      <property name="text">
                       <string>Probe result:</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="label_3">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>140</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>140</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color: rgb(255, 255, 255);
-background:none;</string>
-                     </property>
-                     <property name="text">
-                      <string>Time of report generation:</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -848,6 +825,12 @@ color: white;</string>
                        <height>40</height>
                       </size>
                      </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
 background:none;</string>
@@ -860,29 +843,60 @@ background:none;</string>
                      </property>
                     </widget>
                    </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="label_3">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>140</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Arial</family>
+                       <pointsize>13</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">color: white;
+background:none;</string>
+                     </property>
+                     <property name="text">
+                      <string>Time of report generation:</string>
+                     </property>
+                    </widget>
+                   </item>
                   </layout>
                  </item>
                 </layout>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,2,0">
-                 <item>
-                  <spacer name="verticalSpacer">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
+                <layout class="QVBoxLayout" name="verticalLayout_4">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>5</number>
+                 </property>
                  <item>
                   <widget class="QLabel" name="lblSubjectImage">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
@@ -915,19 +929,6 @@ border: 1px solid rgb(53, 132, 228);
                     <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
-                 </item>
-                 <item>
-                  <spacer name="verticalSpacer_2">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
                  </item>
                 </layout>
                </item>
