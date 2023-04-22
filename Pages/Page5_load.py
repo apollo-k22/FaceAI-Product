@@ -355,7 +355,10 @@ class LoaderProbeReportPreviewPage(QWidget):
                 result_view_item.delete_item_signal.connect(self.delete_result_item)
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
                 index += 1
-            self.vlyReportResultLayout.addLayout(self.glyReportBuff)
+            wdtContainer = QWidget()  # container for bordering.
+            wdtContainer.setLayout(self.glyReportBuff)
+            wdtContainer.setStyleSheet(Common.TARGET_LIST_STYLE)
+            self.vlyReportResultLayout.addWidget(wdtContainer)
             # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
             self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         else:
