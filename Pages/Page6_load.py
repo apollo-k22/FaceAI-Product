@@ -45,7 +45,7 @@ class LoaderProbeReportPage(QWidget):
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.lblMatchedDescription = self.findChild(QLabel, "lblMatchedDescription")
 
-        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail6")
 
         self.lblPs = GrowingTextEdit()
         self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)

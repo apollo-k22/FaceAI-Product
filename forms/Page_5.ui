@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1211</width>
-    <height>592</height>
+    <width>1353</width>
+    <height>601</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -243,7 +243,7 @@ background:transparent;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1172</width>
+          <width>1314</width>
           <height>840</height>
          </rect>
         </property>
@@ -336,7 +336,7 @@ background:transparent;</string>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_5">
                    <item>
-                    <layout class="QFormLayout" name="flyCaseDetail">
+                    <layout class="QFormLayout" name="flyCaseDetail5">
                      <property name="fieldGrowthPolicy">
                       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                      </property>
@@ -344,7 +344,7 @@ background:transparent;</string>
                       <enum>QFormLayout::DontWrapRows</enum>
                      </property>
                      <property name="horizontalSpacing">
-                      <number>6</number>
+                      <number>0</number>
                      </property>
                      <property name="verticalSpacing">
                       <number>10</number>
@@ -370,6 +370,12 @@ background:transparent;</string>
                         </sizepolicy>
                        </property>
                        <property name="minimumSize">
+                        <size>
+                         <width>140</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
                         <size>
                          <width>140</width>
                          <height>40</height>
@@ -455,38 +461,6 @@ background:none;</string>
                        </property>
                        <property name="text">
                         <string>Probe result:</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_3">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>140</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>250</width>
-                         <height>40</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background:none;</string>
-                       </property>
-                       <property name="text">
-                        <string>Time of report generation:</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -770,6 +744,41 @@ background:none;</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_3">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>140</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>300</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>13</pointsize>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">color:white;
+background:none;</string>
+                       </property>
+                       <property name="text">
+                        <string>Time of report generation:</string>
                        </property>
                       </widget>
                      </item>

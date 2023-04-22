@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1184</width>
-    <height>627</height>
+    <width>1322</width>
+    <height>707</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -350,7 +350,7 @@ background:transparent;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1145</width>
+          <width>1283</width>
           <height>642</height>
          </rect>
         </property>
@@ -413,7 +413,7 @@ background:transparent;</string>
               </spacer>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
                <property name="leftMargin">
                 <number>10</number>
                </property>
@@ -429,12 +429,15 @@ background:transparent;</string>
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_5">
                  <item>
-                  <layout class="QFormLayout" name="flyCaseDetail">
+                  <layout class="QFormLayout" name="flyCaseDetail6">
                    <property name="fieldGrowthPolicy">
                     <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                    </property>
                    <property name="rowWrapPolicy">
                     <enum>QFormLayout::DontWrapRows</enum>
+                   </property>
+                   <property name="horizontalSpacing">
+                    <number>0</number>
                    </property>
                    <property name="verticalSpacing">
                     <number>10</number>
@@ -843,7 +846,7 @@ background:none;</string>
                    <item row="2" column="0">
                     <widget class="QLabel" name="label_3">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -854,8 +857,20 @@ background:none;</string>
                        <height>40</height>
                       </size>
                      </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Arial</family>
+                       <pointsize>13</pointsize>
+                      </font>
+                     </property>
                      <property name="styleSheet">
-                      <string notr="true">color: rgb(255, 255, 255);
+                      <string notr="true">color: white;
 background:none;</string>
                      </property>
                      <property name="text">

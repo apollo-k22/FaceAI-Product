@@ -44,7 +44,7 @@ class LoaderProbeReportPreviewPage(QWidget):
         # self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
 
-        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail5")
         self.lblPs = GrowingTextEdit()
         self.lblPs.setReadOnly(True)
         self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
