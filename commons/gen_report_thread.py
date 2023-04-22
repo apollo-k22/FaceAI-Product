@@ -67,12 +67,13 @@ class GenReportThread(QThread):
         target_fields = ["target_url", "case_id"]
         target_data = []
         db = DBConnection()
-        case_id = db.insert_values("cases", cases_fields, cases_data)
-        for target in case_info.target_image_urls:
-            target_tuple = (target, case_id)
-            target_data.append(target_tuple)
-
-        db.insert_values("targets", target_fields, target_data)
+        # check the case with the inserting probe id exists
+        if not db.is_exist_value("cases", "probe_id", probe_result.probe_id):
+            case_id = db.insert_values("cases", cases_fields, cases_data)
+            for target in case_info.target_image_urls:
+                target_tuple = (target, case_id)
+                target_data.append(target_tuple)
+        # db.insert_values("targets", target_fields, target_data)
 
     # update probe result with copied image urls
     def update_json_data(self):

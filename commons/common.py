@@ -336,7 +336,7 @@ class Common:
                     item[attr] = float(item[attr])
             ret = sorted(sorting_list, key=lambda x: x[attr], reverse=reverse)
             for item in ret:
-                item[attr] = Common.round_float_string_natural(item[attr]) + " %"
+                item[attr] = Common.round_float_string_natural(item[attr]) + "%"
         return ret
 
     # round the float string up to 2 decimals

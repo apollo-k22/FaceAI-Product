@@ -46,7 +46,7 @@ class ProbingThread(QThread, CaseInfo, FaceAI):
                 item['confidence'] = Common.round_float_string(item['confidence'])
                 targets_buff.append(img_url)
                 results_buff.append(item)
-            # sort list by confidence desc
+            # sort list by confidence desc and % symbol will be added
             results_buff = Common.sort_list_by_float_attribute(results_buff, 'confidence', 'string', True)
             ret_json['results'] = results_buff
         if type(faces).__name__ == 'list':
