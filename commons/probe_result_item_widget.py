@@ -74,11 +74,10 @@ class ProbeResultItemWidget(QWidget):
         self.lbl_similarity_score.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
         self.fly_info_container.addRow(self.lbl_similarity_score_label, self.lbl_similarity_score)
 
-        self.lbl_case_number_label.setText("Case Number: ")
+        self.lbl_case_number_label.setText("Old Case Number: ")
         self.lbl_ps_label.setText("PS: ")
         self.lbl_probe_id_label.setText("Probe ID: ")
-        if self.is_used_old_cases:
-
+        if Common.get_sel_target_type() == 3:
             self.lbl_case_number.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
             self.lbl_case_number_label.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
             self.lbl_ps.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
