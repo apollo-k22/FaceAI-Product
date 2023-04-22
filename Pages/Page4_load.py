@@ -29,6 +29,10 @@ class LoaderProbingPage(QWidget, FaceAI):
         self.probing_thread.failed_probing_signal.connect(self.failed_probing_slot)
         self.probing_thread.success_probing_signal.connect(self.success_probing_slot)
         self.timer = QTimer()
+        self.lblStatus = self.findChild(QLabel, "lblStatus")
+
+    def set_statusbar(self, status):
+        self.lblStatus.setText(status)
 
     def start_gif(self):
         self.lblFaceGif.setMovie(self.current_gif)

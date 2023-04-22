@@ -2,10 +2,11 @@ import json
 import os
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt
 from PyQt5.QtWidgets import QPushButton, QLabel, QVBoxLayout, QGridLayout, QTextEdit, \
-    QSizePolicy, QFileDialog, QWidget, QMessageBox
+    QSizePolicy, QFileDialog, QWidget, QMessageBox, QFormLayout
 
+from commons.growing_text_edit import GrowingTextEdit
 from commons.common import Common
 from commons.gen_report import export_report_pdf, gen_pdf_filename
 from commons.probe_result_item_widget import ProbeResultItemWidget
@@ -33,18 +34,54 @@ class LoaderProbeReportPage(QWidget):
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
         self.lblCaseNumber = self.findChild(QLabel, "lblCaseNumber")
         self.lblExaminerNo = self.findChild(QLabel, "lblExaminerNo")
-        self.lblExaminerName = self.findChild(QLabel, "lblExaminerName")
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
         self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
-        self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
+
+        # self.lblPs = self.findChild(QTextEdit, "teditPS")
+        # self.lblExaminerName = self.findChild(QTextEdit, "teditExaminerName")
+        # self.teditRemarks = self.findChild(QTextEdit, "teditRemarks")
+
         self.lblTimeOfReportGeneration = self.findChild(QLabel, "lblTimeOfReportGeneration")
         self.lblSubjectImage = self.findChild(QLabel, "lblSubjectImage")
         self.lblMatchedDescription = self.findChild(QLabel, "lblMatchedDescription")
-        self.teditJsonResult = self.findChild(QTextEdit, "teditJsonResult")
+
+        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+
+        self.lblPs = GrowingTextEdit()
+        self.lblPs.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.lblPs.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.lblExaminerName = GrowingTextEdit()
+        self.lblExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.lblExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.teditRemarks = GrowingTextEdit()
+        self.teditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.teditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.lblPs.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT)
+        self.lblExaminerName.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT)
+        self.teditRemarks.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT)
+
+        self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.lblPs)
+        self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.lblExaminerName)
+        self.flyCaseDetail.setWidget(8, QFormLayout.FieldRole, self.teditRemarks)
+
+        self.teditJsonResult = GrowingTextEdit()
+        self.teditJsonResult.setObjectName("teditJsonResult")
+        self.teditJsonResult.setReadOnly(True)
+        self.teditJsonResult.setAlignment(Qt.AlignHCenter)
+        self.vlyJsonResp = self.findChild(QVBoxLayout, "vlyJsonResp")
+        self.vlyJsonResp.addWidget(self.teditJsonResult)
+
         self.vlyReportResult = self.findChild(QVBoxLayout, "vlyTargetResults")
         self.glyReportBuff = QGridLayout()
 
         self.init_actions()
+        self.lblStatus = self.findChild(QLabel, "lblStatus")
+
+    def set_statusbar(self, status):
+        self.lblStatus.setText(status)
 
     @pyqtSlot()
     def on_clicked_export_pdf(self):
@@ -90,6 +127,7 @@ class LoaderProbeReportPage(QWidget):
     def on_clicked_go_back(self):
         # self.probe_result = ProbingResult()
         self.go_back_signal.emit(self.probe_result, True)
+
     def init_actions(self):
         self.btnExportPdf.clicked.connect(self.on_clicked_export_pdf)
         self.btnGoBack.clicked.connect(self.on_clicked_go_back)
@@ -114,10 +152,10 @@ class LoaderProbeReportPage(QWidget):
                 self.glyReportBuff.addWidget(result_view_item, index // 3, index % 3)
                 index += 1
         self.vlyReportResult.addLayout(self.glyReportBuff)
-        js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-        self.teditJsonResult.setPlainText(js_result)
+        # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+        self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         self.init_input_values()
-        self.setEnabled(True)
+        self.set_enabled(True)
         self.stop_splash_signal.emit(None)
 
     def refresh_views(self):
@@ -130,31 +168,41 @@ class LoaderProbeReportPage(QWidget):
         if not Common.is_empty(self.probe_result.case_info):
             self.lblProbeId.setText(self.probe_result.probe_id)
             matched = self.probe_result.is_matched()
+            target_type = self.probe_result.case_info.target_type
             if matched == 'Matched':
-                self.lblMatchedDescription.setText("The subject photo has matched to the following target photos."
-                                                   " Respective facial recognition similarity scores are attached herewith.")
+                if target_type == 1:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_SINGLE)
+                elif target_type == 2:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_MULTIPLE)
+                elif target_type == 3:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_ENTIRE)
+                elif target_type == 4:
+                    self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_MATCHED_FOR_OLDCASE)
             else:
-                self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+                self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_NON_MATCHED)
             self.lblProbeResult.setText(matched)
             self.lblCaseNumber.setText(self.probe_result.case_info.case_number)
+            self.lblPs.setText(self.probe_result.case_info.case_PS)
             self.lblExaminerNo.setText(self.probe_result.case_info.examiner_no)
             self.lblExaminerName.setText(self.probe_result.case_info.examiner_name)
-            self.teditRemarks.setPlainText(self.probe_result.case_info.remarks)
+            self.teditRemarks.setText(self.probe_result.case_info.remarks)
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
             image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
                           "');background:transparent;border: 1px solid rgb(53, 132, 228);"
+            # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
             self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-            self.teditJsonResult.setPlainText(js_result)
+            # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
+            self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
         else:
             self.lblProbeId.setText("")
             self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
             self.lblProbeResult.setText("")
             self.lblCaseNumber.setText("")
+            self.lblPs.setText("")
             self.lblExaminerNo.setText("")
             self.lblExaminerName.setText("")
-            self.teditRemarks.setPlainText("")
+            self.teditRemarks.setText("")
             self.lblTimeOfReportGeneration.setText("")
             image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
                           "');background:transparent;border: 1px solid rgb(53, 132, 228);"
@@ -170,9 +218,8 @@ class LoaderProbeReportPage(QWidget):
         if not self.probe_result:
             return
         if not Common.is_empty(self.probe_result.case_info):
-            self.setEnabled(False)
+            self.set_enabled(False)
             self.start_splash_signal.emit("data")
-            self.setEnabled(False)
             self.target_items_generator_thread.start()
 
     def clear_result_list(self):
@@ -180,17 +227,25 @@ class LoaderProbeReportPage(QWidget):
 
     def init_views(self):
         self.lblProbeId.setText("")
-        self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+        self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_NON_MATCHED)
         self.lblProbeResult.setText("")
         self.lblCaseNumber.setText("")
+        self.lblPs.setText("")
         self.lblExaminerNo.setText("")
         self.lblExaminerName.setText("")
-        self.teditRemarks.setPlainText("")
+        self.teditRemarks.setText("")
         self.lblTimeOfReportGeneration.setText("")
-        image_style = "image:url('" + self.probe_result.case_info.subject_image_url + \
+        resized_image_path = Common.resize_image(self.probe_result.case_info.subject_image_url,
+                                                 self.lblSubjectImage.size().width())
+        self.probe_result.case_info.subject_image_url = resized_image_path
+        image_style = "image:url('" + resized_image_path + \
                       "');background:transparent;border: 1px solid rgb(53, 132, 228);"
         self.lblSubjectImage.setStyleSheet(image_style)
         self.lblSubjectImage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.teditRemarks.setPlainText("")
         self.clear_result_list()
         self.probe_result = ProbingResult()
+
+    def set_enabled(self, enabled):
+        self.btnGoBack.setEnabled(enabled)
+        self.btnReturnHome.setEnabled(enabled)
+        self.btnExportPdf.setEnabled(enabled)

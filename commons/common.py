@@ -1,7 +1,9 @@
 import decimal
+import json
 import os.path
 import os
 import pathlib
+import re
 import shutil
 import winreg
 import time
@@ -14,6 +16,9 @@ from PyQt5.QtWidgets import QMessageBox
 
 
 class Common:
+    STATUS_BAR_HEIGHT = 20
+    CASE_DETAIL_LINE_EDIT_HEIGHT = 40
+    CASE_DETAIL_LINE_EDIT_WIDTH = 400
     REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\FaceAI\main.exe"
     STORAGE_PATH = "Data Storage"
     MEDIA_PATH = "Media"
@@ -29,24 +34,67 @@ class Common:
     CASE_REMARKS_LENGTH = 139
     # CREATE_CASE_REGX = "\w"
     # CREATE_CASE_REGX = "[\u0020-\u007E]"
-    CREATE_CASE_REGX = r'[a-zA-Z0-9]+'
-    CREATE_CASE_REGX_FOR_REMOVE = r'[^a-zA-Z0-9]+'
-    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg', '.ico']
+    # CREATE_CASE_REGX = r'[a-zA-Z0-9]+'
+    # CREATE_CASE_REGX_FOR_REMOVE = r'[^a-zA-Z0-9]+'  #"/[ -~]/"
+    # CREATE_CASE_REGX = r'/[ -~]/+'
+    CREATE_CASE_REGX = r'[\u0020-\u007E]+'
+    CREATE_CASE_REGX_FOR_REMOVE = r'[^\u0020-\u007E]+'  # "/[ -~]/"
+
+    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg']
     # IMAGE_FILTER = "Image Files (*.cur *.icns *.ico *.jpeg *.HEIF *.heif" \
     #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
     #                " *.tif *.tiff *.wbmp" \
     #                " *.webp *.xbm *.xpm)"
-    IMAGE_FILTER = "Image Files ( *.ico *.jpeg"  \
-                   " *.jpg *.png " \
-                   " *.tif)"
+    IMAGE_FILTER = "Image Files (*.jpeg *.jpg *.png *.tif)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
     LABEL_MAX_WIDTH_IN_ITEM = 170
     VALUE_MAX_HEIGHT_IN_ITEM = 30
     VALUE_MAX_WIDTH_IN_ITEM = 230
     CROSS_BUTTON_SIZE = 30
-    PAGINATION_BUTTON_SIZE = 60
+    PAGINATION_BUTTON_SIZE = 40
+    PAGINATION_GO_LABEL_SIZE = 90
+    PAGINATION_NEXT_BUTTON_STYLE = "image: url(:/newPrefix/icon-next2.png); " \
+                                   "border-radius: 10px;" \
+                                   "background-repeat: no-repeat;" \
+                                   "background-color: rgb(127, 0, 226);"
+    PAGINATION_PREVIOUS_BUTTON_STYLE = "image: url(:/newPrefix/icon-back2.png); " \
+                                       "border: 1px solid #7F00E2;" \
+                                       "border-radius: 10px;" \
+                                       "background-repeat: no-repeat;" \
+                                       "background-color: rgb(127, 0, 226);"
+    PAGINATION_BUTTON_STYLE = "border-radius: 10px;" \
+                              "color: rgb(255, 255, 255);" \
+                              "border: 1px solid white;" \
+                              "background:transparent;"
+    PAGINATION_BUTTON_ACTIVE_STYLE = "border-radius: 10px;" \
+                                     "color: rgb(255, 255, 255);" \
+                                     "border: 1px solid white;" \
+                                     "background:transparent;" \
+                                     "background-color:blue;"
+    GO_BUTTON_STYLE = "border-radius: 10px;background: transparent;" \
+                      "color: rgb(255, 255, 255);border: 1px solid white;"
     NUMBER_PER_PAGE = 5
     RESULT_ITEM_WIDGET_SIZE = 330
+    REPORT_DESCRIPTION_MATCHED_FOR_SINGLE = "The subject photo has matched to the following target photo." \
+                                            " Facial similarity score is attached herewith."
+    REPORT_DESCRIPTION_MATCHED_FOR_MULTIPLE = "The subject photo has matched to the following target photos." \
+                                              " Facial similarity scores are attached herewith."
+    REPORT_DESCRIPTION_MATCHED_FOR_ENTIRE = "The subject photo has matched to the following target photos." \
+                                            " Facial similarity scores are attached herewith."
+    REPORT_DESCRIPTION_MATCHED_FOR_OLDCASE = "The subject photo has matched to the following old case photos." \
+                                             " Facial similarity scores and old case details are attached herewith."
+    REPORT_DESCRIPTION_NON_MATCHED = "The subject photo hasn't matched to any target photo."
+    SELECTED_IMAGE_DESCRIPTION = " photos have been selected as target."
+    GROWING_TEXT_EDIT_STYLE_PREVIEW_REPORT = "background:transparent;" \
+                                             "border: 1px solid rgb(53, 132, 228);" \
+                                             "color: rgb(255, 255, 255);font-size: 13pt;" \
+                                             "font:bold;" \
+                                             "font-family: Arial; "
+    GROWING_TEXT_EDIT_STYLE_CREATE_CASE = "background:transparent;" \
+                                          "border: 1px solid rgb(53, 132, 228);" \
+                                          "color: rgb(255, 255, 255);font-size: 13pt;" \
+                                          "font-family: Arial; "
+    RASTER_IMAGE_ACCEPTED_NOTICE = "The PNG, JPEG and bmp image formats are accepted."
 
     @staticmethod
     def clear_layout(layout):
@@ -318,3 +366,20 @@ class Common:
                 time.sleep(0.01)
                 appendix+=1
             return (is_exist, name)
+    @staticmethod
+    def convert_json_for_page(json_data):
+        json_buff = {'subject_face_rectangle': {}, 'subject_headpose': {}}
+        faces = json_data['faces']
+        faces_buff = []
+        if len(faces):
+            for face in faces:
+                json_buff['subject_face_rectangle'] = face['face_rectangle']
+                roll = face['face_angle']
+                roll_buff = re.sub('Roll: ', '', roll)
+                roll_buff = re.sub(' degree', '', roll_buff)
+                json_buff['subject_headpose'] = {"roll_angle": float(roll_buff)}
+                faces_buff.append(json_buff)
+
+        js_result = json.dumps(faces_buff, indent=4, sort_keys=True)
+        print(js_result)
+        return js_result

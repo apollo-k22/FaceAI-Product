@@ -8,12 +8,14 @@ class ProbingResult(object):
     def __init__(self):
         super().__init__()
         self.case_info = CaseInfo()
+
         self.probe_id = ""
         self.matched = "Non Matched"
         self.created_date = ntp_get_time_from_object(SysTimer.now())
         self.json_result = {'time_used': 2, 'thresholds': {}, 'faces': [], 'results': []}
 
     def is_matched(self):
+        self.matched = "Non Matched"
         if self.json_result:
             # if type(self.json_result).__name__ == "tuple":
             #     ret_error = ""

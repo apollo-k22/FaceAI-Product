@@ -3,7 +3,7 @@ from sys import exit
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtGui import QShowEvent, QCloseEvent
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QStatusBar, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QStatusBar, QMessageBox, QHBoxLayout
 
 from Pages.Page0_load import LicenseBoxPage
 from Pages.Page1_load import StartHome
@@ -76,6 +76,7 @@ class StartMain(QMainWindow):
         self.set_page_transition()
         self.set_splash_signal_slot()
         self.init_widgets()
+        self.init_status_bar("sdf")
 
     # def start_main(self):
     #     self.show_p1_home()
@@ -188,12 +189,13 @@ class StartMain(QMainWindow):
 
     @pyqtSlot(CaseInfo)
     def show_p3_select_target_photos(self, case_info):
+        self.setWindowTitle("Select Target(s)")
         # hide other window
         self.ui_1_home.hide()
         self.ui_2_create_new_case.hide()
         self.ui_5_probe_report_preview.hide()
         # return page to initial status.
-        # self.ui_3_select_target_photo.init_views()
+        self.ui_3_select_target_photo.init_views()
         # set case information to page
         self.ui_3_select_target_photo.case_info = case_info
         self.ui_3_select_target_photo.showMaximized()
@@ -211,8 +213,9 @@ class StartMain(QMainWindow):
     @pyqtSlot(str)
     def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
+        self.init_child_widgets()
         if self.ui_0_license.expired_date:
-            self.status_bar.showMessage("The license will be expired by " + self.ui_0_license.expired_date + ".")
+            self.init_status_bar("The license will be expired by " + self.ui_0_license.expired_date + ".")
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
@@ -222,17 +225,16 @@ class StartMain(QMainWindow):
         self.ui_1_home.showMaximized()
         self.ui_1_home.setFocus()
         if len(expire_date) > 0:
-            self.status_bar.showMessage("The license will be expired by "
+            self.init_status_bar("The license will be expired by "
                                         + expire_date)
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
-        self.setWindowTitle("Create Case")
+        self.setWindowTitle("Create a Case")
         Common.remove_target_images()
         self.ui_1_home.hide()
         self.ui_3_select_target_photo.hide()
         self.ui_2_create_new_case.showMaximized()
-        
 
     @pyqtSlot(CaseInfo)
     def show_p4_probing(self, case_info):
@@ -269,8 +271,8 @@ class StartMain(QMainWindow):
         # return page to initial status
         self.ui_6_probe_report.probe_result = probe_result
         self.ui_6_probe_report.case_data_for_results = case_data
-        self.ui_2_create_new_case.refresh_view()
-        self.ui_3_select_target_photo.refresh_view()
+        # self.ui_2_create_new_case.refresh_view()
+        # self.ui_3_select_target_photo.refresh_view()
         self.ui_6_probe_report.refresh_views()
         self.ui_6_probe_report.showMaximized()
 
@@ -356,11 +358,11 @@ class StartMain(QMainWindow):
             #                             + str(app_expire) + ".")
 
             if app_expire.total_seconds() > 0:
-                self.status_bar.showMessage("The license will be expired by "
+                self.init_status_bar("The license will be expired by "
                                             + app_expire_date)
                 return True
             else:
-                self.status_bar.showMessage("The license was expired by "
+                self.init_status_bar("The license was expired by "
                                             + app_expire_date)
                 return False
 
@@ -387,3 +389,12 @@ class StartMain(QMainWindow):
             Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
                                                                         "\nPlease make it and then retry.",
                                 "", "Folder Not Exist", "")
+
+    def init_status_bar(self, mes):
+        self.ui_1_home.set_statusbar(mes)
+        self.ui_2_create_new_case.set_statusbar(mes)
+        self.ui_3_select_target_photo.set_statusbar(mes)
+        self.ui_4_probing.set_statusbar(mes)
+        self.ui_5_probe_report_preview.set_statusbar(mes)
+        self.ui_6_probe_report.set_statusbar(mes)
+        self.ui_7_prove_report_list.set_statusbar(mes)

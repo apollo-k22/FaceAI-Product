@@ -64,7 +64,7 @@ class ProbeResultItemWidget(QWidget):
             image_geo = self.wdt_image.geometry()
             self.btn_delete.setGeometry(image_geo.width() - Common.CROSS_BUTTON_SIZE,
                                         0, Common.CROSS_BUTTON_SIZE, Common.CROSS_BUTTON_SIZE)
-            self.btn_delete.setStyleSheet("image: url(:/newPrefix/cross-icon.png);background:transparent;border:none")
+            self.btn_delete.setStyleSheet("image: url(:/newPrefix/error.png);background:transparent;border:none")
             self.btn_delete.clicked.connect(self.on_clicked_delete)
 
         self.vly_img_container.addWidget(self.wdt_image)
@@ -77,7 +77,8 @@ class ProbeResultItemWidget(QWidget):
         self.lbl_case_number_label.setText("Old Case Number: ")
         self.lbl_ps_label.setText("PS: ")
         self.lbl_probe_id_label.setText("Probe ID: ")
-        if Common.get_sel_target_type() == 3:
+        if self.is_used_old_cases:
+
             self.lbl_case_number.setMaximumSize(Common.VALUE_MAX_WIDTH_IN_ITEM, Common.VALUE_MAX_WIDTH_IN_ITEM)
             self.lbl_case_number_label.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)
             self.lbl_ps.setMaximumSize(Common.LABEL_MAX_WIDTH_IN_ITEM, Common.LABEL_MAX_HEIGHT_IN_ITEM)

@@ -1,14 +1,15 @@
 import re
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QFormLayout, QLabel
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QTextEdit
 from PyQt5.QtWidgets import QPushButton
 
+from commons.growing_text_edit import GrowingTextEdit
 from commons.case_info import CaseInfo
 from commons.common import Common
 from insightfaces.main import FaceAI
@@ -31,28 +32,64 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.btnSelectPhoto = self.findChild(QPushButton, 'btnSelectTargetPhoto')
         self.btnReturnHome = self.findChild(QPushButton, 'btnReturnHome')
         self.btnContinueProbe = self.findChild(QPushButton, 'btnContinueProbe')
+        self.btnGoBack = self.findChild(QPushButton, 'btnGoBack')
         self.leditCaseNumber = self.findChild(QLineEdit, 'leditCaseNumber')
-        self.leditPS = self.findChild(QLineEdit, 'leditPS')
-        self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
         self.leditExaminerNo = self.findChild(QLineEdit, 'leditExaminerNo')
-        self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
 
+        self.flyCaseDetail = self.findChild(QFormLayout, "flyCaseDetail")
+        # self.leditPS = self.findChild(QLineEdit, 'leditPS')
+        self.leditPS = GrowingTextEdit()
+        self.leditPS.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.leditPS.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        self.leditPS.setMaximumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        # self.leditExaminerName = self.findChild(QLineEdit, 'leditExaminerName')
+        self.leditExaminerName = GrowingTextEdit()
+        self.leditExaminerName.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.leditExaminerName.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        # self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        self.leditExaminerName.setMaximumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+
+        self.leditRemarks = GrowingTextEdit()
+        self.leditRemarks.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.leditRemarks.setMinimumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        self.leditRemarks.setMaximumSize(Common.CASE_DETAIL_LINE_EDIT_WIDTH, Common.CASE_DETAIL_LINE_EDIT_HEIGHT)
+        # self.leditRemarks = self.findChild(QTextEdit, 'teditRemarks')
+        self.leditPS.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
+        self.leditExaminerName.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
+        self.leditRemarks.setStyleSheet(Common.GROWING_TEXT_EDIT_STYLE_CREATE_CASE)
+        self.leditPS.setAlignment(Qt.AlignVCenter)
+
+        self.flyCaseDetail.setWidget(1, QFormLayout.FieldRole, self.leditPS)
+        self.flyCaseDetail.setWidget(2, QFormLayout.FieldRole, self.leditExaminerName)
+        self.flyCaseDetail.setWidget(4, QFormLayout.FieldRole, self.leditRemarks)
+
+        self.setTabOrder(self.leditCaseNumber, self.leditPS)
+        self.setTabOrder(self.leditPS, self.leditExaminerName)
+        self.setTabOrder(self.leditExaminerName, self.leditExaminerNo)
+        self.setTabOrder(self.leditExaminerNo, self.leditRemarks)
         # set image url
         self.subject_photo_url = ''
         self.set_event_actions()
         self.set_regxs()
+        self.lblStatus = self.findChild(QLabel, "lblStatus")
+
+    def set_statusbar(self, status):
+        self.lblStatus.setText(status)
 
     # set slots to each widget
     def set_event_actions(self):
         self.btnSelectPhoto.clicked.connect(self.get_subject_photo)
         self.btnReturnHome.clicked.connect(self.return_home)
         self.btnContinueProbe.clicked.connect(self.continue_probe_slot)
+        self.btnGoBack.clicked.connect(self.return_home)
 
     # set regular expression for checking input data
     def set_regxs(self):
         self.set_regx_line_edit(self.leditCaseNumber, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_NUMBER_LENGTH)
-        self.set_regx_line_edit(self.leditPS, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_PS_LENGTH)
-        self.set_regx_line_edit(self.leditExaminerName, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_EXAMINER_NAME_LENGTH)
+        self.set_regx_plain_text_edit(self.leditPS, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_PS_LENGTH)
+        self.set_regx_plain_text_edit(self.leditExaminerName, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_EXAMINER_NAME_LENGTH)
         self.set_regx_line_edit(self.leditExaminerNo, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_EXAMINER_NO_LENGTH)
         self.set_regx_plain_text_edit(self.leditRemarks, Common.CREATE_CASE_REGX_FOR_REMOVE, Common.CASE_REMARKS_LENGTH)
 
@@ -116,9 +153,9 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
                                 ledit_name + " is empty")
         else:
             self.case_info.case_number = self.leditCaseNumber.text()
-            self.case_info.case_PS = self.leditPS.text()
+            self.case_info.case_PS = self.leditPS.toPlainText()
             self.case_info.examiner_no = self.leditExaminerNo.text()
-            self.case_info.examiner_name = self.leditExaminerName.text()
+            self.case_info.examiner_name = self.leditExaminerName.toPlainText()
             self.case_info.remarks = self.leditRemarks.toPlainText()
             self.case_info.subject_image_url = self.subject_photo_url
             # emit continue probe signal
@@ -130,13 +167,13 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         if self.leditCaseNumber.text() == '':
             self.leditCaseNumber.setFocus()
             return True, 'Case Number'
-        if self.leditPS.text() == '':
+        if self.leditPS.toPlainText() == '':
             self.leditPS.setFocus()
             return True, 'PS'
         if self.leditExaminerNo.text() == '':
             self.leditExaminerNo.setFocus()
             return True, "Examiner's NO"
-        if self.leditExaminerName.text() == '':
+        if self.leditExaminerName.toPlainText() == '':
             self.leditExaminerName.setFocus()
             return True, "Examiner's Name"
         if self.leditRemarks.toPlainText() == '':
@@ -151,27 +188,29 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
     @pyqtSlot(str)
     def check_ledit_string_validation(self, line_edit, regx, txt, max_length):
         sub_string = re.sub(regx, '', txt)
+        len_text = len(txt)
         if not txt == sub_string:
             txt = sub_string
             line_edit.setText(txt)
-        if len(txt) > max_length:
-            txt = txt[:max_length - 1]
+        if len_text > max_length:
+            txt = txt[:len_text - 1]
             line_edit.setText(txt)
 
     # remove all invalid substring according to regx
     @pyqtSlot(str)
     def check_ptedit_string_validation(self, text_edit, regx, max_length):
-        string = text_edit.toPlainText()
-        if string == '':
+        txt = text_edit.toPlainText()
+        len_txt = len(txt)
+        if txt == '':
             return
-        sub_string = re.sub(regx, '', string)
-        if not string == sub_string:
-            string = sub_string
-            text_edit.setPlainText(string)
+        sub_string = re.sub(regx, '', txt)
+        if not txt == sub_string:
+            txt = sub_string
+            text_edit.setPlainText(txt)
             return
-        if len(string) > max_length:
-            string = string[:max_length - 1]
-            text_edit.setPlainText(string)
+        if len_txt > max_length:
+            txt = txt[:len_txt - 1]
+            text_edit.setPlainText(txt)
             return
         cursor = text_edit.textCursor()
         cursor.movePosition(QTextCursor.End)

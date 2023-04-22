@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1659</width>
-    <height>800</height>
+    <width>832</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/newPrefix/Background.png);
+   <string notr="true">background:transparent;
 background-repeat: no-repeat;
 background-position: center;
 </string>
@@ -49,32 +49,98 @@ background-position: center;
      <property name="spacing">
       <number>0</number>
      </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="leftMargin">
         <number>10</number>
        </property>
        <property name="topMargin">
         <number>10</number>
        </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
+        <number>20</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="leftMargin">
+          <number>10</number>
+         </property>
+         <property name="topMargin">
+          <number>20</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:transparent;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
-           <width>120</width>
-           <height>60</height>
+           <width>80</width>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>120</width>
-           <height>60</height>
+           <width>80</width>
+           <height>40</height>
           </size>
          </property>
          <property name="baseSize">
           <size>
-           <width>200</width>
-           <height>100</height>
+           <width>80</width>
+           <height>40</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -112,13 +178,16 @@ background-position: center;
         <number>0</number>
        </property>
        <property name="leftMargin">
-        <number>0</number>
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>10</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>10</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <item>
         <spacer name="horizontalSpacer">
@@ -143,8 +212,8 @@ background-position: center;
          </property>
          <property name="minimumSize">
           <size>
-           <width>571</width>
-           <height>500</height>
+           <width>300</width>
+           <height>300</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -152,6 +221,10 @@ background-position: center;
            <width>571</width>
            <height>500</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background:transparent;
+border-radius:20px;</string>
          </property>
          <property name="text">
           <string/>
@@ -164,15 +237,15 @@ background-position: center;
        <item>
         <widget class="QLabel" name="label_3">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>300</width>
+           <height>300</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -209,8 +282,11 @@ background-position: center;
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="topMargin">
+        <number>10</number>
+       </property>
        <property name="bottomMargin">
-        <number>6</number>
+        <number>20</number>
        </property>
        <item>
         <spacer name="horizontalSpacer_3">
@@ -228,7 +304,7 @@ background-position: center;
        <item>
         <widget class="QLabel" name="lblProbeResult">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -236,8 +312,11 @@ background-position: center;
          <property name="minimumSize">
           <size>
            <width>150</width>
-           <height>50</height>
+           <height>40</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background:transparent;</string>
          </property>
          <property name="text">
           <string>Probing images...</string>
@@ -274,6 +353,47 @@ background-position: center;
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="hlyStatus">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="lblStatus">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background:transparent;</string>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

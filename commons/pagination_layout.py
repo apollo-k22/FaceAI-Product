@@ -23,6 +23,7 @@ class PaginationLayout(QHBoxLayout):
             self.page_count += 1
 
         self.hlyPaginationButtons = QHBoxLayout()
+        self.hlyPaginationButtons.setContentsMargins(0, 0, 20, 0)
 
         self.hlyGo2Page = QHBoxLayout()
 
@@ -44,65 +45,26 @@ class PaginationLayout(QHBoxLayout):
         btnPrevious = QPushButton()
         btnPrevious.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnPrevious.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-        btnPrevious.setStyleSheet("background-image: url(:/newPrefix/icon-back2.png); "
-                                  "border: 1px solid #7F00E2;"
-                                  "border-radius: 10px;"
-                                  "background-repeat: no-repeat;"
-                                  "background-color: rgb(127, 0, 226);")
+        btnPrevious.setStyleSheet(Common.PAGINATION_PREVIOUS_BUTTON_STYLE)
         btnPrevious.clicked.connect(self.previous_page_slot)
 
         btnNext = QPushButton()
         btnNext.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btnNext.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-        btnNext.setStyleSheet("background-image: url(:/newPrefix/icon-next2.png); "
-                              "border: 1px solid #7F00E2;"
-                              "border-radius: 10px;"
-                              "background-repeat: no-repeat;"
-                              "background-color: rgb(127, 0, 226);")
+        btnNext.setStyleSheet(Common.PAGINATION_NEXT_BUTTON_STYLE)
         btnNext.clicked.connect(self.next_page_slot)
 
         if not self.page_count == 0:
             # add previous button
             self.hlyPaginationButtons.addWidget(btnPrevious)
-            if self.page_count > 5:
-                # add page buttons
-                if self.page_count - self.current_page > 5:
-                    start_index = 0
-                    if self.current_page > 0:
-                        start_index = self.current_page - 1
-                    for index in range(start_index, start_index + 3):
-                        button = self.create_pagination_button(index)
-                        # set current page button to inactive
-                        if index == self.current_page:
-                            button.setEnabled(False)
-                        self.hlyPaginationButtons.addWidget(button)
-
-                    omitting_label = QLabel("...")
-                    omitting_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-                    omitting_label.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-                    omitting_label.setStyleSheet("color: rgb(255, 255, 255);"
-                                                 "background-color: rgb(0, 0, 0);"
-                                                 "padding-bottom:5px;")
-                    omitting_label.setAlignment(Qt.AlignVCenter)
-                    self.hlyPaginationButtons.addWidget(omitting_label)
-                    for index in range(self.page_count - 2, self.page_count):
-                        button = self.create_pagination_button(index)
-                        self.hlyPaginationButtons.addWidget(button)
-
-                else:
-                    for index in range(self.page_count - 6, self.page_count):
-                        button = self.create_pagination_button(index)
-                        # set current page button to inactive
-                        if index == self.current_page:
-                            button.setEnabled(False)
-                        self.hlyPaginationButtons.addWidget(button)
-            else:
-                for index in range(self.page_count):
-                    button = self.create_pagination_button(index)
-                    # set current page button to inactive
-                    if index == self.current_page:
-                        button.setEnabled(False)
-                    self.hlyPaginationButtons.addWidget(button)
+            for index in range(self.page_count):
+                button = self.create_pagination_button(index)
+                # set current page button to inactive
+                if index == self.current_page:
+                    button.setEnabled(False)
+                    button.setStyleSheet(Common.PAGINATION_BUTTON_ACTIVE_STYLE)
+                self.hlyPaginationButtons.addWidget(button)
+            
             # add next button
             self.hlyPaginationButtons.addWidget(btnNext)
             # add spacer
@@ -110,32 +72,33 @@ class PaginationLayout(QHBoxLayout):
             self.hlyPaginationButtons.addSpacerItem(hspacer)
 
     def init_go_to_page_layout(self):
-        lbl_go_label = QLabel("Go To")
-        lbl_page_label = QLabel("Page")
+        lbl_go_label = QLabel("Go to page ")
+        lbl_page_label = QLabel("page ")
         lbl_page_number = QLineEdit()
         lbl_page_number.setObjectName("leditGoPageNumber")
         btn_go = QPushButton("Go")
         btn_go.clicked.connect(self.clicked_go_button)
         lbl_go_label.setStyleSheet("background: transparent;color: rgb(255, 255, 255);")
-        lbl_go_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-        lbl_go_label.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
+        lbl_go_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE * 2, Common.PAGINATION_BUTTON_SIZE)
+        lbl_go_label.setMaximumSize(Common.PAGINATION_GO_LABEL_SIZE, Common.PAGINATION_BUTTON_SIZE)
 
         lbl_page_label.setStyleSheet("background: transparent;color: rgb(255, 255, 255);")
-        lbl_page_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-        lbl_page_label.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
+        lbl_page_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE + 15, Common.PAGINATION_BUTTON_SIZE)
+        lbl_page_label.setMaximumSize(Common.PAGINATION_BUTTON_SIZE + 15, Common.PAGINATION_BUTTON_SIZE)
 
-        lbl_page_number.setStyleSheet("border: 1px solid rgb(53, 132, 228);border-radius: 10px;background: transparent")
+        lbl_page_number.setStyleSheet("border: 1px solid rgb(53, 132, 228);border-radius: 1px;background: transparent")
+        lbl_page_number.setAlignment(Qt.AlignHCenter)
         lbl_page_number.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         lbl_page_number.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-        hspacer = QSpacerItem(50, 10, QSizePolicy.Fixed, QSizePolicy.Fixed)
+        hspacer = QSpacerItem(10, 10, QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         btn_go.setStyleSheet("border-radius: 10px;background: transparent;"
                              "color: rgb(255, 255, 255);border: 1px solid white;")
         btn_go.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         btn_go.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
         self.hlyGo2Page.addWidget(lbl_go_label)
+        # self.hlyGo2Page.addWidget(lbl_page_label)
         self.hlyGo2Page.addWidget(lbl_page_number)
-        self.hlyGo2Page.addWidget(lbl_page_label)
         self.hlyGo2Page.addSpacerItem(hspacer)
         self.hlyGo2Page.addWidget(btn_go)
         # set validator for line edit box of go number
@@ -167,6 +130,7 @@ class PaginationLayout(QHBoxLayout):
         leditGoPage = self.hlyGo2Page.itemAt(1).widget()
         print(self.hlyGo2Page.count())
         go_page = leditGoPage.text()
+        leditGoPage.setText("")
         if go_page == '':
             return
         to_be_gone_page = int(go_page) - 1
@@ -174,7 +138,6 @@ class PaginationLayout(QHBoxLayout):
             return
 
         self.changed_page_signal.emit(to_be_gone_page)
-        leditGoPage.setText("")
 
     def create_pagination_button(self, current):
         button = PaginationButton(current)
