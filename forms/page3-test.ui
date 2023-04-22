@@ -1041,6 +1041,20 @@ background:transparent;</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>btnStartProbe</tabstop>
+  <tabstop>btnSinglePhoto</tabstop>
+  <tabstop>btnMultiPhoto</tabstop>
+  <tabstop>btnMultiPhoto2</tabstop>
+  <tabstop>btnEntireFolder</tabstop>
+  <tabstop>btnEntireFolder2</tabstop>
+  <tabstop>rdobtnSinglePhoto</tabstop>
+  <tabstop>rdobtnMultiPhoto</tabstop>
+  <tabstop>rdobtnEntireFolder</tabstop>
+  <tabstop>rdobtnOldCasePhoto</tabstop>
+  <tabstop>btnGoBack</tabstop>
+  <tabstop>btnReturnHome</tabstop>
+ </tabstops>
  <resources>
   <include location="../images/images.qrc"/>
  </resources>

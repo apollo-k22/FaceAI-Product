@@ -39,7 +39,7 @@ class LoaderProbeReportListPage(QWidget):
 
         self.window = uic.loadUi("./forms/Page_7.ui", self)
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
-        self.btnGoBack = self.findChild(QPushButton, "btnGoBack1")
+        # self.btnGoBack = self.findChild(QPushButton, "btnGoBack1")
         self.btnExportAllZip = self.findChild(QPushButton, "btnExportAllZip")
         self.btnGoRemainingPage = self.findChild(QPushButton, "btnGoRemainingPage")
         self.vlyTableContainer = self.findChild(QVBoxLayout, "vlyTableContainer")
@@ -88,7 +88,7 @@ class LoaderProbeReportListPage(QWidget):
         self.init_views()
 
     def init_actions(self):
-        self.btnGoBack.clicked.connect(self.on_clicked_go_back)
+        # self.btnGoBack.clicked.connect(self.on_clicked_go_back)
         self.btnReturnHome.clicked.connect(self.on_clicked_return_home)
         self.combEntriesNumber.currentIndexChanged.connect(self.changed_entries_number)
         self.leditSearchString.textChanged.connect(self.changed_search_string)
@@ -285,6 +285,6 @@ class LoaderProbeReportListPage(QWidget):
                                 "", "Notice", "")
 
     def set_enabled(self, enabled):
-        self.btnGoBack.setEnabled(enabled)
+        # self.btnGoBack.setEnabled(enabled)
         self.btnReturnHome.setEnabled(enabled)
         self.btnExportAllZip.setEnabled(enabled)

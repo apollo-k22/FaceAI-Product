@@ -242,7 +242,7 @@ background:transparent;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-256</y>
           <width>1314</width>
           <height>840</height>
          </rect>
@@ -1435,6 +1435,14 @@ background:transparent;</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>leditRemainingPhotoNumber</tabstop>
+  <tabstop>full_page_scroll</tabstop>
+  <tabstop>btnGoBack</tabstop>
+  <tabstop>btnGoRemaining</tabstop>
+  <tabstop>btnGenerateReport</tabstop>
+  <tabstop>btnReturnHome</tabstop>
+ </tabstops>
  <resources>
   <include location="../images/images.qrc"/>
  </resources>

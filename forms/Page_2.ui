@@ -928,6 +928,14 @@ background:transparent;</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>leditCaseNumber</tabstop>
+  <tabstop>btnSelectTargetPhoto</tabstop>
+  <tabstop>btnGoBack</tabstop>
+  <tabstop>leditExaminerNo</tabstop>
+  <tabstop>btnContinueProbe</tabstop>
+  <tabstop>btnReturnHome</tabstop>
+ </tabstops>
  <resources>
   <include location="../images/images.qrc"/>
  </resources>

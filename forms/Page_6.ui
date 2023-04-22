@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1322</width>
-    <height>707</height>
+    <width>1051</width>
+    <height>823</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -98,7 +98,8 @@ border:none;</string>
            <property name="styleSheet">
             <string notr="true">background:transparent;
 border-radius: 10px;
-background-position: center;</string>
+background-position: center;
+border:none;</string>
            </property>
            <property name="text">
             <string/>
@@ -350,7 +351,7 @@ background:transparent;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1283</width>
+          <width>1012</width>
           <height>642</height>
          </rect>
         </property>
@@ -1208,6 +1209,12 @@ background:transparent;</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>btnReturnHome</tabstop>
+  <tabstop>full_page_scroll</tabstop>
+  <tabstop>btnExportPdf</tabstop>
+  <tabstop>btnGoBack</tabstop>
+ </tabstops>
  <resources>
   <include location="../images/images.qrc"/>
  </resources>

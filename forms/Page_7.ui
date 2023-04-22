@@ -76,47 +76,11 @@ border:none;</string>
           <number>0</number>
          </property>
          <property name="leftMargin">
-          <number>0</number>
+          <number>55</number>
          </property>
          <property name="topMargin">
-          <number>0</number>
+          <number>55</number>
          </property>
-         <item>
-          <widget class="QPushButton" name="btnGoBack1">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>55</width>
-             <height>55</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>55</width>
-             <height>55</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">border-radius: 10px;
-background:transparent;
-border:none;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>55</width>
-             <height>55</height>
-            </size>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item>
@@ -1170,6 +1134,18 @@ background:transparent;</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit_14</tabstop>
+  <tabstop>lineEdit_12</tabstop>
+  <tabstop>leditSearchString</tabstop>
+  <tabstop>lineEdit_15</tabstop>
+  <tabstop>lineEdit_16</tabstop>
+  <tabstop>combEntriesNumber</tabstop>
+  <tabstop>btnExportAllZip</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>resultTable</tabstop>
+  <tabstop>btnReturnHome</tabstop>
+ </tabstops>
  <resources>
   <include location="../images/images.qrc"/>
  </resources>
