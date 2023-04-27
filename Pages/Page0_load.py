@@ -55,6 +55,10 @@ class LicenseBoxPage(QWidget, SysTimerThread):
                 expire_dt = today_dt + relativedelta(months=+12)
             elif "1Month" in expire_flag:
                 expire_dt = today_dt + relativedelta(months=+1)
+            elif "3Month" in expire_flag:
+                expire_dt = today_dt + relativedelta(months=+3)
+            elif "6Month" in expire_flag:
+                expire_dt = today_dt + relativedelta(months=+6)
             elif "1Day" in expire_flag:
                 expire_dt = today_dt + timedelta(days=1)
         except Exception as e:

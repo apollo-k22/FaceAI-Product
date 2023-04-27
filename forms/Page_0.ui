@@ -272,7 +272,7 @@ background: none;</string>
          <property name="maximumSize">
           <size>
            <width>250</width>
-           <height>60</height>
+           <height>50</height>
           </size>
          </property>
          <property name="cursor">
