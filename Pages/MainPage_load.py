@@ -78,12 +78,6 @@ class StartMain(QMainWindow):
         self.init_widgets()
         self.init_status_bar("sdf")
 
-        # bkgnd = QPixmap("url(:/newPrefix/Background.png)")
-        # bkgnd = bkgnd.scaled(self.size(), 0)
-        # palette = QPalette()
-        # palette.setBrush(QPalette.Background, bkgnd)
-        # self.setPalette(palette)
-
     # def start_main(self):
     #     self.show_p1_home()
 

@@ -3,7 +3,7 @@ import ntplib
 from datetime import datetime, timezone, timedelta
 from time import ctime
 
-# import pytz
+import pytz
 
 # for key, val in pytz.country_timezones.items():
 #     print(key, '=', val, end=',')
