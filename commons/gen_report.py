@@ -117,10 +117,7 @@ class GenReport:
                   style=tablestyle1)
         elements.append(table1)
 
-        elements.append(Paragraph(
-            'The subject photo has matched to the following old case photos. Respective similarity scores and case details are attached herewith.',
-            ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black,
-                           leading=leading, spaceBefore=spacing, spaceAfter=spacing)))
+        elements.append(Paragraph(reportinfo['description'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceBefore=spacing, spaceAfter=spacing)))
 
         nested = {}
         targets_len = len(reportinfo["targets"])
@@ -149,7 +146,7 @@ class GenReport:
                     img,
                     draw,
                     Paragraph('Similarity score: %.2f%% (%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
-                    Paragraph('Case no.: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
+                    Paragraph('Old Case Number: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                     Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                     Paragraph('Probe ID: %s'%target['probeid'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
                 ]
@@ -232,12 +229,26 @@ def create_pdf(probe_id, probe_result, file_location):
     ntptime = ntp_get_time_from_object(systime) 
     try:
         buffer = BytesIO()
+        repo_desc = ''
+        if probe_result.matched == 'Matched':
+            if probe_result.case_info.target_type == 1:
+                repo_desc = Common.REPORT_DESCRIPTION_MATCHED_FOR_SINGLE
+            elif probe_result.case_info.target_type == 2:
+                repo_desc = Common.REPORT_DESCRIPTION_MATCHED_FOR_MULTIPLE
+            elif probe_result.case_info.target_type == 3:
+                repo_desc = Common.REPORT_DESCRIPTION_MATCHED_FOR_ENTIRE
+            elif probe_result.case_info.target_type == 4:
+                repo_desc = Common.REPORT_DESCRIPTION_MATCHED_FOR_OLDCASE
+        else:
+            repo_desc = Common.REPORT_DESCRIPTION_NON_MATCHED
+
         reportinfo = {
             "subject": probe_result.case_info.subject_image_url,
             "result": probe_result.matched,
             "created": datetime.strftime(ntptime, "%d/%m/%Y %I:%M %p"),
             "casenum": probe_result.case_info.case_number,
             "ps": probe_result.case_info.case_PS,
+            "description": repo_desc,
             "examname": probe_result.case_info.examiner_name,
             "examnum": probe_result.case_info.examiner_no,
             "remarks": probe_result.case_info.remarks,

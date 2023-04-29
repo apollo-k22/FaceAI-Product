@@ -26,8 +26,11 @@ def ntp_get_time():
 
 
 def ntp_get_time_from_string(time):
-    date = datetime.strptime(time, "%d/%m/%Y")
-    return date.astimezone(sys_tz_obj)
+    try:
+        date = datetime.strptime(time, "%d/%m/%Y %H:%M:%S")
+        return date.astimezone(sys_tz_obj)
+    except Exception as e:
+        return ""
 
 
 def ntp_get_time_from_object(date):

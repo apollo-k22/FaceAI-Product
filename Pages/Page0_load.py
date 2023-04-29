@@ -11,15 +11,17 @@ from commons.common import Common
 from commons.ntptime import ntp_get_time
 from commons.verifying_license_thread import VerifyingLicenseThread
 from cryptophic.license import write_infomation_db
+from commons.systimer_thread import SysTimerThread
 
 
-class LicenseBoxPage(QWidget):
+class LicenseBoxPage(QWidget, SysTimerThread):
     continue_app_signal = pyqtSignal(str)
     start_splash_signal = pyqtSignal(str)
     stop_splash_signal = pyqtSignal(object)
 
-    def __init__(self):
+    def __init__(self, timerthread):
         super().__init__()
+        self.systimer_thread = timerthread
         self.window = uic.loadUi("./forms/Page_0.ui", self)
         self.btnConfirm = self.findChild(QPushButton, "btnConfirm")
         self.btnConfirm.clicked.connect(self.procLicenseConfirm)
@@ -53,6 +55,10 @@ class LicenseBoxPage(QWidget):
                 expire_dt = today_dt + relativedelta(months=+12)
             elif "1Month" in expire_flag:
                 expire_dt = today_dt + relativedelta(months=+1)
+            elif "3Month" in expire_flag:
+                expire_dt = today_dt + relativedelta(months=+3)
+            elif "6Month" in expire_flag:
+                expire_dt = today_dt + relativedelta(months=+6)
             elif "1Day" in expire_flag:
                 expire_dt = today_dt + timedelta(days=1)
         except Exception as e:
@@ -65,7 +71,8 @@ class LicenseBoxPage(QWidget):
         for s in c.Win32_Processor():
             fpo_value = s.ProcessorId
             atpo_value = s.Description
-        self.expired_date = expire_dt.strftime('%d/%m/%Y')
+        self.expired_date = expire_dt.strftime('%d/%m/%Y %H:%M:%S')
+        self.systimer_thread.setexpire(self.expired_date)
         write_infomation_db(True, self.expired_date, fpo_value, atpo_value)
         # Goto homepage
         self.lblNotify.setText("Let's go to home page")

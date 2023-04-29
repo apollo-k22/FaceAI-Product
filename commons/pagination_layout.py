@@ -64,45 +64,7 @@ class PaginationLayout(QHBoxLayout):
                     button.setEnabled(False)
                     button.setStyleSheet(Common.PAGINATION_BUTTON_ACTIVE_STYLE)
                 self.hlyPaginationButtons.addWidget(button)
-            # if self.page_count > 5:
-            #     # add page buttons
-            #     if self.page_count - self.current_page > 5:
-            #         start_index = 0
-            #         if self.current_page > 0:
-            #             start_index = self.current_page - 1
-            #         for index in range(start_index, start_index + 3):
-            #             button = self.create_pagination_button(index)
-            #             # set current page button to inactive
-            #             if index == self.current_page:
-            #                 button.setEnabled(False)
-            #             self.hlyPaginationButtons.addWidget(button)
-            #
-            #         omitting_label = QLabel("...")
-            #         omitting_label.setMinimumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-            #         omitting_label.setMaximumSize(Common.PAGINATION_BUTTON_SIZE, Common.PAGINATION_BUTTON_SIZE)
-            #         omitting_label.setStyleSheet("color: rgb(255, 255, 255);"
-            #                                      "background-color: rgb(0, 0, 0);"
-            #                                      "padding-bottom:5px;")
-            #         omitting_label.setAlignment(Qt.AlignVCenter)
-            #         self.hlyPaginationButtons.addWidget(omitting_label)
-            #         for index in range(self.page_count - 2, self.page_count):
-            #             button = self.create_pagination_button(index)
-            #             self.hlyPaginationButtons.addWidget(button)
-            #
-            #     else:
-            #         for index in range(self.page_count - 6, self.page_count):
-            #             button = self.create_pagination_button(index)
-            #             # set current page button to inactive
-            #             if index == self.current_page:
-            #                 button.setEnabled(False)
-            #             self.hlyPaginationButtons.addWidget(button)
-            # else:
-            #     for index in range(self.page_count):
-            #         button = self.create_pagination_button(index)
-            #         # set current page button to inactive
-            #         if index == self.current_page:
-            #             button.setEnabled(False)
-            #         self.hlyPaginationButtons.addWidget(button)
+            
             # add next button
             self.hlyPaginationButtons.addWidget(btnNext)
             # add spacer

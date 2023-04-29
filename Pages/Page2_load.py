@@ -73,7 +73,6 @@ class LoaderCreateNewCasePage(QWidget, FaceAI):
         self.subject_photo_url = ''
         self.set_event_actions()
         self.set_regxs()
-        # self.mock_view()
         self.lblStatus = self.findChild(QLabel, "lblStatus")
 
     def set_statusbar(self, status):

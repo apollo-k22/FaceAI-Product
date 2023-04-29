@@ -44,7 +44,7 @@ QRadioButton::checked{
     background:transparent;
     color: rgb(255, 255, 255);
     font-size: 13pt;
-    fond: bold;
+    font: bold;
     font-family: Arial;    
 }
 

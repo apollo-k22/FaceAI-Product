@@ -59,7 +59,7 @@ class StartMain(QMainWindow):
 
         self.window = uic.loadUi("./forms/main_window.ui", self)
         self.centralLayout = self.findChild(QVBoxLayout, "centralLayout")
-        self.ui_0_license = LicenseBoxPage()
+        self.ui_0_license = LicenseBoxPage(self.systimer_thread)
         self.ui_1_home = StartHome()
         self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai)
         self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage(self.faceai)
@@ -99,6 +99,7 @@ class StartMain(QMainWindow):
         self.faceai_init_thread.quit()
         app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
         self.check_device_info(app_fpo_info, app_atpo_info)
+        self.systimer_thread.setexpire(app_expire_date)
         if self.check_license(app_unlocked, app_expire_date):
             self.finished_initiating_widget_signal.emit(self)
             self.showMaximized()

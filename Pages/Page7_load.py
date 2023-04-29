@@ -39,7 +39,7 @@ class LoaderProbeReportListPage(QWidget):
 
         self.window = uic.loadUi("./forms/Page_7.ui", self)
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
-        # self.btnGoBack = self.findChild(QPushButton, "btnGoBack1")
+        self.btnGoBack = self.findChild(QPushButton, "btnGoBack1")
         self.btnExportAllZip = self.findChild(QPushButton, "btnExportAllZip")
         self.btnGoRemainingPage = self.findChild(QPushButton, "btnGoRemainingPage")
         self.vlyTableContainer = self.findChild(QVBoxLayout, "vlyTableContainer")
