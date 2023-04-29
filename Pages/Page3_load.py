@@ -16,8 +16,8 @@ class LoaderSelectTargetPhotoPage(QWidget):
     start_splash_signal = pyqtSignal(str)
     stop_splash_signal = pyqtSignal(object)
 
-    def __init__(self, faceai):
-        super().__init__()
+    def __init__(self, faceai, parent=None):
+        super(LoaderSelectTargetPhotoPage, self).__init__(parent=parent)
 
         self.window = uic.loadUi("./forms/Page3-test.ui", self)
         self.case_info = CaseInfo()

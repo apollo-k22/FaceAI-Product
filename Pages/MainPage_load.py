@@ -59,14 +59,14 @@ class StartMain(QMainWindow):
 
         self.window = uic.loadUi("./forms/main_window.ui", self)
         self.centralLayout = self.findChild(QVBoxLayout, "centralLayout")
-        self.ui_0_license = LicenseBoxPage(self.systimer_thread)
-        self.ui_1_home = StartHome()
-        self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai)
-        self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage(self.faceai)
-        self.ui_4_probing = LoaderProbingPage(self.faceai)
-        self.ui_5_probe_report_preview = LoaderProbeReportPreviewPage()
-        self.ui_6_probe_report = LoaderProbeReportPage()
-        self.ui_7_prove_report_list = LoaderProbeReportListPage()
+        self.ui_0_license = LicenseBoxPage(self.systimer_thread, self)
+        self.ui_1_home = StartHome(self)
+        self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai, self)
+        self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage(self.faceai, self)
+        self.ui_4_probing = LoaderProbingPage(self.faceai, self)
+        self.ui_5_probe_report_preview = LoaderProbeReportPreviewPage(self)
+        self.ui_6_probe_report = LoaderProbeReportPage(self)
+        self.ui_7_prove_report_list = LoaderProbeReportListPage(self)
         self.status_bar = self.findChild(QStatusBar, "statusBar")
         self.refresh_views_thread = TargetItemsContainerGenerator()  # the thread to be used to refresh some page
         self.refresh_views_thread.finished_refreshing_target_items.connect(
@@ -351,7 +351,7 @@ class StartMain(QMainWindow):
                                     "NTP Error.",
                                     "")
                 exit()
-            
+
             app_expire = ntp_get_time_from_string(app_expire_date) - ntptime
             # self.status_bar.showMessage("The license will be expired by "
             #                             + app_expire_date + ". You can use more this application for "

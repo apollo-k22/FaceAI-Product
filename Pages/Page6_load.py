@@ -22,8 +22,8 @@ class LoaderProbeReportPage(QWidget):
     start_splash_signal = pyqtSignal(str)
     stop_splash_signal = pyqtSignal(object)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super(LoaderProbeReportPage, self).__init__(parent=parent)
 
         self.target_items_generator_thread = TargetItemsContainerGenerator()
         self.window = uic.loadUi("./forms/Page_6.ui", self)

@@ -10,12 +10,12 @@ from commons.probing_thread import ProbingThread
 from insightfaces.main import FaceAI
 
 
-class LoaderProbingPage(QWidget, FaceAI):
+class LoaderProbingPage(QWidget):
     completed_probing_signal = pyqtSignal(ProbingResult)
     start_splash_signal = pyqtSignal()
 
-    def __init__(self, faceai):
-        super().__init__()
+    def __init__(self, faceai, parent=None):
+        super(LoaderProbingPage, self).__init__(parent=parent)
         self.faceai = faceai
         self.probing_result = ProbingResult()
         self.probing_thread = ProbingThread(CaseInfo, self.faceai)

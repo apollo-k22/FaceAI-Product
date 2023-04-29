@@ -14,13 +14,13 @@ from cryptophic.license import write_infomation_db
 from commons.systimer_thread import SysTimerThread
 
 
-class LicenseBoxPage(QWidget, SysTimerThread):
+class LicenseBoxPage(QWidget):
     continue_app_signal = pyqtSignal(str)
     start_splash_signal = pyqtSignal(str)
     stop_splash_signal = pyqtSignal(object)
 
-    def __init__(self, timerthread):
-        super().__init__()
+    def __init__(self, timerthread, parent=None):
+        super(LicenseBoxPage, self).__init__(parent=parent)
         self.systimer_thread = timerthread
         self.window = uic.loadUi("./forms/Page_0.ui", self)
         self.btnConfirm = self.findChild(QPushButton, "btnConfirm")

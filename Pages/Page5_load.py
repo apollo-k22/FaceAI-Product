@@ -24,8 +24,8 @@ class LoaderProbeReportPreviewPage(QWidget):
     stop_splash_signal = pyqtSignal(object)
     show_window_signal = pyqtSignal()
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super(LoaderProbeReportPreviewPage, self).__init__(parent=parent)
         self.target_items_generator_thread = TargetItemsContainerGenerator()
         self.case_data_for_results = []
         self.probe_result = ProbingResult()

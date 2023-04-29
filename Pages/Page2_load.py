@@ -15,14 +15,14 @@ from commons.common import Common
 from insightfaces.main import FaceAI
 
 
-class LoaderCreateNewCasePage(QWidget, FaceAI):
+class LoaderCreateNewCasePage(QWidget):
     # when clicked 'return home' button, this will be emitted
     return_home_signal = pyqtSignal(str)
     # when clicked 'continue to probe' button, this will be emitted
     continue_probe_signal = pyqtSignal(object)
 
-    def __init__(self, faceai):
-        super().__init__()
+    def __init__(self, faceai, parent=None):
+        super(LoaderCreateNewCasePage, self).__init__(parent)
         self.faceai = faceai
         self.window = uic.loadUi("./forms/Page_2.ui", self)
         # instance CaseInfo to save the case information

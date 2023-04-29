@@ -25,8 +25,8 @@ class LoaderProbeReportListPage(QWidget):
     start_splash_signal = pyqtSignal(str)
     stop_splash_signal = pyqtSignal(object)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super(LoaderProbeReportListPage, self).__init__(parent=parent)
         self.zip_thread = None
         self.probe_result = ProbingResult()
         self.current_page = 0
