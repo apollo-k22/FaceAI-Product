@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/newPrefix">
+    <file>confirm.png</file>
     <file>Background_.png</file>
     <file>Group 69.png</file>
     <file>continuetoprobe.png</file>

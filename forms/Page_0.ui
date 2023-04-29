@@ -271,8 +271,8 @@ background: none;</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>250</width>
-           <height>60</height>
+           <width>230</width>
+           <height>50</height>
           </size>
          </property>
          <property name="cursor">
@@ -285,13 +285,13 @@ background: none;</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../images/images.qrc">
            <normaloff>:/newPrefix/confirm.png</normaloff>:/newPrefix/confirm.png</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>250</width>
-           <height>60</height>
+           <width>230</width>
+           <height>50</height>
           </size>
          </property>
         </widget>
