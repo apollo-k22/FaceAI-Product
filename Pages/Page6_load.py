@@ -22,8 +22,8 @@ class LoaderProbeReportPage(QWidget):
     start_splash_signal = pyqtSignal(str)
     stop_splash_signal = pyqtSignal(object)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super(LoaderProbeReportPage, self).__init__(parent=parent)
 
         self.target_items_generator_thread = TargetItemsContainerGenerator()
         self.window = uic.loadUi("./forms/Page_6.ui", self)
@@ -36,7 +36,6 @@ class LoaderProbeReportPage(QWidget):
         self.lblExaminerNo = self.findChild(QLabel, "lblExaminerNo")
         self.lblProbeId = self.findChild(QLabel, "lblProbeId")
         self.lblProbeResult = self.findChild(QLabel, "lblProbeResult")
-        self.available_filename = ""
 
         # self.lblPs = self.findChild(QTextEdit, "teditPS")
         # self.lblExaminerName = self.findChild(QTextEdit, "teditExaminerName")

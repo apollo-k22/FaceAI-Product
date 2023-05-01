@@ -899,7 +899,7 @@ background:transparent;</string>
 background:transparent;</string>
                  </property>
                  <property name="text">
-                  <string>The subject photo has matched to the following target photos. Respective facial recognition similarity scores are attached herewith.</string>
+                  <string/>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>

@@ -98,7 +98,8 @@ border:none;</string>
            <property name="styleSheet">
             <string notr="true">background:transparent;
 border-radius: 10px;
-background-position: center;</string>
+background-position: center;
+border:none;</string>
            </property>
            <property name="text">
             <string/>

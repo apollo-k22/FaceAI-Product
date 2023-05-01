@@ -24,8 +24,8 @@ class LoaderProbeReportPreviewPage(QWidget):
     stop_splash_signal = pyqtSignal(object)
     show_window_signal = pyqtSignal()
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super(LoaderProbeReportPreviewPage, self).__init__(parent=parent)
         self.target_items_generator_thread = TargetItemsContainerGenerator()
         self.case_data_for_results = []
         self.probe_result = ProbingResult()
@@ -287,7 +287,7 @@ class LoaderProbeReportPreviewPage(QWidget):
             # self.lblSubjectImage.setPixmap(pixmap)
         else:
             self.lblProbeId.setText("")
-            self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
+            self.lblMatchedDescription.setText("")
             self.lblProbeResult.setText("")
             self.lblCaseNumber.setText("")
             self.lblPs.setText("")
@@ -375,7 +375,7 @@ class LoaderProbeReportPreviewPage(QWidget):
 
     def init_views(self):
         self.lblProbeId.setText("")
-        self.lblMatchedDescription.setText(Common.REPORT_DESCRIPTION_NON_MATCHED)
+        self.lblMatchedDescription.setText("")
         self.lblProbeResult.setText("")
         self.lblCaseNumber.setText("")
         self.lblPs.setText("")

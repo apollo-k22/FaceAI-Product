@@ -82,7 +82,7 @@ border:none;</string>
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="btnGoBack1">
+          <widget class="QLabel" name="empty">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -101,18 +101,26 @@ border:none;</string>
              <height>55</height>
             </size>
            </property>
+           <property name="baseSize">
+            <size>
+             <width>0</width>
+             <height>80</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>25</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="styleSheet">
             <string notr="true">border-radius: 10px;
 background:transparent;</string>
            </property>
            <property name="text">
             <string/>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>55</width>
-             <height>55</height>
-            </size>
            </property>
           </widget>
          </item>
@@ -322,6 +330,12 @@ padding:12px 20px 12px 20px;</string>
                  <height>40</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>Arial</family>
+                 <pointsize>13</pointsize>
+                </font>
+               </property>
                <property name="toolTip">
                 <string>input search string</string>
                </property>
@@ -332,11 +346,13 @@ padding:12px 20px 12px 20px;</string>
                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 border-radius: 8px;
-color: rgb(255, 255, 255);
-padding:12px 20px 12px 20px;</string>
+color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
                 <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
                <property name="placeholderText">
                 <string>Filter for cases</string>
@@ -1169,6 +1185,18 @@ background:transparent;</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit_14</tabstop>
+  <tabstop>lineEdit_12</tabstop>
+  <tabstop>leditSearchString</tabstop>
+  <tabstop>lineEdit_15</tabstop>
+  <tabstop>lineEdit_16</tabstop>
+  <tabstop>combEntriesNumber</tabstop>
+  <tabstop>btnExportAllZip</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>resultTable</tabstop>
+  <tabstop>btnReturnHome</tabstop>
+ </tabstops>
  <resources>
   <include location="../images/images.qrc"/>
  </resources>

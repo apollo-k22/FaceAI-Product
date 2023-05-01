@@ -60,14 +60,14 @@ class StartMain(QMainWindow):
 
         self.window = uic.loadUi("./forms/main_window.ui", self)
         self.centralLayout = self.findChild(QVBoxLayout, "centralLayout")
-        self.ui_0_license = LicenseBoxPage(self.systimer_thread)
-        self.ui_1_home = StartHome()
-        self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai)
-        self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage(self.faceai)
-        self.ui_4_probing = LoaderProbingPage(self.faceai)
-        self.ui_5_probe_report_preview = LoaderProbeReportPreviewPage()
-        self.ui_6_probe_report = LoaderProbeReportPage()
-        self.ui_7_prove_report_list = LoaderProbeReportListPage()
+        self.ui_0_license = LicenseBoxPage(self.systimer_thread, self)
+        self.ui_1_home = StartHome(self)
+        self.ui_2_create_new_case = LoaderCreateNewCasePage(self.faceai, self)
+        self.ui_3_select_target_photo = LoaderSelectTargetPhotoPage(self.faceai, self)
+        self.ui_4_probing = LoaderProbingPage(self.faceai, self)
+        self.ui_5_probe_report_preview = LoaderProbeReportPreviewPage(self)
+        self.ui_6_probe_report = LoaderProbeReportPage(self)
+        self.ui_7_prove_report_list = LoaderProbeReportListPage(self)
         self.status_bar = self.findChild(QStatusBar, "statusBar")
         self.refresh_views_thread = TargetItemsContainerGenerator()  # the thread to be used to refresh some page
         self.refresh_views_thread.finished_refreshing_target_items.connect(
@@ -219,8 +219,8 @@ class StartMain(QMainWindow):
     def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
         self.init_child_widgets()
-        if self.ui_0_license.expired_date:
-            self.init_status_bar("The license will be expired by " + self.ui_0_license.expired_date + ".")
+        # if self.ui_0_license.expired_date:
+        #     self.init_status_bar("The license will be expired by " + self.ui_0_license.expired_date + ".")
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
@@ -230,9 +230,9 @@ class StartMain(QMainWindow):
         self.ui_1_home.showMaximized()
         self.ui_1_home.setFocus()
         self.systimer_thread.setexpire(expire_date)
-        if len(expire_date) > 0:
-            self.init_status_bar("The license will be expired by "
-                                        + expire_date)
+        # if len(expire_date) > 0:
+        #     self.init_status_bar("The license will be expired by "
+        #                                 + expire_date)
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
@@ -365,11 +365,11 @@ class StartMain(QMainWindow):
 
             if app_expire.total_seconds() > 0:
                 self.init_status_bar("The license will be expired by "
-                                            + app_expire_date)
+                                            + Common.convert_string2datetime(app_expire_date, "%d/%m/%Y %H:%M:%S"))
                 return True
             else:
                 self.init_status_bar("The license was expired by "
-                                            + app_expire_date)
+                                            + Common.convert_string2datetime(app_expire_date, "%d/%m/%Y %H:%M:%S"))
                 return False
 
     def check_device_info(self, app_fpo_info, app_atpo_info):
@@ -389,12 +389,18 @@ class StartMain(QMainWindow):
             self.ui_3_select_target_photo.init_views()
             self.ui_5_probe_report_preview.init_views()
             self.ui_6_probe_report.init_views()
+            self.ui_7_prove_report_list.init_empty()
             self.show_p2_create_new_case()
             Common.remove_temp_folder_for_resize_image()
         else:
-            Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
-                                                                        "\nPlease make it and then retry.",
-                                "", "Folder Not Exist", "")
+            if root_path is not None:
+                Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                            "\nPlease make it and then retry.",
+                                    "", "Folder Not Exist", "")
+            else:
+                Common.show_message(QMessageBox.Warning, "Root path does not exist."
+                                                                            "\nPlease make it and then retry.",
+                                    "", "Folder Not Exist", "")
 
     def init_status_bar(self, mes):
         self.ui_1_home.set_statusbar(mes)

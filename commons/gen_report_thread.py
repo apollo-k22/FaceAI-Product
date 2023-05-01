@@ -3,8 +3,6 @@ import os
 
 from PyQt5.QtCore import QThread, QDateTime, pyqtSignal
 
-# class to use generate report from probing result.
-# this class will use the GenReport class to write pdf file.
 from commons.common import Common
 from commons.db_connection import DBConnection
 from commons.gen_report import create_pdf, gen_pdf_filename
@@ -15,7 +13,8 @@ from commons.systimer import SysTimer
 from commons.ntptime import ntp_get_time_from_object
 
 
-
+# class to use generate report from probing result.
+# this class will use the GenReport class to write pdf file.
 class GenReportThread(QThread):
     finished_generate_report_signal = pyqtSignal(object)
 
@@ -26,7 +25,7 @@ class GenReportThread(QThread):
     def run(self) -> None:
         self.generate_report()
         self.finished_generate_report_signal.emit(self.probe_result)
-        
+
     # save probe result and make probe report file as pdf.
     def generate_report(self):
         report_path = Common.get_reg(Common.REG_KEY)
@@ -68,12 +67,13 @@ class GenReportThread(QThread):
         target_fields = ["target_url", "case_id"]
         target_data = []
         db = DBConnection()
-        case_id = db.insert_values("cases", cases_fields, cases_data)
-        for target in case_info.target_image_urls:
-            target_tuple = (target, case_id)
-            target_data.append(target_tuple)
-
-        db.insert_values("targets", target_fields, target_data)
+        # check the case with the inserting probe id exists
+        if not db.is_exist_value("cases", "probe_id", probe_result.probe_id):
+            case_id = db.insert_values("cases", cases_fields, cases_data)
+            for target in case_info.target_image_urls:
+                target_tuple = (target, case_id)
+                target_data.append(target_tuple)
+        # db.insert_values("targets", target_fields, target_data)
 
     # update probe result with copied image urls
     def update_json_data(self):

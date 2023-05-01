@@ -7,6 +7,7 @@ import re
 import shutil
 import winreg
 import time
+from datetime import datetime
 
 import cv2
 import numpy as np
@@ -47,12 +48,12 @@ class Common:
     CREATE_CASE_REGX = r'[\u0020-\u007E]+'
     CREATE_CASE_REGX_FOR_REMOVE = r'[^\u0020-\u007E]+'  # "/[ -~]/"
 
-    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg']
+    EXTENSIONS = ['.png', '.jpe?g', '.jpg', '.tif', '.jpeg', '.bmp']
     # IMAGE_FILTER = "Image Files (*.cur *.icns *.ico *.jpeg *.HEIF *.heif" \
     #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
     #                " *.tif *.tiff *.wbmp" \
     #                " *.webp *.xbm *.xpm)"
-    IMAGE_FILTER = "Image Files (*.jpeg *.jpg *.png *.tif)"
+    IMAGE_FILTER = "*.jpeg *.jpg *.png *.tif *.bmp"
     PDF_FILTER = "PDF Files (*.pdf)"
     ZIP_FILTER = "ZIP Files (*.zip)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
@@ -103,7 +104,7 @@ class Common:
                                           "border: 1px solid rgb(53, 132, 228);" \
                                           "color: rgb(255, 255, 255);font-size: 13pt;" \
                                           "font-family: Arial; "
-    RASTER_IMAGE_ACCEPTED_NOTICE = "The png, jpeg, bmp and tif image formats are accepted."
+    RASTER_IMAGE_ACCEPTED_NOTICE = "JPEG, PNG, TIF and BMP files are accepted."
 
     @staticmethod
     def clear_layout(layout):
@@ -391,3 +392,10 @@ class Common:
         js_result = json.dumps(faces_buff, indent=4, sort_keys=True)
         print(js_result)
         return js_result
+
+    @staticmethod
+    def convert_string2datetime(timestr, formatstr):
+        # ddd = datetime.strptime("2023-04-29 13-59-02", '%Y-%m-%d %H-%M-%S')
+        # print(ddd.strftime("%d/%m/%Y %I:%M %p"))
+        formated_datetime = datetime.strptime(timestr, formatstr)
+        return formated_datetime.strftime("%d/%m/%Y %I:%M %p")
