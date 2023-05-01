@@ -162,7 +162,12 @@ class GenReport:
         json_parse = jsondata.split('\\n')
         for jdata in json_parse:
             jdata_ = jdata.replace("\\", "")
-            elements.append(Paragraph(jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
+            tabs = jdata_.split("  ")
+            if len(tabs) > 2:
+                tab_cnt = len(tabs) - 1
+                elements.append(Paragraph("&nbsp;&nbsp;" * tab_cnt + jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
+            else:
+                elements.append(Paragraph(jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
 
         doc.build(elements, onFirstPage=self._header_footer, onLaterPages=self._header_footer,
                   canvasmaker=NumberedCanvas)        
