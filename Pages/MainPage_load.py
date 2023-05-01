@@ -80,6 +80,7 @@ class StartMain(QMainWindow):
 
     # def start_main(self):
     #     self.show_p1_home()
+    # after finished to be initialized,
 
     @pyqtSlot()
     def finished_decrypting_slot(self):
@@ -214,8 +215,8 @@ class StartMain(QMainWindow):
     def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
         self.init_child_widgets()
-        if self.ui_0_license.expired_date:
-            self.init_status_bar("The license will be expired by " + self.ui_0_license.expired_date + ".")
+        # if self.ui_0_license.expired_date:
+        #     self.init_status_bar("The license will be expired by " + self.ui_0_license.expired_date + ".")
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
@@ -224,9 +225,9 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_1_home.showMaximized()
         self.ui_1_home.setFocus()
-        if len(expire_date) > 0:
-            self.init_status_bar("The license will be expired by "
-                                        + expire_date)
+        # if len(expire_date) > 0:
+        #     self.init_status_bar("The license will be expired by "
+        #                                 + expire_date)
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
@@ -351,19 +352,19 @@ class StartMain(QMainWindow):
                                     "NTP Error.",
                                     "")
                 exit()
-
-            app_expire = ntp_get_time_from_string(app_expire_date) - ntptime
+            expire_date_buff = ntp_get_time_from_string(app_expire_date)
+            app_expire = expire_date_buff - ntptime
             # self.status_bar.showMessage("The license will be expired by "
             #                             + app_expire_date + ". You can use more this application for "
             #                             + str(app_expire) + ".")
 
             if app_expire.total_seconds() > 0:
                 self.init_status_bar("The license will be expired by "
-                                            + app_expire_date)
+                                            + Common.convert_string2datetime(app_expire_date, "%d/%m/%Y %H:%M:%S"))
                 return True
             else:
                 self.init_status_bar("The license was expired by "
-                                            + app_expire_date)
+                                            + Common.convert_string2datetime(app_expire_date, "%d/%m/%Y %H:%M:%S"))
                 return False
 
     def check_device_info(self, app_fpo_info, app_atpo_info):

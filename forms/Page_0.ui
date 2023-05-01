@@ -242,7 +242,7 @@ background: none;</string>
 background: none;</string>
            </property>
            <property name="text">
-            <string>Please enter to license string</string>
+            <string>Enter license key</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -285,7 +285,7 @@ background: none;</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="../images/images.qrc">
            <normaloff>:/newPrefix/confirm.png</normaloff>:/newPrefix/confirm.png</iconset>
          </property>
          <property name="iconSize">

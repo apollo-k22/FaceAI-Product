@@ -82,23 +82,23 @@ border:none;</string>
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="pageTitle">
+          <widget class="QLabel" name="empty">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="minimumSize">
             <size>
-             <width>0</width>
-             <height>40</height>
+             <width>55</width>
+             <height>55</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>16777215</width>
-             <height>40</height>
+             <width>55</width>
+             <height>55</height>
             </size>
            </property>
            <property name="baseSize">
@@ -120,7 +120,7 @@ border:none;</string>
 background:transparent;</string>
            </property>
            <property name="text">
-            <string>Probe Reports</string>
+            <string/>
            </property>
           </widget>
          </item>

@@ -187,7 +187,8 @@ class LoaderProbeReportListPage(QWidget):
         self.resultTable.setRowCount(len(reports))
         for report in reports:
             case_info = report.case_info
-            datetime_item = QTableWidgetItem(report.created_date)
+            formated_date = Common.convert_string2datetime(report.created_date, '%Y-%m-%d %H-%M-%S')
+            datetime_item = QTableWidgetItem(formated_date)
             datetime_item.setSizeHint(QSize(50, 50))
             case_no = QTableWidgetItem(case_info.case_number)
             ps = QTableWidgetItem(case_info.case_PS)

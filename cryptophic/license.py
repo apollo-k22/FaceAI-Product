@@ -5,6 +5,7 @@ from sqlite3 import OperationalError
 import wmi
 from pyutil import filereplace
 
+from commons.common import Common
 from cryptophic.main import encrypt_file, decrypt_file, get_dec_file_path
 
 license_file_name = r"license.dat"
