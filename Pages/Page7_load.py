@@ -36,6 +36,7 @@ class LoaderProbeReportListPage(QWidget):
         self.reports = []
         self.shown_reports = []  # current shown reports on table
         self.get_reports_thread = GetReportsThread()
+        self.available_filename = ""
 
         self.window = uic.loadUi("./forms/Page_7.ui", self)
         self.btnReturnHome = self.findChild(QPushButton, "btnReturnHome")
@@ -206,6 +207,14 @@ class LoaderProbeReportListPage(QWidget):
         self.current_page = page
         self.init_views()
 
+    @pyqtSlot(str)
+    def getAvailableFileName(self, path):
+        is_exist, able_file = Common.get_available_appendix_num(path, ".pdf")
+        if is_exist:
+            path = able_file        
+        self.available_filename = path
+        print(self.available_filename)
+
     @pyqtSlot(ProbingResult)
     def export_pdf(self, probe_result):
         is_exist, root_path = Common.check_exist_data_storage()
@@ -213,22 +222,35 @@ class LoaderProbeReportListPage(QWidget):
             exfilename = gen_pdf_filename(probe_result.probe_id, probe_result.case_info.case_number,
                                         probe_result.case_info.case_PS)
             filename = os.path.join(Common.EXPORT_PATH, exfilename)
-            is_exist, able_file = Common.get_available_appendix_num(filename, ".pdf")
-            if is_exist:
-                filename = able_file
-            file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", filename, ".pdf")
-            if file_location[0] == "":
-                return
-            dirs = file_location[0].split("/")
-            file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
-            exported = export_report_pdf(file_path, exfilename, filename)
-            if exported:
-                Common.show_message(QMessageBox.Information, "Report has been exported to PDF.", "Report Generation", "Notice",
-                                    "")
-            else:
-                Common.show_message(QMessageBox.Information, "Report was not exported to PDF.", "Report Generation",
-                                    "Notice",
-                                    "")
+            # is_exist, able_file = Common.get_available_appendix_num(filename, ".pdf")
+            # if is_exist:
+            #     filename = able_file
+            fdialog = QFileDialog(self)
+            fdialog.setAcceptMode(QFileDialog.AcceptSave)
+            fdialog.setDirectory(Common.EXPORT_PATH)
+            fdialog.setNameFilter(Common.PDF_FILTER)
+            fdialog.selectFile(filename)
+            # fdialog.currentChanged.connect(self.getAvailableFileName)
+            fdialog.setOption(QFileDialog.DontConfirmOverwrite, True) 
+            if fdialog.exec_():
+                file_location = fdialog.selectedFiles()
+                if file_location[0] == "":
+                    return
+                filename = file_location[0].replace(".pdf", "")
+                is_exist, able_file = Common.get_available_appendix_num(filename, ".pdf")
+                if is_exist:
+                    filename = able_file
+                dirs = file_location[0].split("/")
+                file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
+                
+                exported = export_report_pdf(file_path, exfilename, filename)
+                if exported:
+                    Common.show_message(QMessageBox.Information, "Report has been exported to PDF.", "Report Generation", "Notice",
+                                        "")
+                else:
+                    Common.show_message(QMessageBox.Information, "Report was not exported to PDF.", "Report Generation",
+                                        "Notice",
+                                        "")
         else:
             Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
                                                                         "\nPlease make it and then retry.",
@@ -251,18 +273,30 @@ class LoaderProbeReportListPage(QWidget):
 
             datestr = datetime.strftime(ntp_get_time_from_object(SysTimer.now()), "%d_%m_%Y")
             zip_file = "%s/probe_reports_%s" % (Common.EXPORT_PATH, datestr)
-            is_exist, able_zip_file = Common.get_available_appendix_num(zip_file, ".zip")
-            if is_exist:
-                zip_file = able_zip_file
-            zip_location = QFileDialog.getSaveFileName(self, "Save report zip file", zip_file, ".zip")
-            self.zip_time = time.time()
+            # is_exist, able_zip_file = Common.get_available_appendix_num(zip_file, ".zip")
+            # if is_exist:
+            #     zip_file = able_zip_file
+            fdialog = QFileDialog(self)
+            fdialog.setAcceptMode(QFileDialog.AcceptSave)
+            fdialog.setDirectory(Common.EXPORT_PATH)
+            fdialog.setNameFilter(Common.ZIP_FILTER)
+            fdialog.selectFile(zip_file)
+            fdialog.setOption(QFileDialog.DontConfirmOverwrite, True) 
+            if fdialog.exec_():
+                zip_location = fdialog.selectedFiles()
+                # zip_location = QFileDialog.getSaveFileName(self, "Save report zip file", zip_file, ".zip")
+                self.zip_time = time.time()
 
-            if zip_location[0] == '':
-                return
-            self.zip_thread = ZipThread(self.reports, zip_location[0] + zip_location[1])
-            self.zip_thread.finished_zip_signal.connect(self.finished_zip_slot)
-            self.zip_thread.start()
-            self.set_enabled(False)  # set screen to be unable to operate
+                if zip_location[0] == '':
+                    return
+                zip_file = zip_location[0].replace(".zip", "")
+                is_exist, able_zip_file = Common.get_available_appendix_num(zip_file, ".zip")
+                if is_exist:
+                    zip_file = able_zip_file
+                self.zip_thread = ZipThread(self.reports, zip_file + ".zip")
+                self.zip_thread.finished_zip_signal.connect(self.finished_zip_slot)
+                self.zip_thread.start()
+                self.set_enabled(False)  # set screen to be unable to operate
         else:
             Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
                                                                         "\nPlease make it and then retry.",

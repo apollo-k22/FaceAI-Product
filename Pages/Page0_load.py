@@ -46,21 +46,19 @@ class LicenseBoxPage(QWidget, SysTimerThread):
         try:
             today_dt = ntp_get_time()
             if today_dt is None:
-                Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
-                                    "NTP Error.",
-                                    "")
+                Common.show_message(QMessageBox.Warning, "Please connect to internet to launch the software.", "",
+                                "Internet connection failure",
+                                "")
                 exit()
-
-            if "1Year" in expire_flag:
-                expire_dt = today_dt + relativedelta(months=+12)
-            elif "1Month" in expire_flag:
-                expire_dt = today_dt + relativedelta(months=+1)
-            elif "3Month" in expire_flag:
-                expire_dt = today_dt + relativedelta(months=+3)
-            elif "6Month" in expire_flag:
-                expire_dt = today_dt + relativedelta(months=+6)
-            elif "1Day" in expire_flag:
-                expire_dt = today_dt + timedelta(days=1)
+            expire_f = expire_flag.split("|")
+            expire_dt = today_dt
+            for e in expire_f:
+                e_ = e.replace("Year", "").replace("Month", "")
+                if "Day" in e_:
+                    e__ = e_.replace("Day", "")
+                    expire_dt += timedelta(days=int(e__))
+                else:
+                    expire_dt += relativedelta(months=+int(e_))
         except Exception as e:
             print("ntp error:", e)
 
