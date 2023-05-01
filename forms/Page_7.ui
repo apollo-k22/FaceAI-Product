@@ -330,6 +330,12 @@ padding:12px 20px 12px 20px;</string>
                  <height>40</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <family>Arial</family>
+                 <pointsize>13</pointsize>
+                </font>
+               </property>
                <property name="toolTip">
                 <string>input search string</string>
                </property>
@@ -340,11 +346,13 @@ padding:12px 20px 12px 20px;</string>
                 <string notr="true">background:transparent;
 border: 1px solid rgb(53, 132, 228);
 border-radius: 8px;
-color: rgb(255, 255, 255);
-padding:12px 20px 12px 20px;</string>
+color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
                 <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
                <property name="placeholderText">
                 <string>Filter for cases</string>

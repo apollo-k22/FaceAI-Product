@@ -229,7 +229,7 @@ background-position: center;</string>
        <item>
         <widget class="QStackedWidget" name="stkwdtSelectPhotos">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="wdtSinglePhoto">
           <property name="enabled">

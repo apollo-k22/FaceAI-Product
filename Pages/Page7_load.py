@@ -30,10 +30,12 @@ class LoaderProbeReportListPage(QWidget):
         self.zip_thread = None
         self.probe_result = ProbingResult()
         self.current_page = 0
+        self.current_search_page = 0
         self.number_per_page = 10
         self.search_string = '%'
         self.is_searching_result = False
         self.reports = []
+        self.searched_reports = []
         self.shown_reports = []  # current shown reports on table
         self.get_reports_thread = GetReportsThread()
 
@@ -83,6 +85,7 @@ class LoaderProbeReportListPage(QWidget):
         if not search_string == '':
             self.search_string = search_string
             self.is_searching_result = True
+            self.current_search_page = 0
         else:
             self.is_searching_result = False
         self.init_views()
@@ -107,23 +110,24 @@ class LoaderProbeReportListPage(QWidget):
     def refresh_view(self):
         self.get_reports_thread.start()
         self.set_enabled(False)
+        self.init_empty()  # set all members and search box as empty
         self.start_splash_signal.emit("data")
 
     def init_views(self):
         Common.clear_layout(self.hlyPaginationContainer)
-        report_len = len(self.reports)
         if self.is_searching_result:
-            self.shown_reports = self.get_search_results(self.search_string, report_len, self.current_page,
+            self.shown_reports = self.get_search_results(self.search_string, self.current_search_page,
                                                          self.number_per_page)
             # if the number of data is more than showing number per page, show pagination layout.
-            shown_len = len(self.shown_reports)
-            if shown_len > self.number_per_page:
-                self.set_pagination(shown_len)
+            searched_len = len(self.searched_reports)
+            if searched_len > self.number_per_page:
+                self.set_pagination(searched_len, self.current_search_page, self.number_per_page)
         else:
+            report_len = len(self.reports)
             self.shown_reports = self.get_pagination_results(report_len, self.current_page, self.number_per_page)
             # if the number of data is more than showing number per page, show pagination layout.
             if report_len > self.number_per_page:
-                self.set_pagination(report_len)
+                self.set_pagination(report_len, self.current_page, self.number_per_page)
 
         # if report_len:
         #     hly_pagination = PaginationLayout(report_len, self.number_per_page, self.current_page)
@@ -133,15 +137,15 @@ class LoaderProbeReportListPage(QWidget):
         self.init_table(self.shown_reports)
 
     # set pagination layout with the number of shown data on table.
-    def set_pagination(self, data_len):
+    def set_pagination(self, data_len, current_page, number_per_page):
         if data_len:
-            hly_pagination = PaginationLayout(data_len, self.number_per_page, self.current_page)
+            hly_pagination = PaginationLayout(data_len, number_per_page, current_page)
             # connect signals
             hly_pagination.changed_page_signal.connect(self.refresh_table)
             self.hlyPaginationContainer.addLayout(hly_pagination)
 
-    def get_search_results(self, search_string, report_len, current_page, number_per_page):
-        searched = []
+    def get_search_results(self, search_string, current_page, number_per_page):
+        self.searched_reports.clear()
         paginated = []
         for item in self.reports:
             case_info = item.case_info
@@ -154,17 +158,19 @@ class LoaderProbeReportListPage(QWidget):
                     or case_info.remarks.count(search_string) > 0 \
                     or probe_id.count(search_string) > 0 \
                     or created_date.count(search_string) > 0:
-                searched.append(item)
+                self.searched_reports.append(item)
         start_index = current_page * number_per_page
         end_index = start_index + number_per_page
-        if start_index > report_len:
-            dif = start_index - report_len
-            start_index -= dif
-            end_index = report_len
-        else:
-            if end_index > report_len:
+        report_len = len(self.searched_reports)
+        if self.searched_reports:
+            if start_index > report_len:
+                dif = start_index - report_len
+                start_index -= dif
                 end_index = report_len
-        paginated = searched[start_index:end_index]
+            else:
+                if end_index > report_len:
+                    end_index = report_len
+            paginated = self.searched_reports[start_index:end_index]
         return paginated
 
     def get_pagination_results(self, report_len, current_page, number_per_page):
@@ -208,7 +214,10 @@ class LoaderProbeReportListPage(QWidget):
 
     @pyqtSlot(int)
     def refresh_table(self, page):
-        self.current_page = page
+        if self.is_searching_result:
+            self.current_search_page = page
+        else:
+            self.current_page = page
         self.init_views()
 
     @pyqtSlot(ProbingResult)
@@ -221,7 +230,7 @@ class LoaderProbeReportListPage(QWidget):
             is_exist, able_file = Common.get_available_appendix_num(filename, ".pdf")
             if is_exist:
                 filename = able_file
-            file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", filename, ".pdf")
+            file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", filename, "*.pdf")
             if file_location[0] == "":
                 return
             dirs = file_location[0].split("/")
@@ -289,3 +298,12 @@ class LoaderProbeReportListPage(QWidget):
         # self.btnGoBack.setEnabled(enabled)
         self.btnReturnHome.setEnabled(enabled)
         self.btnExportAllZip.setEnabled(enabled)
+
+    def init_empty(self):
+        self.current_search_page = 0
+        self.current_page = 0
+        self.searched_reports.clear()
+        self.reports.clear()
+        self.shown_reports.clear()
+        self.search_string = ''
+        self.leditSearchString.setText("")

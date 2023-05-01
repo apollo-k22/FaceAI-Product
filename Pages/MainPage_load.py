@@ -384,12 +384,18 @@ class StartMain(QMainWindow):
             self.ui_3_select_target_photo.init_views()
             self.ui_5_probe_report_preview.init_views()
             self.ui_6_probe_report.init_views()
+            self.ui_7_prove_report_list.init_empty()
             self.show_p2_create_new_case()
             Common.remove_temp_folder_for_resize_image()
         else:
-            Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
-                                                                        "\nPlease make it and then retry.",
-                                "", "Folder Not Exist", "")
+            if root_path is not None:
+                Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
+                                                                            "\nPlease make it and then retry.",
+                                    "", "Folder Not Exist", "")
+            else:
+                Common.show_message(QMessageBox.Warning, "Root path does not exist."
+                                                                            "\nPlease make it and then retry.",
+                                    "", "Folder Not Exist", "")
 
     def init_status_bar(self, mes):
         self.ui_1_home.set_statusbar(mes)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1353</width>
-    <height>601</height>
+    <width>951</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -242,8 +242,8 @@ background:transparent;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
-          <width>1314</width>
+          <y>-279</y>
+          <width>1010</width>
           <height>840</height>
          </rect>
         </property>
@@ -899,7 +899,7 @@ background:transparent;</string>
 background:transparent;</string>
                  </property>
                  <property name="text">
-                  <string>The subject photo has matched to the following target photos. Respective facial recognition similarity scores are attached herewith.</string>
+                  <string/>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
