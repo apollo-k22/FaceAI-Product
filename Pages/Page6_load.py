@@ -95,25 +95,36 @@ class LoaderProbeReportPage(QWidget):
             if is_exist:
                 exfilename = gen_pdf_filename(self.probe_result.probe_id, self.probe_result.case_info.case_number, self.probe_result.case_info.case_PS)
                 filename = os.path.join(Common.EXPORT_PATH, exfilename)
-                is_exist, able_file = Common.get_available_appendix_num(filename, ".pdf")
-                if is_exist:
-                    filename = able_file
-                file_location = QFileDialog.getSaveFileName(self, "Save report pdf file", filename, ".pdf")
-                if file_location[0] == "":
-                    return
-                dirs = file_location[0].split("/")
-                file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
-                exported = export_report_pdf(file_path, exfilename, filename)
-                if exported:
-                    Common.show_message(QMessageBox.Information, "Report has been exported to PDF.", "Report Generation", "Notice", "")
-                    self.probe_result = ProbingResult()
-                    self.refresh_views()
-                    self.init_input_values()
-                    self.return_home_signal.emit("")  # return to home page so that can start new case.
-                    # self.export_pdf_signal.emit(self.probe_result)
-                else:
-                    Common.show_message(QMessageBox.Information, "Report was not exported to PDF.", "Report Generation", "Notice",
-                                        "")
+                # is_exist, able_file = Common.get_available_appendix_num(filename, ".pdf")
+                # if is_exist:
+                #     filename = able_file
+                fdialog = QFileDialog(self)
+                fdialog.setAcceptMode(QFileDialog.AcceptSave)
+                fdialog.setDirectory(Common.EXPORT_PATH)        
+                fdialog.setNameFilter(Common.PDF_FILTER)
+                fdialog.selectFile(filename)
+                fdialog.setOption(QFileDialog.DontConfirmOverwrite, True) 
+                if fdialog.exec_():
+                    file_location = fdialog.selectedFiles()
+                    if file_location[0] == "":
+                        return
+                    filename = file_location[0].replace(".pdf", "")
+                    is_exist, able_file = Common.get_available_appendix_num(filename, ".pdf")
+                    if is_exist:
+                        filename = able_file
+                    dirs = file_location[0].split("/")
+                    file_path = file_location[0].replace(dirs[len(dirs) - 1], "")
+                    exported = export_report_pdf(file_path, exfilename, filename)
+                    if exported:
+                        Common.show_message(QMessageBox.Information, "Report has been exported to PDF.", "Report Generation", "Notice", "")
+                        self.probe_result = ProbingResult()
+                        self.refresh_views()
+                        self.init_input_values()
+                        self.return_home_signal.emit("")  # return to home page so that can start new case.
+                        # self.export_pdf_signal.emit(self.probe_result)
+                    else:
+                        Common.show_message(QMessageBox.Information, "Report was not exported to PDF.", "Report Generation", "Notice",
+                                            "")
             else:
                 Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
                                                                             "\nPlease make it and then retry.",

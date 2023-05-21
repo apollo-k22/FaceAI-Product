@@ -38,13 +38,14 @@ class StartMain(QMainWindow):
         super().__init__()
         ntptime = ntp_get_time()
         if ntptime is None:
-            Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
-                                "NTP Error.",
+            Common.show_message(QMessageBox.Warning, "Please connect to internet to launch the software.", "",
+                                "Internet connection failure",
                                 "")
             exit()
         self.systimer = SysTimer(ntptime)
         self.systimer_thread = SysTimerThread()
         self.systimer_thread.reset(self.systimer)
+        self.systimer_thread.expired_application_siginal.connect(self.expired_application_slot)
         self.systimer_thread.start()
 
         self.faceai = FaceAI()
@@ -86,6 +87,10 @@ class StartMain(QMainWindow):
     def finished_decrypting_slot(self):
         self.dec_thread.quit()
         self.faceai_init_thread.start()
+    
+    @pyqtSlot()
+    def expired_application_slot(self):
+        self.show_p0_license()
 
     # when main window finished to be initiated or refreshed, the widget emit finished signal.
     # then, this slot will be called.
@@ -225,6 +230,7 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_1_home.showMaximized()
         self.ui_1_home.setFocus()
+        self.systimer_thread.setexpire(expire_date)
         # if len(expire_date) > 0:
         #     self.init_status_bar("The license will be expired by "
         #                                 + expire_date)
@@ -348,9 +354,9 @@ class StartMain(QMainWindow):
         else:            
             ntptime = ntp_get_time()
             if ntptime is None:
-                Common.show_message(QMessageBox.Warning, "NTP server was not connected", "",
-                                    "NTP Error.",
-                                    "")
+                Common.show_message(QMessageBox.Warning, "Please connect to internet to launch the software.", "",
+                                "Internet connection failure",
+                                "")
                 exit()
             expire_date_buff = ntp_get_time_from_string(app_expire_date)
             app_expire = expire_date_buff - ntptime

@@ -177,9 +177,15 @@ class GenReport:
                                                  spaceAfter=spacing)))
 
         jsondata = json.dumps(reportinfo["json"], indent=4)
-        elements.append(Paragraph(jsondata,
-                                  ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT,
-                                                 textColor=black, leading=leading)))
+        json_parse = jsondata.split('\\n')
+        for jdata in json_parse:
+            jdata_ = jdata.replace("\\", "")
+            tabs = jdata_.split("  ")
+            if len(tabs) > 2:
+                tab_cnt = len(tabs) - 1
+                elements.append(Paragraph("&nbsp;&nbsp;" * tab_cnt + jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
+            else:
+                elements.append(Paragraph(jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
 
         doc.build(elements, onFirstPage=self._header_footer, onLaterPages=self._header_footer,
                   canvasmaker=NumberedCanvas)
@@ -252,7 +258,7 @@ def create_pdf(probe_id, probe_result, file_location):
             "examname": probe_result.case_info.examiner_name,
             "examnum": probe_result.case_info.examiner_no,
             "remarks": probe_result.case_info.remarks,
-            "json": probe_result.json_result
+            "json": Common.convert_json_for_page(probe_result.json_result)
         }
 
         reportinfo["targets"] = []
@@ -300,7 +306,7 @@ def export_report_pdf(file_path, ex_file_name, file_name):
     else:
         report_path = Common.STORAGE_PATH + "/" + Common.REPORTS_PATH
     Common.create_path(report_path)
-
+    
     try:
         decrypt_file_to(os.path.join(report_path, ex_file_name), os.path.join(file_path, file_name+".pdf"))
     except Exception as e:

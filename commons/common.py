@@ -54,6 +54,8 @@ class Common:
     #                " *.tif *.tiff *.wbmp" \
     #                " *.webp *.xbm *.xpm)"
     IMAGE_FILTER = "*.jpeg *.jpg *.png *.tif *.bmp"
+    PDF_FILTER = "PDF Files (*.pdf)"
+    ZIP_FILTER = "ZIP Files (*.zip)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
     LABEL_MAX_WIDTH_IN_ITEM = 170
     VALUE_MAX_HEIGHT_IN_ITEM = 30

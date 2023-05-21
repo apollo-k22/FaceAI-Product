@@ -14,4 +14,4 @@ class SysTimer:
     def timepick(self):
         global clock
         period = timedelta(seconds=1)
-        clock = clock.now() + period
+        clock = clock + period
