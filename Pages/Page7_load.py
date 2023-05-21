@@ -1,11 +1,12 @@
 import os
 import time
 from datetime import datetime
+
 from commons.systimer import SysTimer
 from commons.ntptime import ntp_get_time_from_object
 
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QSize, Qt
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QTableWidget, QHBoxLayout, QLineEdit, QComboBox, QTableWidgetItem, \
     QFileDialog, QMessageBox, QWidget, QLabel
 
@@ -78,6 +79,7 @@ class LoaderProbeReportListPage(QWidget):
     def changed_entries_number(self, current_index):
         self.number_per_page = int(self.combEntriesNumber.currentText())
         self.current_page = 0
+        self.current_search_page = 0
         self.init_views()
 
     @pyqtSlot(str)
@@ -86,6 +88,7 @@ class LoaderProbeReportListPage(QWidget):
             self.search_string = search_string
             self.is_searching_result = True
             self.current_search_page = 0
+            self.current_page = 0
         else:
             self.is_searching_result = False
         self.init_views()
@@ -122,19 +125,14 @@ class LoaderProbeReportListPage(QWidget):
             searched_len = len(self.searched_reports)
             if searched_len > self.number_per_page:
                 self.set_pagination(searched_len, self.current_search_page, self.number_per_page)
+            self.init_table(self.shown_reports, self.current_search_page, self.number_per_page)
         else:
             report_len = len(self.reports)
             self.shown_reports = self.get_pagination_results(report_len, self.current_page, self.number_per_page)
             # if the number of data is more than showing number per page, show pagination layout.
             if report_len > self.number_per_page:
                 self.set_pagination(report_len, self.current_page, self.number_per_page)
-
-        # if report_len:
-        #     hly_pagination = PaginationLayout(report_len, self.number_per_page, self.current_page)
-        #     # connect signals
-        #     hly_pagination.changed_page_signal.connect(self.refresh_table)
-        #     self.hlyPaginationContainer.addLayout(hly_pagination)
-        self.init_table(self.shown_reports)
+            self.init_table(self.shown_reports, self.current_page, self.number_per_page)
 
     # set pagination layout with the number of shown data on table.
     def set_pagination(self, data_len, current_page, number_per_page):
@@ -187,10 +185,13 @@ class LoaderProbeReportListPage(QWidget):
         results = self.reports[start_index:end_index]
         return results
 
-    def init_table(self, reports):
+    def init_table(self, reports, current_page, number_per_page):
         row_index = 0
+        vheader_label_index = current_page * number_per_page + 1
+        vheader_labels = []
         # set table row and column num
         self.resultTable.setRowCount(len(reports))
+        self.resultTable.verticalHeader().setDefaultAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         for report in reports:
             case_info = report.case_info
             formated_date = Common.convert_string2datetime(report.created_date, '%Y-%m-%d %H-%M-%S')
@@ -210,7 +211,10 @@ class LoaderProbeReportListPage(QWidget):
             self.resultTable.setItem(row_index, 4, exam_name)
             self.resultTable.setItem(row_index, 5, exam_no)
             self.resultTable.setCellWidget(row_index, 6, export_btn)
+            vheader_labels.append(str(vheader_label_index))
+            vheader_label_index += 1
             row_index += 1
+        self.resultTable.setVerticalHeaderLabels(vheader_labels)
 
     @pyqtSlot(int)
     def refresh_table(self, page):
