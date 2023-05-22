@@ -53,7 +53,7 @@ class Common:
     #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
     #                " *.tif *.tiff *.wbmp" \
     #                " *.webp *.xbm *.xpm)"
-    IMAGE_FILTER = "*.jpeg *.jpg *.png *.tif *.bmp"
+    IMAGE_FILTER = "*.jpeg *.jpg *.png *.tif *.tiff *.bmp"
     PDF_FILTER = "PDF Files (*.pdf)"
     ZIP_FILTER = "ZIP Files (*.zip)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
