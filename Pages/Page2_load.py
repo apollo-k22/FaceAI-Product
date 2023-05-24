@@ -109,6 +109,8 @@ class LoaderCreateNewCasePage(QWidget):
         photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', self.current_work_folder, Common.IMAGE_FILTER)
         if photo_url:
             self.current_work_folder = Common.get_folder_path(photo_url)
+            if Common.get_file_extension_from_path(photo_url) == ".heic":
+                photo_url = Common.reformat_image(photo_url)
             if self.faceai.is_face(photo_url) == 0:
                 Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
                                     "Incorrect image selected.",

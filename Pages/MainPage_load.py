@@ -42,10 +42,11 @@ class StartMain(QMainWindow):
                                 "Internet connection failure",
                                 "")
             exit()
+        self.is_first_running = True  # A flag to save whether the system is firstly run or not.
         self.systimer = SysTimer(ntptime)
         self.systimer_thread = SysTimerThread()
         self.systimer_thread.reset(self.systimer)
-        self.systimer_thread.expired_application_siginal.connect(self.expired_application_slot)
+        self.systimer_thread.expired_application_signal.connect(self.expired_application_slot)
         self.systimer_thread.start()
 
         self.faceai = FaceAI()
@@ -77,7 +78,7 @@ class StartMain(QMainWindow):
         self.set_page_transition()
         self.set_splash_signal_slot()
         self.init_widgets()
-        self.init_status_bar("sdf")
+        self.init_status_bar("")
 
     # def start_main(self):
     #     self.show_p1_home()
@@ -87,7 +88,7 @@ class StartMain(QMainWindow):
     def finished_decrypting_slot(self):
         self.dec_thread.quit()
         self.faceai_init_thread.start()
-    
+
     @pyqtSlot()
     def expired_application_slot(self):
         self.show_p0_license()
@@ -220,8 +221,6 @@ class StartMain(QMainWindow):
     def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
         self.init_child_widgets()
-        # if self.ui_0_license.expired_date:
-        #     self.init_status_bar("The license will be expired by " + self.ui_0_license.expired_date + ".")
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
@@ -230,10 +229,11 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_1_home.showMaximized()
         self.ui_1_home.setFocus()
-        self.systimer_thread.setexpire(expire_date)
-        # if len(expire_date) > 0:
-        #     self.init_status_bar("The license will be expired by "
-        #                                 + expire_date)
+        if self.is_first_running:
+            self.systimer_thread.setexpire(expire_date)
+            self.init_status_bar("The license will be expired by "
+                                 + expire_date)
+            self.is_first_running = False
 
     @pyqtSlot()
     def show_p2_create_new_case(self):
@@ -351,12 +351,12 @@ class StartMain(QMainWindow):
         if not app_unlocked:
             self.init_status_bar("The license is not available.")
             self.show_p0_license()
-        else:            
+        else:
             ntptime = ntp_get_time()
             if ntptime is None:
                 Common.show_message(QMessageBox.Warning, "Please connect to internet to launch the software.", "",
-                                "Internet connection failure",
-                                "")
+                                    "Internet connection failure",
+                                    "")
                 exit()
             expire_date_buff = ntp_get_time_from_string(app_expire_date)
             app_expire = expire_date_buff - ntptime
@@ -366,11 +366,11 @@ class StartMain(QMainWindow):
 
             if app_expire.total_seconds() > 0:
                 self.init_status_bar("The license will be expired by "
-                                            + Common.convert_string2datetime(app_expire_date, "%d/%m/%Y %H:%M:%S"))
+                                     + Common.convert_string2datetime(app_expire_date, "%d/%m/%Y %H:%M:%S"))
                 return True
             else:
                 self.init_status_bar("The license was expired by "
-                                            + Common.convert_string2datetime(app_expire_date, "%d/%m/%Y %H:%M:%S"))
+                                     + Common.convert_string2datetime(app_expire_date, "%d/%m/%Y %H:%M:%S"))
                 return False
 
     def check_device_info(self, app_fpo_info, app_atpo_info):
@@ -392,7 +392,8 @@ class StartMain(QMainWindow):
             self.ui_6_probe_report.init_views()
             self.ui_7_prove_report_list.init_empty()
             self.show_p2_create_new_case()
-            Common.remove_temp_folder_for_resize_image()
+            Common.remove_temp_folder("resize-temp")
+            Common.remove_temp_folder("reformat-temp")
         else:
             if root_path is not None:
                 Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
@@ -400,7 +401,7 @@ class StartMain(QMainWindow):
                                     "", "Folder Not Exist", "")
             else:
                 Common.show_message(QMessageBox.Warning, "Root path does not exist."
-                                                                            "\nPlease make it and then retry.",
+                                                         "\nPlease make it and then retry.",
                                     "", "Folder Not Exist", "")
 
     def init_status_bar(self, mes):

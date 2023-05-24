@@ -27,6 +27,8 @@ class GetImagesThread(QThread):
 
     def get_images_from_urls(self):
         for url in self.urls:
+            if Common.get_file_extension_from_path(url) == ".heic":
+                url = Common.reformat_image(url)
             if self.faceai.is_face(url):
                 url = Common.resize_image(url, 500)
                 self.image_urls.append(url)
@@ -35,7 +37,10 @@ class GetImagesThread(QThread):
         desktop = pathlib.Path(self.direct)
         for url in desktop.glob(r'**/*'):
             if Common.EXTENSIONS.count(url.suffix):
+                if Common.get_file_extension_from_path(url) == ".heic":
+                    url = Common.reformat_image(url)
                 if self.faceai.is_face(url):
+
                     url = Common.resize_image(url.__str__(), 500)
                     self.image_urls.append(url)
 

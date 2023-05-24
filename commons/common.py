@@ -11,6 +11,7 @@ from datetime import datetime
 
 import cv2
 import numpy as np
+import pillow_heif
 from PyQt5.QtCore import QFile
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QMessageBox
@@ -53,7 +54,7 @@ class Common:
     #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
     #                " *.tif *.tiff *.wbmp" \
     #                " *.webp *.xbm *.xpm)"
-    IMAGE_FILTER = "*.jpeg *.jpg *.png *.tif *tiff *.bmp"
+    IMAGE_FILTER = "*.jpeg *.jpg *.png *.tif *.tiff *.bmp *.heic"
     PDF_FILTER = "PDF Files (*.pdf)"
     ZIP_FILTER = "ZIP Files (*.zip)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
@@ -148,6 +149,15 @@ class Common:
         return pa.name
 
     @staticmethod
+    def get_file_name_without_extension_from_path(url):
+        fname = Common.get_file_name_from_path(url)
+        return os.path.splitext(fname)[0]
+
+    @staticmethod
+    def get_file_extension_from_path(url):
+        return os.path.splitext(url)[1]
+
+    @staticmethod
     def remove_elements_from_list_tail(removing_list, start_index):
         ret_list = []
         list_len = len(removing_list)
@@ -203,14 +213,34 @@ class Common:
         return img_path
 
     @staticmethod
-    def remove_temp_folder_for_resize_image():
+    def reformat_image(img_path):
+        try:
+            temp_path = Common.get_reg(Common.REG_KEY)
+            if temp_path:
+                temp_path = temp_path + "/" + Common.TEMP_PATH
+            else:
+                temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH
+            Common.create_path(temp_path)
+            temp_folder = temp_path + "/reformat-temp/"
+            Common.create_path(temp_folder)
+            heif_file = pillow_heif.open_heif(img_path, convert_hdr_to_8bit=False, bgr_mode=True)
+            np_array = np.asarray(heif_file)
+            fname = Common.get_file_name_without_extension_from_path(img_path)
+            img_path = temp_folder + fname + ".png"
+            cv2.imwrite(img_path, np_array)
+        except IOError as e:
+            print("resize image error:", e)
+        return img_path
+
+    @staticmethod
+    def remove_temp_folder(folder_name):
         temp_path = Common.get_reg(Common.REG_KEY)
         if temp_path:
             temp_path = temp_path + "/" + Common.TEMP_PATH
         else:
             temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH
         Common.create_path(temp_path)
-        temp_folder = temp_path + "/resize-temp"
+        temp_folder = temp_path + "/" + folder_name
         Common.create_path(temp_folder)
         shutil.rmtree(temp_folder, ignore_errors=True)
 
@@ -382,6 +412,7 @@ class Common:
         faces = json_data['faces']
         faces_buff = []
         if len(faces):
+            face_index = 1
             for face in faces:
                 json_buff = {'subject_face_rectangle': face['face_rectangle'], 'subject_headpose': {}}
                 roll = face['face_angle']
@@ -389,6 +420,7 @@ class Common:
                 roll_buff = re.sub(' degree', '', roll_buff)
                 json_buff['subject_headpose'] = {"roll_angle": float(roll_buff)}
                 faces_buff.append(json_buff)
+                face_index += 1
 
         js_result = json.dumps(faces_buff, indent=4, sort_keys=True)
         print(js_result)

@@ -117,6 +117,8 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.refresh_view()
         url, _ = QFileDialog.getOpenFileName(self, 'Open File', self.current_work_folder, Common.IMAGE_FILTER)
         if url:
+            if Common.get_file_extension_from_path(url) == ".heic":
+                url = Common.reformat_image(url)
             if not self.faceai.is_face(url):
                 Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
                                     "Incorrect image selected.",
