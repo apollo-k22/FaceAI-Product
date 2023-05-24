@@ -67,7 +67,8 @@ class LoaderProbeReportPage(QWidget):
         self.flyCaseDetail.setWidget(7, QFormLayout.FieldRole, self.lblExaminerName)
         self.flyCaseDetail.setWidget(8, QFormLayout.FieldRole, self.teditRemarks)
 
-        self.teditJsonResult = GrowingTextEdit()
+        # self.teditJsonResult = GrowingTextEdit()
+        self.teditJsonResult = self.findChild(QTextEdit, "tedit_jsonRet")
         self.teditJsonResult.setObjectName("teditJsonResult")
         self.teditJsonResult.setStyleSheet(Common.JSON_RESULT_STYLE)
         self.teditJsonResult.setReadOnly(True)
@@ -168,7 +169,7 @@ class LoaderProbeReportPage(QWidget):
         wdtContainer.setStyleSheet(Common.TARGET_LIST_STYLE)
         self.vlyReportResult.addWidget(wdtContainer)
         # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-        self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
+        self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result))
         self.init_input_values()
         self.set_enabled(True)
         self.stop_splash_signal.emit(None)
@@ -208,7 +209,7 @@ class LoaderProbeReportPage(QWidget):
             self.lblSubjectImage.setStyleSheet(image_style)
             self.lblSubjectImage.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-            self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
+            self.teditJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result))
         else:
             self.lblProbeId.setText("")
             self.lblMatchedDescription.setText("The subject photo hasn't matched to any target photo.")
@@ -250,7 +251,7 @@ class LoaderProbeReportPage(QWidget):
         self.lblExaminerName.setText("")
         self.teditRemarks.setText("")
         self.lblTimeOfReportGeneration.setText("")
-        resized_image_path = Common.resize_image(self.probe_result.case_info.subject_image_url,
+        resized_image_path, resized = Common.resize_image(self.probe_result.case_info.subject_image_url,
                                                  self.lblSubjectImage.size().width())
         self.probe_result.case_info.subject_image_url = resized_image_path
         image_style = "image:url('" + resized_image_path + \

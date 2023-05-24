@@ -351,8 +351,8 @@ background:transparent;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1283</width>
-          <height>642</height>
+          <width>1012</width>
+          <height>852</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1038,7 +1038,7 @@ background:transparent;</string>
               </layout>
              </item>
              <item>
-              <layout class="QVBoxLayout" name="vlyJsonResp" stretch="0">
+              <layout class="QVBoxLayout" name="vlyJsonResp" stretch="0,0">
                <property name="spacing">
                 <number>10</number>
                </property>
@@ -1077,10 +1077,35 @@ background:transparent;</string>
 background:transparent;</string>
                  </property>
                  <property name="text">
-                  <string>      Facial Recognition JSON results</string>
+                  <string>Metadata</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTextEdit" name="tedit_jsonRet">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>200</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777213</width>
+                   <height>400</height>
+                  </size>
+                 </property>
+                 <property name="horizontalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOff</enum>
                  </property>
                 </widget>
                </item>

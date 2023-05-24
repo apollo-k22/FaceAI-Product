@@ -242,9 +242,9 @@ background:transparent;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-279</y>
+          <y>-514</y>
           <width>1010</width>
-          <height>840</height>
+          <height>1050</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1132,7 +1132,7 @@ border: 1px solid white</string>
                      </layout>
                     </item>
                     <item>
-                     <layout class="QVBoxLayout" name="JsonResp_layout" stretch="0">
+                     <layout class="QVBoxLayout" name="JsonResp_layout" stretch="0,0">
                       <property name="spacing">
                        <number>10</number>
                       </property>
@@ -1174,10 +1174,32 @@ border: 1px solid white</string>
 background:transparent;</string>
                         </property>
                         <property name="text">
-                         <string>      Facial Recognition JSON results</string>
+                         <string>Metadata</string>
                         </property>
                         <property name="alignment">
                          <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QTextEdit" name="tedit_jsonRet">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>200</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>400</height>
+                         </size>
                         </property>
                        </widget>
                       </item>

@@ -79,7 +79,8 @@ class LoaderProbeReportPreviewPage(QWidget):
         # self.etextJsonResult = self.findChild(QTextEdit, "teditJsonResult")
 
         self.vlyJsonResult = self.findChild(QVBoxLayout, "JsonResp_layout")
-        self.etextJsonResult = GrowingTextEdit()
+        # self.etextJsonResult = GrowingTextEdit()
+        self.etextJsonResult = self.findChild(QTextEdit, "tedit_jsonRet")
         self.etextJsonResult.setStyleSheet(Common.JSON_RESULT_STYLE)
         self.etextJsonResult.setObjectName("teditJsonResult")
         self.etextJsonResult.setReadOnly(True)
@@ -186,6 +187,8 @@ class LoaderProbeReportPreviewPage(QWidget):
     def finished_refresh_target_widget_slot(self, case_data):
         self.glyReportBuff = QGridLayout(self)
         case_data_buff = []
+        metadata_buff = []
+        processing_buff = []
         results = self.probe_result.json_result['results']
         faces = self.probe_result.json_result['faces']
 
@@ -198,12 +201,19 @@ class LoaderProbeReportPreviewPage(QWidget):
                 if confidence < Common.MATCH_LEVEL:
                     self.probe_result.remove_json_item(result)
                     case_data_buff.append(case_data[index])
+                    metadata_buff.append(self.probe_result.case_info.target_images_metadata[index])
+                    processing_buff.append(self.probe_result.case_info.target_images_processing_details[index])
                 index += 1
+
         # if there are cases that match level is lower than 70,
         # those will be removed from case data
         if len(case_data_buff) > 0:
             for case_buff in case_data_buff:
                 case_data.remove(case_buff)
+            for meta in metadata_buff:
+                self.probe_result.case_info.target_images_metadata.remove(meta)
+            for proc in processing_buff:
+                self.probe_result.case_info.target_images_processing_details.remove(proc)
         index = 0
         self.case_data_for_results = case_data
         results = self.probe_result.json_result['results']
@@ -227,7 +237,7 @@ class LoaderProbeReportPreviewPage(QWidget):
             wdtContainer.setStyleSheet(Common.TARGET_LIST_STYLE)
             self.vlyReportResultLayout.addWidget(wdtContainer)
             # js_result = json.dumps(self.probe_result.json_result, indent=4, sort_keys=True)
-            self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result.json_result))
+            self.etextJsonResult.setPlainText(Common.convert_json_for_page(self.probe_result))
         else:
             self.wdtProbingResult.hide()
 
@@ -276,7 +286,7 @@ class LoaderProbeReportPreviewPage(QWidget):
 
             self.lblTimeOfReportGeneration.setText(str(self.probe_result.json_result['time_used']))
             # image_style = "background:transparent;border: 1px solid rgb(53, 132, 228);"
-            resized_image_path = Common.resize_image(self.probe_result.case_info.subject_image_url,
+            resized_image_path, resized = Common.resize_image(self.probe_result.case_info.subject_image_url,
                                                      self.lbeSubjectImage.size().width())
             self.probe_result.case_info.subject_image_url = resized_image_path
             image_style = "image:url('" + resized_image_path + \

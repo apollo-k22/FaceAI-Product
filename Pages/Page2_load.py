@@ -9,9 +9,12 @@ from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QMessageBox, QSizePolicy, QWidget, QTextEdit
 from PyQt5.QtWidgets import QPushButton
 
+from commons.get_image_metadata import GetImageMetadata
 from commons.growing_text_edit import GrowingTextEdit
 from commons.case_info import CaseInfo
 from commons.common import Common
+from commons.metadata_detail import MetadataDetail
+from commons.processing_detail import ProcessingDetail
 from insightfaces.main import FaceAI
 
 
@@ -23,6 +26,9 @@ class LoaderCreateNewCasePage(QWidget):
 
     def __init__(self, faceai, parent=None):
         super(LoaderCreateNewCasePage, self).__init__(parent)
+        self.get_image_metadata = GetImageMetadata()
+        self.image_metadata = MetadataDetail()
+        self.processing_detail = ProcessingDetail()
         self.faceai = faceai
         self.window = uic.loadUi("./forms/Page_2.ui", self)
         # instance CaseInfo to save the case information
@@ -109,8 +115,10 @@ class LoaderCreateNewCasePage(QWidget):
         photo_url, _ = QFileDialog.getOpenFileName(self, 'Open file', self.current_work_folder, Common.IMAGE_FILTER)
         if photo_url:
             self.current_work_folder = Common.get_folder_path(photo_url)
+            self.image_metadata = self.get_image_metadata.get_metadata(photo_url)
             if Common.get_file_extension_from_path(photo_url) == ".heic":
                 photo_url = Common.reformat_image(photo_url)
+                self.processing_detail.reformatted = True
             if self.faceai.is_face(photo_url) == 0:
                 Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
                                     "Incorrect image selected.",
@@ -127,7 +135,7 @@ class LoaderCreateNewCasePage(QWidget):
                 # check the "data storage" folder exist.
                 is_exist, root_path = Common.check_exist_data_storage()
                 if is_exist:
-                    resized_image_path = Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
+                    resized_image_path, self.processing_detail.resized = Common.resize_image(photo_url, self.btnSelectPhoto.size().width())
                     self.subject_photo_url = resized_image_path
                     btn_style = "image:url('" + resized_image_path + "');background:transparent;" \
                                  "border: 1px solid rgb(53, 132, 228);"
@@ -160,6 +168,8 @@ class LoaderCreateNewCasePage(QWidget):
             self.case_info.examiner_name = self.leditExaminerName.toPlainText()
             self.case_info.remarks = self.leditRemarks.toPlainText()
             self.case_info.subject_image_url = self.subject_photo_url
+            self.case_info.subject_image_processing_detail = self.processing_detail
+            self.case_info.subject_image_metadata = self.image_metadata
             # emit continue probe signal
             self.continue_probe_signal.emit(self.case_info)
 

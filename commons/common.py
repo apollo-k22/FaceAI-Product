@@ -105,7 +105,7 @@ class Common:
                                           "border: 1px solid rgb(53, 132, 228);" \
                                           "color: rgb(255, 255, 255);font-size: 13pt;" \
                                           "font-family: Arial; "
-    RASTER_IMAGE_ACCEPTED_NOTICE = "JPEG, PNG, TIF and BMP files are accepted."
+    RASTER_IMAGE_ACCEPTED_NOTICE = "JPEG, PNG, TIF, BMP and HEIC files are accepted."
 
     @staticmethod
     def clear_layout(layout):
@@ -170,6 +170,7 @@ class Common:
 
     @staticmethod
     def resize_image(img_path, size):
+        resized = False
         try:
             temp_path = Common.get_reg(Common.REG_KEY)
             if temp_path:
@@ -196,6 +197,7 @@ class Common:
                     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
                     img_path = temp_folder + Common.get_file_name_from_path(img_path)
                     cv2.imwrite(img_path, img)
+                    resized = True
 
                 rate = 1
                 if width > height:
@@ -208,9 +210,10 @@ class Common:
                     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
                     img_path = temp_folder + Common.get_file_name_from_path(img_path)
                     cv2.imwrite(img_path, img)
+                    resized = True
         except IOError as e:
             print("resize image error:", e)
-        return img_path
+        return img_path, resized
 
     @staticmethod
     def reformat_image(img_path):
@@ -408,22 +411,88 @@ class Common:
             return (is_exist, name)
 
     @staticmethod
-    def convert_json_for_page(json_data):
-        faces = json_data['faces']
+    def convert_json_for_page(probing_result):
+
+        faces = probing_result.json_result['faces']
         faces_buff = []
+        ret_buff = ""
         if len(faces):
-            face_index = 1
+            face_index = 0
+            ret_buff = "Subject photo metadata: \n"
+            ret_buff += Common.convert_metadata2json(str(probing_result.json_result['time_used']),
+                                                     probing_result.case_info.subject_image_metadata,
+                                                     "",
+                                                     probing_result.case_info.subject_image_processing_detail)
             for face in faces:
-                json_buff = {'subject_face_rectangle': face['face_rectangle'], 'subject_headpose': {}}
+                ret_buff += "\nTarget photo " + str(face_index + 1) + " metadata:\n"
                 roll = face['face_angle']
                 roll_buff = re.sub('Roll: ', '', roll)
                 roll_buff = re.sub(' degree', '', roll_buff)
-                json_buff['subject_headpose'] = {"roll_angle": float(roll_buff)}
-                faces_buff.append(json_buff)
+                ret_buff += Common.convert_metadata2json(str(probing_result.json_result['time_used']),
+                                                        probing_result.case_info.target_images_metadata[face_index],
+                                                        roll_buff,
+                                                        probing_result.case_info.target_images_processing_details[
+                                                            face_index])
+                # json_buff = {
+                #     "Date and time: ": str(probing_result.json_result['time_used']),
+                #     "Source information": "",
+                #     "Location": {
+                #         "longitude": probing_result.case_info.target_images_metadata[face_index].longitude,
+                #         "latitude": probing_result.case_info.target_images_metadata[face_index].latitude,
+                #         "street": probing_result.case_info.target_images_metadata[face_index].street
+                #     },
+                #     "Image quality and resolution": {
+                #         "quality": "",
+                #         "XResolution": probing_result.case_info.target_images_metadata[face_index].XResolution,
+                #         "YResolution": probing_result.case_info.target_images_metadata[face_index].YResolution,
+                #         "format": probing_result.case_info.target_images_metadata[face_index].type,
+                #         "width": probing_result.case_info.target_images_metadata[face_index].width,
+                #         "height": probing_result.case_info.target_images_metadata[face_index].height,
+                #         "roll_angle": roll_buff
+                #     },
+                #     "Processing detail": {
+                #         "reformatted": probing_result.case_info.target_images_processing_details[face_index].reformatted,
+                #         "resized": probing_result.case_info.target_images_processing_details[face_index].resized
+                #     }
+                # }
+
+                # json_buff = {'subject_face_rectangle': face['face_rectangle'], 'subject_headpose': {}}
+                # roll = face['face_angle']
+                # roll_buff = re.sub('Roll: ', '', roll)
+                # roll_buff = re.sub(' degree', '', roll_buff)
+                # json_buff['subject_headpose'] = {"roll_angle": float(roll_buff)}
+                # faces_buff.append(json_buff)
                 face_index += 1
 
-        js_result = json.dumps(faces_buff, indent=4, sort_keys=True)
-        print(js_result)
+        # js_result = json.dumps(ret_buff, indent=4, sort_keys=True)
+        print(ret_buff)
+        return ret_buff
+
+    @staticmethod
+    def convert_metadata2json(used_time, metadata, roll_data, processing):
+        json_buff = {
+            "Date and time: ": used_time,
+            "Source information": "",
+            "Location": {
+                "longitude": metadata.longitude,
+                "latitude": metadata.latitude,
+                "street": metadata.street
+            },
+            "Image quality and resolution": {
+                "quality": "",
+                "XResolution": metadata.XResolution,
+                "YResolution": metadata.YResolution,
+                "format": metadata.type,
+                "width": metadata.width,
+                "height": metadata.height,
+                "roll_angle": roll_data
+            },
+            "Processing detail": {
+                "reformatted": processing.reformatted,
+                "resized": processing.resized
+            }
+        }
+        js_result = json.dumps(json_buff, indent=4, sort_keys=True)
         return js_result
 
     @staticmethod
