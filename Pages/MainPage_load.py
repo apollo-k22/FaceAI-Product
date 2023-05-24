@@ -42,6 +42,9 @@ class StartMain(QMainWindow):
                                 "Internet connection failure",
                                 "")
             exit()
+        self.app_unlocked, self.app_expire_date, self.app_fpo_info, self.app_atpo_info = read_information_db()
+        self.check_device_info(self.app_fpo_info, self.app_atpo_info)
+
         self.systimer = SysTimer(ntptime)
         self.systimer_thread = SysTimerThread()
         self.systimer_thread.reset(self.systimer)
@@ -77,7 +80,7 @@ class StartMain(QMainWindow):
         self.set_page_transition()
         self.set_splash_signal_slot()
         self.init_widgets()
-        self.init_status_bar("sdf")
+        self.init_status_bar("start")
 
     # def start_main(self):
     #     self.show_p1_home()
@@ -95,14 +98,13 @@ class StartMain(QMainWindow):
     # then, this slot will be called.
     @pyqtSlot()
     def finished_initializing_slot(self):
-        self.faceai_init_thread.quit()
-        app_unlocked, app_expire_date, app_fpo_info, app_atpo_info = read_information_db()
-        self.check_device_info(app_fpo_info, app_atpo_info)
-        self.systimer_thread.setexpire(app_expire_date)
-        if self.check_license(app_unlocked, app_expire_date):
+        self.faceai_init_thread.quit()        
+        
+        self.systimer_thread.setexpire(self.app_expire_date)
+        if self.check_license(self.app_unlocked, self.app_expire_date):
             self.finished_initiating_widget_signal.emit(self)
             self.showMaximized()
-            self.show_p1_home(app_expire_date)
+            self.show_p1_home(self.app_expire_date)
         else:
             self.finished_initiating_widget_signal.emit(self)
             self.showMaximized()
@@ -219,8 +221,8 @@ class StartMain(QMainWindow):
     def show_p1_home(self, expire_date):
         self.setWindowTitle("Home")
         self.init_child_widgets()
-        # if self.ui_0_license.expired_date:
-        #     self.init_status_bar("The license will be expired by " + self.ui_0_license.expired_date + ".")
+        if expire_date:
+            self.init_status_bar("The license will be expired by " + expire_date + ".")
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
@@ -375,7 +377,7 @@ class StartMain(QMainWindow):
     def check_device_info(self, app_fpo_info, app_atpo_info):
         fpo_info, atpo_info = get_cpu_info()
         if (app_fpo_info != fpo_info) & (app_atpo_info != atpo_info):
-            Common.show_message(QMessageBox.Warning, "You are an invalid user.", "",
+            Common.show_message(QMessageBox.Warning, "You are an invalid user or working on the other machine.", "",
                                 "Invalid selected.",
                                 "")
             exit()

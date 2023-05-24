@@ -1,14 +1,11 @@
-from datetime import timedelta
 from sys import exit
 
 import wmi
 from PyQt5 import uic
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QMessageBox
-from dateutil.relativedelta import relativedelta
 
 from commons.common import Common
-from commons.ntptime import ntp_get_time
 from commons.verifying_license_thread import VerifyingLicenseThread
 from cryptophic.license import write_infomation_db
 from commons.systimer_thread import SysTimerThread
@@ -31,37 +28,23 @@ class LicenseBoxPage(QWidget):
         self.verifying_license_thread.finished_verifying_license_signal.connect(
             lambda ret, expire_flag: self.finished_verifying_license_slot(ret, expire_flag))
 
-    @pyqtSlot(bool, str)
-    def finished_verifying_license_slot(self, ret, expire_flag):
-        if not ret:
+    @pyqtSlot(int, str)
+    def finished_verifying_license_slot(self, ret, expire_dt):
+        if ret is 0:
             self.lblNotify.setText("The license is not correct")
             self.stop_splash_signal.emit(None)  # stop splash
             self.setEnabled(True)  # once finished to process, can access to screen.
             return
+        elif ret is -1:
+            self.lblNotify.setText("The license is correct")
+            self.stop_splash_signal.emit(None)  # stop splash
+            self.setEnabled(True)  # once finished to process, can access to screen.
+            Common.show_message(QMessageBox.Warning, "Please connect to internet to launch the software.", "",
+                            "Internet connection failure",
+                            "")
+            return
 
         self.lblNotify.setText("The license is correct. One minutes...")
-        expire_dt = None
-
-        ### getting validate date
-        try:
-            today_dt = ntp_get_time()
-            if today_dt is None:
-                Common.show_message(QMessageBox.Warning, "Please connect to internet to launch the software.", "",
-                                "Internet connection failure",
-                                "")
-                exit()
-            expire_f = expire_flag.split("|")
-            expire_dt = today_dt
-            for e in expire_f:
-                e_ = e.replace("Year", "").replace("Month", "")
-                if "Day" in e_:
-                    e__ = e_.replace("Day", "")
-                    expire_dt += timedelta(days=int(e__))
-                else:
-                    expire_dt += relativedelta(months=+int(e_))
-        except Exception as e:
-            print("ntp error:", e)
-
         #  getting processor batch number(FPO) and partial serial number(ATPO) date
         fpo_value = ""
         atpo_value = ""
@@ -69,7 +52,7 @@ class LicenseBoxPage(QWidget):
         for s in c.Win32_Processor():
             fpo_value = s.ProcessorId
             atpo_value = s.Description
-        self.expired_date = expire_dt.strftime('%d/%m/%Y %H:%M:%S')
+        self.expired_date = expire_dt
         self.systimer_thread.setexpire(self.expired_date)
         write_infomation_db(True, self.expired_date, fpo_value, atpo_value)
         # Goto homepage

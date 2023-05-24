@@ -2,12 +2,18 @@ import sqlite3, os
 from cryptophic.main import encrypt_file, decrypt_file, get_dec_file_path
 from pyutil import filereplace
 import cpuinfo, wmi
+from commons.ntptime import ntp_get_time
+from dateutil.relativedelta import relativedelta
+from datetime import timedelta
+from commons.common import Common
+from PyQt5.QtWidgets import QMessageBox
 
 license_file_name = r"license.dat"
 database_file_name = r"data.db"
 
 def access_license_list(license_str):
     expire_flag = ""
+    expire_dt = None
     decrypt_file(os.path.join(license_file_name))
     dec_secure_path = get_dec_file_path()
 
@@ -25,23 +31,44 @@ def access_license_list(license_str):
             # If Matched
             if matched == True:
                 print("Matched")
+
+                ### getting validate date
+                try:
+                    today_dt = ntp_get_time()
+                    if today_dt is None:
+                        encrypt_file(license_file_name)
+                        return (-1, "")
+                    expire_f = expire_flag.split("|")
+                    expire_dt = today_dt
+                    for e in expire_f:
+                        e_ = e.replace("Year", "").replace("Month", "")
+                        if "Day" in e_:
+                            e__ = e_.replace("Day", "")
+                            expire_dt += timedelta(days=int(e__))
+                        else:
+                            expire_dt += relativedelta(months=+int(e_))
+                except Exception as e:
+                    print("ntp error:", e)
+                    encrypt_file(license_file_name)
+                    return (-1, "")
+                    
                 ## Delete matched license from list file                   
                 filereplace(os.path.join(dec_secure_path, license_file_name), license_str, "")
             else:
                 print("Unmatched")
                 encrypt_file(license_file_name)
-                return (False, expire_flag)
+                return (0, "")
         else:
             print("File non-exist")
             encrypt_file(license_file_name)
-            return (False, expire_flag)
+            return (0, "")
     except Exception as e:
         print("access_license_list: ", e)
         encrypt_file(license_file_name)
-        return (False, expire_flag)
+        return (0, "")
 
     encrypt_file(license_file_name)
-    return (True, expire_flag)
+    return (1, expire_dt.strftime('%d/%m/%Y %H:%M:%S'))
     
 
 def read_information_db():

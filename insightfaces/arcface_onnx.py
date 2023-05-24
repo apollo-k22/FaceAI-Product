@@ -72,7 +72,7 @@ class ArcFaceONNX:
         feat2 = feat2.ravel()
         sim = np.dot(feat1, feat2) / (norm(feat1) * norm(feat2))
         cos = self.cos_distance(feat1, feat2)
-        if cos < 0.7 : sim += cos / 2
+        if cos < 0.6 : sim += cos * 2 / 3
         if sim > 1 : sim = 1
         if sim < 0 : sim = sim * (-1) / 5
         return sim

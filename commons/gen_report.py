@@ -71,6 +71,7 @@ class GenReport:
         textsize = 12
         leading = 14
         spacing = 6
+        nb_spacing = 12
         # elements.append(Paragraph('''<para align=center leading=18 fontName='Arial'><font size=12 color=0xff0000><b>''' + 'Probe result: ' + reportinfo["result"] + '''</b></font></para>'''))
         elements.append(Paragraph('Probe result: ' + reportinfo["result"], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=red, leading=20)))
 
@@ -156,7 +157,7 @@ class GenReport:
                     style=tablestyle2)
             elements.append(table)
 
-        elements.append(Paragraph('JSON results', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
+        elements.append(Paragraph('Metadata', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
         
         jsondata = json.dumps(reportinfo["json"], indent=4)
         json_parse = jsondata.split('\\n')
@@ -168,6 +169,12 @@ class GenReport:
                 elements.append(Paragraph("&nbsp;&nbsp;" * tab_cnt + jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
             else:
                 elements.append(Paragraph(jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
+
+        elements.append(Paragraph('NB', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
+        elements.append(Paragraph(Common.PDF_NB_PARA1, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceAfter=nb_spacing)))
+        elements.append(Paragraph(Common.PDF_NB_PARA2, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceAfter=nb_spacing)))
+        elements.append(Paragraph(Common.PDF_NB_PARA3, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceAfter=nb_spacing)))
+        elements.append(Paragraph(Common.PDF_NB_PARA4, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceAfter=nb_spacing)))
 
         doc.build(elements, onFirstPage=self._header_footer, onLaterPages=self._header_footer,
                   canvasmaker=NumberedCanvas)        
