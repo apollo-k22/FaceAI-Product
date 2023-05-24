@@ -23,7 +23,7 @@ def access_license_list(license_str):
             # Match inputed license and license list file
             matched = False
             for line in listFile:
-                if license_str in line:
+                if license_str == line.split("&")[0]:
                     matched = True
                     expire_flag = line.split("&")[1]
             listFile.close()   

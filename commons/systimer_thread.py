@@ -6,7 +6,7 @@ from sys import exit
 
 
 class SysTimerThread(QThread):
-    expired_application_siginal = pyqtSignal()
+    expired_application_signal = pyqtSignal()
 
     def __init__(self, parent=None):
         QThread.__init__(self, parent)
@@ -27,7 +27,7 @@ class SysTimerThread(QThread):
         exp = exp_date - ntp_get_time_from_object(self.clock.now())
         print("check_expire: ", exp)
         if exp.total_seconds() <= 0 and self.expired == False:            
-            self.expired_application_siginal.emit()
+            self.expired_application_signal.emit()
             self.expired = True
 
     def run(self) -> None:

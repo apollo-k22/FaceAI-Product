@@ -6,7 +6,10 @@ from PyQt5.QtWidgets import QPushButton, QRadioButton, QStackedWidget, QFileDial
 
 from commons.case_info import CaseInfo
 from commons.common import Common
+from commons.get_image_metadata import GetImageMetadata
 from commons.get_images_thread import GetImagesThread
+from commons.metadata_detail import MetadataDetail
+from commons.processing_detail import ProcessingDetail
 
 
 class LoaderSelectTargetPhotoPage(QWidget):
@@ -19,6 +22,8 @@ class LoaderSelectTargetPhotoPage(QWidget):
     def __init__(self, faceai, parent=None):
         super(LoaderSelectTargetPhotoPage, self).__init__(parent=parent)
 
+        self.target_images_metadata = []
+        self.processing_details = []
         self.window = uic.loadUi("./forms/Page3-test.ui", self)
         self.case_info = CaseInfo()
         self.faceai = faceai
@@ -61,6 +66,8 @@ class LoaderSelectTargetPhotoPage(QWidget):
                     Common.show_message(QMessageBox.Warning, "Please select target images.", "", "Empty Warning", "")
                 else:
                     self.case_info.target_image_urls = self.image_urls
+                    self.case_info.target_images_processing_details = self.processing_details
+                    self.case_info.target_images_metadata = self.target_images_metadata
                     self.start_probe_signal.emit(self.case_info)
         else:
             Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
@@ -85,10 +92,12 @@ class LoaderSelectTargetPhotoPage(QWidget):
             if index == 3:
                 self.select_from_old_cases()
 
-    @pyqtSlot(list)
-    def finished_get_images_slot(self, urls):
+    @pyqtSlot(list, list, list)
+    def finished_get_images_slot(self, urls, processing_details, metadata):
         self.setEnabled(True)
         self.image_urls = urls
+        self.processing_details = processing_details
+        self.target_images_metadata = metadata
         if self.get_images_thread.is_urls:
             self.get_images_thread.is_urls = False
             if len(self.image_urls) == 0:
@@ -117,6 +126,12 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.refresh_view()
         url, _ = QFileDialog.getOpenFileName(self, 'Open File', self.current_work_folder, Common.IMAGE_FILTER)
         if url:
+            processing_detail = ProcessingDetail()
+            metadata = GetImageMetadata()
+            metadata_detail = metadata.get_metadata(url)
+            if Common.get_file_extension_from_path(url) == ".heic":
+                url = Common.reformat_image(url)
+                processing_detail.reformatted = True
             if not self.faceai.is_face(url):
                 Common.show_message(QMessageBox.Warning, "Please select an image with man", "",
                                     "Incorrect image selected.",
@@ -126,11 +141,13 @@ class LoaderSelectTargetPhotoPage(QWidget):
                 is_exist, root_path = Common.check_exist_data_storage()
                 if is_exist:
                     self.current_work_folder = Common.get_folder_path(url)
-                    resized_image_path = Common.resize_image(url, self.btnSinglePhoto.size().width())
+                    resized_image_path, processing_detail.resized = Common.resize_image(url, self.btnSinglePhoto.size().width())
                     btn_style = "image:url('" + resized_image_path + "');height: auto;border: 1px solid rgb(53, 132, 228);"
                     self.btnSinglePhoto.setStyleSheet(btn_style)
                     self.btnSinglePhoto.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
                     self.image_urls.append(resized_image_path)
+                    self.processing_details.append(processing_detail)
+                    self.target_images_metadata.append(metadata_detail)
                     self.case_info.target_type = 1
                 else:
                     Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."
@@ -235,7 +252,7 @@ class LoaderSelectTargetPhotoPage(QWidget):
         self.btnEntireFolder.clicked.connect(self.select_entire_folder_slot)
         self.btnEntireFolder2.clicked.connect(self.select_entire_folder_slot)
         self.get_images_thread.finished_get_images_signal.connect(
-            lambda urls: self.finished_get_images_slot(urls))
+            lambda urls, processing_details, metadata: self.finished_get_images_slot(urls, processing_details, metadata))
 
         self.rdobtnSinglePhoto.toggled[bool].connect(
             lambda checked:
@@ -256,7 +273,9 @@ class LoaderSelectTargetPhotoPage(QWidget):
 
     def refresh_view(self):
         self.image_urls.clear()
+        self.processing_details.clear()
         self.case_info.target_image_urls.clear()
+        self.case_info.target_images_metadata.clear()
         self.case_info.is_used_old_cases = False
         btn_style = "background:transparent;border:0px;image:url(:/newPrefix/Group 67.png);"
         self.btnSinglePhoto.setStyleSheet(btn_style)

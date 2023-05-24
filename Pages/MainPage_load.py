@@ -48,7 +48,7 @@ class StartMain(QMainWindow):
         self.systimer = SysTimer(ntptime)
         self.systimer_thread = SysTimerThread()
         self.systimer_thread.reset(self.systimer)
-        self.systimer_thread.expired_application_siginal.connect(self.expired_application_slot)
+        self.systimer_thread.expired_application_signal.connect(self.expired_application_slot)
         self.systimer_thread.start()
 
         self.faceai = FaceAI()
@@ -393,7 +393,8 @@ class StartMain(QMainWindow):
             self.ui_6_probe_report.init_views()
             self.ui_7_prove_report_list.init_empty()
             self.show_p2_create_new_case()
-            Common.remove_temp_folder_for_resize_image()
+            Common.remove_temp_folder("resize-temp")
+            Common.remove_temp_folder("reformat-temp")
         else:
             if root_path is not None:
                 Common.show_message(QMessageBox.Warning, "\"" + root_path + "\" folder does not exist."

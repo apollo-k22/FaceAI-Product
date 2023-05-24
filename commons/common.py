@@ -11,6 +11,7 @@ from datetime import datetime
 
 import cv2
 import numpy as np
+import pillow_heif
 from PyQt5.QtCore import QFile
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QMessageBox
@@ -34,7 +35,7 @@ class Common:
     TEMP_PATH = "Temporary Data"
     REG_KEY = "DataFolder"
     EXPORT_PATH = r"C:\\Users\\" + os.getlogin() + r"\\Documents"
-    MATCH_LEVEL = 70
+    MATCH_LEVEL = 70.00
     CASE_NUMBER_LENGTH = 14
     CASE_PS_LENGTH = 31
     CASE_EXAMINER_NAME_LENGTH = 63
@@ -53,7 +54,7 @@ class Common:
     #                " *.jpg *.pbm *.pgm *.png *.ppm *.svg *.svgz *.tga" \
     #                " *.tif *.tiff *.wbmp" \
     #                " *.webp *.xbm *.xpm)"
-    IMAGE_FILTER = "*.jpeg *.jpg *.png *.tif *.tiff *.bmp"
+    IMAGE_FILTER = "*.jpeg *.jpg *.png *.tif *.tiff *.bmp *.heic"
     PDF_FILTER = "PDF Files (*.pdf)"
     ZIP_FILTER = "ZIP Files (*.zip)"
     LABEL_MAX_HEIGHT_IN_ITEM = 30
@@ -104,7 +105,7 @@ class Common:
                                           "border: 1px solid rgb(53, 132, 228);" \
                                           "color: rgb(255, 255, 255);font-size: 13pt;" \
                                           "font-family: Arial; "
-    RASTER_IMAGE_ACCEPTED_NOTICE = "JPEG, PNG, TIF and BMP files are accepted."
+    RASTER_IMAGE_ACCEPTED_NOTICE = "JPEG, PNG, TIF, BMP and HEIC files are accepted."
 
     PDF_NB_PARA1 = "The facial images were analyzed and compared using FaceAI, a facial recognition software incorporating advanced deep learning techniques, including convolutional neural networks (CNN). FaceAI utilizes CNN for facial feature extraction and facial landmark detection. This involves extracting high-level facial features such as the shape, texture, and spatial relationships of prominent facial components like the eyes, nose, and mouth."
     PDF_NB_PARA2 = "FaceAI generates a unique facial representation for each image based on these extracted features. The comparison process involves measuring the similarity between the reference image and the target image using cosine similarity, which produces a similarity score ranging from 0 to 1. A confidence threshold of 0.80 (80%) is applied to consider potential matches."
@@ -153,6 +154,15 @@ class Common:
         return pa.name
 
     @staticmethod
+    def get_file_name_without_extension_from_path(url):
+        fname = Common.get_file_name_from_path(url)
+        return os.path.splitext(fname)[0]
+
+    @staticmethod
+    def get_file_extension_from_path(url):
+        return os.path.splitext(url)[1]
+
+    @staticmethod
     def remove_elements_from_list_tail(removing_list, start_index):
         ret_list = []
         list_len = len(removing_list)
@@ -165,6 +175,7 @@ class Common:
 
     @staticmethod
     def resize_image(img_path, size):
+        resized = False
         try:
             temp_path = Common.get_reg(Common.REG_KEY)
             if temp_path:
@@ -191,6 +202,7 @@ class Common:
                     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
                     img_path = temp_folder + Common.get_file_name_from_path(img_path)
                     cv2.imwrite(img_path, img)
+                    resized = True
 
                 rate = 1
                 if width > height:
@@ -203,19 +215,40 @@ class Common:
                     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
                     img_path = temp_folder + Common.get_file_name_from_path(img_path)
                     cv2.imwrite(img_path, img)
+                    # resized = True
+        except IOError as e:
+            print("resize image error:", e)
+        return img_path, resized
+
+    @staticmethod
+    def reformat_image(img_path):
+        try:
+            temp_path = Common.get_reg(Common.REG_KEY)
+            if temp_path:
+                temp_path = temp_path + "/" + Common.TEMP_PATH
+            else:
+                temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH
+            Common.create_path(temp_path)
+            temp_folder = temp_path + "/reformat-temp/"
+            Common.create_path(temp_folder)
+            heif_file = pillow_heif.open_heif(img_path, convert_hdr_to_8bit=False, bgr_mode=True)
+            np_array = np.asarray(heif_file)
+            fname = Common.get_file_name_without_extension_from_path(img_path)
+            img_path = temp_folder + fname + ".png"
+            cv2.imwrite(img_path, np_array)
         except IOError as e:
             print("resize image error:", e)
         return img_path
 
     @staticmethod
-    def remove_temp_folder_for_resize_image():
+    def remove_temp_folder(folder_name):
         temp_path = Common.get_reg(Common.REG_KEY)
         if temp_path:
             temp_path = temp_path + "/" + Common.TEMP_PATH
         else:
             temp_path = Common.STORAGE_PATH + "/" + Common.TEMP_PATH
         Common.create_path(temp_path)
-        temp_folder = temp_path + "/resize-temp"
+        temp_folder = temp_path + "/" + folder_name
         Common.create_path(temp_folder)
         shutil.rmtree(temp_folder, ignore_errors=True)
 
@@ -383,20 +416,59 @@ class Common:
                 appendix+=1
             return (is_exist, name)
     @staticmethod
-    def convert_json_for_page(json_data):
-        faces = json_data['faces']
+    def convert_json_for_page(probing_result):
+
+        faces = probing_result.json_result['faces']
         faces_buff = []
+        ret_buff = ""
         if len(faces):
+            face_index = 0
+            ret_buff = "Subject photo metadata: \n"
+            ret_buff += Common.convert_metadata2json(str(probing_result.json_result['time_used']),
+                                                     probing_result.case_info.subject_image_metadata,
+                                                     "",
+                                                     probing_result.case_info.subject_image_processing_detail)
             for face in faces:
-                json_buff = {'subject_face_rectangle': face['face_rectangle'], 'subject_headpose': {}}
+                ret_buff += "\nTarget photo " + str(face_index + 1) + " metadata:\n"
                 roll = face['face_angle']
                 roll_buff = re.sub('Roll: ', '', roll)
                 roll_buff = re.sub(' degree', '', roll_buff)
-                json_buff['subject_headpose'] = {"roll_angle": float(roll_buff)}
-                faces_buff.append(json_buff)
+                ret_buff += Common.convert_metadata2json(str(probing_result.json_result['time_used']),
+                                                        probing_result.case_info.target_images_metadata[face_index],
+                                                        roll_buff,
+                                                        probing_result.case_info.target_images_processing_details[
+                                                            face_index])                
+                face_index += 1
 
-        js_result = json.dumps(faces_buff, indent=4, sort_keys=True)
-        print(js_result)
+        # js_result = json.dumps(ret_buff, indent=4, sort_keys=True)
+        print(ret_buff)
+        return ret_buff
+
+    @staticmethod
+    def convert_metadata2json(used_time, metadata, roll_data, processing):
+        json_buff = {
+            "Date and time: ": used_time,
+            "Source information": "",
+            "Location": {
+                "longitude": metadata.longitude,
+                "latitude": metadata.latitude,
+                "street": metadata.street
+            },
+            "Image quality and resolution": {
+                "quality": "",
+                "XResolution": metadata.XResolution,
+                "YResolution": metadata.YResolution,
+                "format": metadata.type,
+                "width": metadata.width,
+                "height": metadata.height,
+                "roll_angle": roll_data
+            },
+            "Processing detail": {
+                "reformatted": processing.reformatted,
+                "resized": processing.resized
+            }
+        }
+        js_result = json.dumps(json_buff, indent=4, sort_keys=True)
         return js_result
 
     @staticmethod

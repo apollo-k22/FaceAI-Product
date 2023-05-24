@@ -250,7 +250,7 @@ def create_pdf(probe_id, probe_result, file_location):
             "examname": probe_result.case_info.examiner_name,
             "examnum": probe_result.case_info.examiner_no,
             "remarks": probe_result.case_info.remarks,
-            "json": Common.convert_json_for_page(probe_result.json_result)
+            "json": Common.convert_json_for_page(probe_result)
         }
 
         reportinfo["targets"] = []
