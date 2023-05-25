@@ -426,7 +426,7 @@ class Common:
             ret_buff = "Subject photo metadata: \n"
             ret_buff += Common.convert_metadata2json(str(probing_result.json_result['time_used']),
                                                      probing_result.case_info.subject_image_metadata,
-                                                     "",
+                                                     None,
                                                      probing_result.case_info.subject_image_processing_detail)
             for face in faces:
                 ret_buff += "\nTarget photo " + str(face_index + 1) + " metadata:\n"
@@ -447,8 +447,10 @@ class Common:
     @staticmethod
     def convert_metadata2json(used_time, metadata, roll_data, processing):
         json_buff = {
-            "Date and time: ": used_time,
-            "Source information": "",
+            "Date and time: ": metadata.processed_time,
+            "Source information": {
+                "device": metadata.device
+            },
             "Location": {
                 "longitude": metadata.longitude,
                 "latitude": metadata.latitude,
@@ -458,16 +460,19 @@ class Common:
                 "quality": "",
                 "XResolution": metadata.XResolution,
                 "YResolution": metadata.YResolution,
-                "format": metadata.type,
                 "width": metadata.width,
                 "height": metadata.height,
-                "roll_angle": roll_data
+                "file size": metadata.fsize,
+                "file type": metadata.type
+                # "roll_angle": roll_data
             },
             "Processing detail": {
                 "reformatted": processing.reformatted,
                 "resized": processing.resized
             }
         }
+        if roll_data is not None:
+            json_buff.get("Image quality and resolution")["roll_angle"] = roll_data
         js_result = json.dumps(json_buff, indent=4, sort_keys=True)
         return js_result
 

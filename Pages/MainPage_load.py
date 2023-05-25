@@ -223,6 +223,7 @@ class StartMain(QMainWindow):
         self.init_child_widgets()
         if expire_date:
             self.init_status_bar("The license will be expired by " + expire_date + ".")
+            self.systimer_thread.setexpire(expire_date)
         self.ui_0_license.hide()
         self.ui_2_create_new_case.hide()
         self.ui_3_select_target_photo.hide()
@@ -231,7 +232,6 @@ class StartMain(QMainWindow):
         self.ui_5_probe_report_preview.hide()
         self.ui_1_home.showMaximized()
         self.ui_1_home.setFocus()
-        self.systimer_thread.setexpire(expire_date)
         # if len(expire_date) > 0:
         #     self.init_status_bar("The license will be expired by "
         #                                 + expire_date)
