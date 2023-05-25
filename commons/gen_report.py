@@ -82,6 +82,7 @@ class GenReport:
         textsize = 12
         leading = 14
         spacing = 6
+        nb_spacing = 12
         # elements.append(Paragraph('''<para align=center leading=18 fontName='Arial'><font size=12 color=0xff0000><b>''' + 'Probe result: ' + reportinfo["result"] + '''</b></font></para>'''))
         elements.append(Paragraph('Probe result: ' + reportinfo["result"],
                                   ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER,
@@ -145,6 +146,7 @@ class GenReport:
                 nested[index % 2] = [
                     img,
                     draw,
+                    Paragraph('Serial Number: %d'%(index + 1), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                     Paragraph('Similarity score: %.2f%% (%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                     Paragraph('Old Case Number: %s'%target['caseno'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                     Paragraph('PS: %s'%target['ps'], ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
@@ -154,6 +156,7 @@ class GenReport:
                 nested[index % 2] = [
                     img,
                     draw,
+                    Paragraph('Serial Number: %d'%(index + 1), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)),
                     Paragraph('Similarity score: %.2f%% (%s)'%(target['sim'], FaceAI.get_similarity_str([], target['sim'], "", 100)), ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading))
                 ]
             if ((targets_len % 2 != 0) & (index == targets_len - 1)):
@@ -171,11 +174,8 @@ class GenReport:
                     style=tablestyle2)
             elements.append(table)
 
-        elements.append(Paragraph('JSON results',
-                                  ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER,
-                                                 textColor=black, leading=20, spaceBefore=spacing * 2,
-                                                 spaceAfter=spacing)))
-
+        elements.append(Paragraph('Metadata', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
+        
         jsondata = json.dumps(reportinfo["json"], indent=4)
         json_parse = jsondata.split('\\n')
         for jdata in json_parse:
@@ -186,6 +186,12 @@ class GenReport:
                 elements.append(Paragraph("&nbsp;&nbsp;" * tab_cnt + jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
             else:
                 elements.append(Paragraph(jdata_, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading)))
+
+        elements.append(Paragraph('NB', ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_CENTER, textColor=black, leading=20, spaceBefore=spacing*2, spaceAfter=spacing)))        
+        elements.append(Paragraph(Common.PDF_NB_PARA1, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceAfter=nb_spacing)))
+        elements.append(Paragraph(Common.PDF_NB_PARA2, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceAfter=nb_spacing)))
+        elements.append(Paragraph(Common.PDF_NB_PARA3, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceAfter=nb_spacing)))
+        elements.append(Paragraph(Common.PDF_NB_PARA4, ParagraphStyle(name="style", fontName="Arial", fontSize=textsize, alignment=TA_LEFT, textColor=black, leading=leading, spaceAfter=nb_spacing)))
 
         doc.build(elements, onFirstPage=self._header_footer, onLaterPages=self._header_footer,
                   canvasmaker=NumberedCanvas)
@@ -258,7 +264,7 @@ def create_pdf(probe_id, probe_result, file_location):
             "examname": probe_result.case_info.examiner_name,
             "examnum": probe_result.case_info.examiner_no,
             "remarks": probe_result.case_info.remarks,
-            "json": Common.convert_json_for_page(probe_result.json_result)
+            "json": Common.convert_json_for_page(probe_result)
         }
 
         reportinfo["targets"] = []

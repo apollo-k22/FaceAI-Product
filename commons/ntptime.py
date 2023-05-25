@@ -7,7 +7,7 @@ import pytz
 
 # for key, val in pytz.country_timezones.items():
 #     print(key, '=', val, end=',')
-system_time_delta = timedelta(hours=1)
+system_time_delta = timedelta(hours=1) # you can update the timezone on here by updating number 1 to 2
 sys_tz_obj = timezone(system_time_delta, name="SYSTIME")
 
 

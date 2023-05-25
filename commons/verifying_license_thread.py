@@ -1,10 +1,9 @@
 from PyQt5.QtCore import QThread, pyqtSignal
-
 from cryptophic.license import access_license_list
 
 
 class VerifyingLicenseThread(QThread):
-    finished_verifying_license_signal = pyqtSignal(bool, str)
+    finished_verifying_license_signal = pyqtSignal(int, str)
 
     def __init__(self, parent=None):
         super().__init__(parent)

@@ -1,7 +1,5 @@
 from commons.metadata_detail import MetadataDetail
 from commons.processing_detail import ProcessingDetail
-
-
 class CaseInfo(object):
 
     def __init__(self):
@@ -19,4 +17,3 @@ class CaseInfo(object):
         self.target_type = 1  # if 1, single photo, if 2, multi-photo, if 3, entire folder as target, if 4, old case subjects as target
         self.subject_image_processing_detail = ProcessingDetail()
         self.subject_image_metadata = MetadataDetail()
-

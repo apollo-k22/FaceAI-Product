@@ -107,6 +107,11 @@ class Common:
                                           "font-family: Arial; "
     RASTER_IMAGE_ACCEPTED_NOTICE = "JPEG, PNG, TIF, BMP and HEIC files are accepted."
 
+    PDF_NB_PARA1 = "The facial images were analyzed and compared using FaceAI, a facial recognition software incorporating advanced deep learning techniques, including convolutional neural networks (CNN). FaceAI utilizes CNN for facial feature extraction and facial landmark detection. This involves extracting high-level facial features such as the shape, texture, and spatial relationships of prominent facial components like the eyes, nose, and mouth."
+    PDF_NB_PARA2 = "FaceAI generates a unique facial representation for each image based on these extracted features. The comparison process involves measuring the similarity between the reference image and the target image using cosine similarity, which produces a similarity score ranging from 0 to 1. A confidence threshold of 0.80 (80%) is applied to consider potential matches."
+    PDF_NB_PARA3 = "The facial recognition report provided similarity scores represented in percentages. A similarity score of 80% or above indicates that the similarity scores are 0.80 or higher, which meets or exceeds the confidence threshold and is considered a match, as it indicates a high level of similarity between the facial images."
+    PDF_NB_PARA4 = "It is important to note that while FaceAI provides accurate results in most cases, there are inherent limitations to automated facial recognition technology. False positives or false negatives can occur, and the software may require further manual verification by a trained human examiner. FaceAI's results should be interpreted as an aid to investigative analysis, and final conclusions should be based on a combination of automated results and human assessment."
+
     @staticmethod
     def clear_layout(layout):
         while layout.count():
@@ -210,7 +215,7 @@ class Common:
                     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
                     img_path = temp_folder + Common.get_file_name_from_path(img_path)
                     cv2.imwrite(img_path, img)
-                    resized = True
+                    # resized = True
         except IOError as e:
             print("resize image error:", e)
         return img_path, resized
@@ -253,7 +258,8 @@ class Common:
         if targets_path:
             targets_path = Common.get_reg(Common.REG_KEY) + "/" + Common.MEDIA_PATH + "/targets"
         else:
-            targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/targets"
+            # targets_path = Common.STORAGE_PATH + "/" + Common.MEDIA_PATH + "/targets"
+            return
 
         desktop = pathlib.Path(targets_path)
         for url in desktop.glob(r'**/*'):
