@@ -1,3 +1,7 @@
+import os
+import time
+from datetime import datetime
+
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 from geopy.geocoders import Nominatim
@@ -22,16 +26,34 @@ class GetImageMetadata:
         try:
             with Image.open(image) as img:
                 info = img._getexif()
-                for tag, value in info.items():
-                    decoded_tag = TAGS.get(tag, tag)
-                    if decoded_tag == 'GPSInfo':
-                        gps_data = {}
-                        for gps_tag in value:
-                            sub_decoded_tag = GPSTAGS.get(gps_tag, gps_tag)
-                            gps_data[sub_decoded_tag] = value[gps_tag]
-                        exif_data[decoded_tag] = gps_data
-                    else:
-                        exif_data[decoded_tag] = value
+                self.metadata_detail.width, self.metadata_detail.height = img.size
+                dpi_info = img.info.get("dpi")
+                if dpi_info is not None:
+                    if len(dpi_info) == 2:
+                        self.metadata_detail.XResolution = dpi_info[0]
+                        self.metadata_detail.YResolution = dpi_info[1]
+                mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime = os.stat(image)
+
+                created = datetime.strptime(time.ctime(ctime), "%a %b %d %H:%M:%S %Y")
+                self.metadata_detail.processed_time = created.strftime("%d/%m/%Y %I:%M %p")
+                self.metadata_detail.fsize = str(round(size / 1024, 2)) + "KB"
+                if info is not None:
+                    for tag, value in info.items():
+                        decoded_tag = TAGS.get(tag, tag)
+                        if decoded_tag == 'GPSInfo':
+                            gps_data = {}
+                            for gps_tag in value:
+                                sub_decoded_tag = GPSTAGS.get(gps_tag, gps_tag)
+                                gps_data[sub_decoded_tag] = value[gps_tag]
+                            exif_data[decoded_tag] = gps_data
+                        else:
+                            exif_data[decoded_tag] = value
+                info_for_device = img.getexif()
+                if info_for_device is not None:
+                    for tag, value in info_for_device.items():
+                        decoded_tag = TAGS.get(tag, tag)
+                        if decoded_tag == 'Model':
+                            self.metadata_detail.device = value
         except (IOError, AttributeError, KeyError, IndexError) as err:
             print("Error: ", err)
         return exif_data
@@ -41,13 +63,17 @@ class GetImageMetadata:
             print(f"{tag}: {value}")
             self.tags.append(tag)
             self.values.append(value)
-        if not exif_data.get("XResolution"):
-            self.metadata_detail.XResolution = exif_data.get("XResolution")
-        else:
-            self.metadata_detail.XResolution = ""
-        self.metadata_detail.YResolution = exif_data.get("YResolution")
-        self.metadata_detail.height = exif_data.get("ExifImageHeight")
-        self.metadata_detail.width = exif_data.get("ExifImageWidth")
+        # if exif_data.get("XResolution") is not None:
+        #     self.metadata_detail.XResolution = str(exif_data.get("XResolution"))
+        #
+        # if exif_data.get("YResolution") is not None:
+        #     self.metadata_detail.YResolution = str(exif_data.get("YResolution"))
+        #
+        # if exif_data.get("ExifImageHeight") is not None:
+        #     self.metadata_detail.height = exif_data.get("ExifImageHeight")[0]
+        #
+        # if exif_data.get("ExifImageWidth") is not None:
+        #     self.metadata_detail.width = exif_data.get("ExifImageWidth")[0]
 
     def dms_to_decimal(self, degrees, minutes, seconds, direction):
         """Converts GPS coordinates in degrees, minutes, and seconds format to decimal degrees."""
@@ -58,23 +84,27 @@ class GetImageMetadata:
 
     def get_location_address(self, exif_data):
         geolocator = Nominatim(user_agent="metadata/1.0")
-        if self.tags.count("dGPSInfo"):
-            lat_deg, lat_min, lat_sec = exif_data["dGPSInfo"]["GPSLatitude"]
-            lat_dir = exif_data["GPSInfo"]["GPSLatitudeRef"]
-            lon_deg, lon_min, lon_sec = exif_data["GPSInfo"]["GPSLongitude"]
-            lon_dir = exif_data["GPSInfo"]["GPSLongitudeRef"]
+        if self.tags.count("GPSInfo"):
+            if exif_data["GPSInfo"] is not None:
+                lat_deg, lat_min, lat_sec = exif_data["GPSInfo"]["GPSLatitude"]
+                lat_dir = exif_data["GPSInfo"]["GPSLatitudeRef"]
+                lon_deg, lon_min, lon_sec = exif_data["GPSInfo"]["GPSLongitude"]
+                lon_dir = exif_data["GPSInfo"]["GPSLongitudeRef"]
 
-            self.lat = self.dms_to_decimal(lat_deg, lat_min, lat_sec, lat_dir)
-            self.lon = self.dms_to_decimal(lon_deg, lon_min, lon_sec, lon_dir)
-
-            location = geolocator.reverse(f"{self.lat}, {self.lon}")
-            self.metadata_detail.longitude = self.lon
-            self.metadata_detail.latitude = self.lat
-            self.metadata_detail.street = location.address
-
-            print("Location Address: ", location.address)
+                self.lat = self.dms_to_decimal(lat_deg, lat_min, lat_sec, lat_dir)
+                self.lon = self.dms_to_decimal(lon_deg, lon_min, lon_sec, lon_dir)
+                self.metadata_detail.longitude = "%.5f" % self.lon
+                self.metadata_detail.latitude = "%.5f" % self.lat
+                try:
+                    location = geolocator.reverse(f"{self.lat}, {self.lon}")
+                    self.metadata_detail.street = location.address
+                    print("Location Address: ", location.address)
+                except Exception as ex:
+                    print(ex)
 
     def get_metadata(self, img_path):
+        self.tags.clear()
+        self.values.clear()
         exif_data = self.get_exif_data(img_path)
         self.metadata_detail.type = Common.get_file_extension_from_path(img_path)
         self.print_exif_data(exif_data)

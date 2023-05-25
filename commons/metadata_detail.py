@@ -1,6 +1,7 @@
 class MetadataDetail:
     def __init__(self):
         self.processed_time = ""
+        self.fsize = ""  # file size as kb
         self.device = ""
 
         self.longitude = ""
