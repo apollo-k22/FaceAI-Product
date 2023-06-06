@@ -65,17 +65,6 @@ class GetImageMetadata:
             print(f"{tag}: {value}")
             self.tags.append(tag)
             self.values.append(value)
-        # if exif_data.get("XResolution") is not None:
-        #     self.metadata_detail.XResolution = str(exif_data.get("XResolution"))
-        #
-        # if exif_data.get("YResolution") is not None:
-        #     self.metadata_detail.YResolution = str(exif_data.get("YResolution"))
-        #
-        # if exif_data.get("ExifImageHeight") is not None:
-        #     self.metadata_detail.height = exif_data.get("ExifImageHeight")[0]
-        #
-        # if exif_data.get("ExifImageWidth") is not None:
-        #     self.metadata_detail.width = exif_data.get("ExifImageWidth")[0]
 
     def dms_to_decimal(self, degrees, minutes, seconds, direction):
         """Converts GPS coordinates in degrees, minutes, and seconds format to decimal degrees."""

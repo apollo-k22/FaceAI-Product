@@ -40,6 +40,7 @@ class FaceAI(QObject):
     def init_json_data(self, data):
         data['time_used'] = {}
         data['thresholds'] = {}
+        data['subject_face'] = {}
         data['faces'] = []
         data['results'] = []
         data['image_id'] = "image id"
@@ -61,6 +62,24 @@ class FaceAI(QObject):
             conclu = 'Highest match'
 
         return conclu
+
+    def append_json_subject(self, data, x1, y1, x2, y2, angle, path):
+        _, token = generate_token()
+        facedata = {
+            'image_path': path,
+            'face_token': str(token),
+            'face_rectangle': {
+                'left': int(x1),
+                'top': int(y1),
+                'width': int(x2 - x1),
+                'height': int(y2 - y1),
+            },
+            'face_angle': "Roll: %d degree" % int(angle)
+        }
+
+        data['subject_face'] = facedata
+
+        return data
 
     def append_json_data(self, data, x1, y1, x2, y2, angle, sim, path):
         _, token = generate_token()
@@ -201,6 +220,7 @@ class FaceAI(QObject):
             pt1, pt2, pt3, pt4, pt5 = kpss1[idx]
             angles1[idx] = self.angle(self.slope(x1, y1, x2, y1), self.slope(pt1[0], pt1[1], pt2[0], pt2[1]))
 
+        jsondata = self.append_json_subject(jsondata, x1, y1, x2, y2, angles1[0], path1.__str__())
         feat1 = self.rec.get(image1, kpss1[0])
 
         for index, path2 in enumerate(paths2):

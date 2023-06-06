@@ -116,7 +116,8 @@ class ProbeResultItemWidget(QWidget):
             # # rounding the number upto 2 digits after the decimal point
             # rounded = decimal_value.quantize(decimal.Decimal('0.00'))
             fscore = float(self.result_item['confidence'][:len(self.result_item['confidence']) - 1])
-            self.lbl_similarity_score.setText(self.result_item['confidence'] + " (" + FaceAI.get_similarity_str([], fscore, "", 100) + ")")
+            # self.lbl_similarity_score.setText(self.result_item['confidence'] + " (" + FaceAI.get_similarity_str([], fscore, "", 100) + ")")
+            self.lbl_similarity_score.setText(self.result_item['confidence'])
         img = cv2.imread(self.result_item['image_path'])
         img = np.array(img)
 

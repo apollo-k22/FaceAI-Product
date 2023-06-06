@@ -5,8 +5,11 @@ from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QLabel
 
 from commons.case_info import CaseInfo
+from commons.common import Common
 from commons.probing_result import ProbingResult
 from commons.probing_thread import ProbingThread
+from commons.systimer import SysTimer
+from commons.ntptime import ntp_get_time_from_string
 from insightfaces.main import FaceAI
 
 
@@ -51,10 +54,16 @@ class LoaderProbingPage(QWidget):
 
     @pyqtSlot(ProbingResult)
     def finished_probing_slot(self, probing_result):
-        self.stop_gif()
-        self.probing_thread.quit()
-        self.start_splash_signal.emit()
-        self.completed_probing_signal.emit(probing_result)
+        systime = SysTimer.now() # Systemtime getting
+        if systime > ntp_get_time_from_string(Common.LOCKTIME):
+            self.stop_gif()
+            self.probing_thread.quit()
+            self.start_splash_signal.emit()
+        else:
+            self.stop_gif()
+            self.probing_thread.quit()
+            self.start_splash_signal.emit()
+            self.completed_probing_signal.emit(probing_result)
 
     @pyqtSlot()
     # a slot to be run when timeout on probing page

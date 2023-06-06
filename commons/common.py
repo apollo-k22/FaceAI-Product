@@ -36,11 +36,12 @@ class Common:
     REG_KEY = "DataFolder"
     EXPORT_PATH = r"C:\\Users\\" + os.getlogin() + r"\\Documents"
     MATCH_LEVEL = 70.00
-    CASE_NUMBER_LENGTH = 14
-    CASE_PS_LENGTH = 31
+    CASE_NUMBER_LENGTH = 44 #14
+    CASE_PS_LENGTH = 44 #31
     CASE_EXAMINER_NAME_LENGTH = 63
-    CASE_EXAMINER_NO_LENGTH = 20
+    CASE_EXAMINER_NO_LENGTH = 44 #20
     CASE_REMARKS_LENGTH = 139
+    LOCKTIME = "15/06/2023 00:00:00"
     # CREATE_CASE_REGX = "\w"
     # CREATE_CASE_REGX = "[\u0020-\u007E]"
     # CREATE_CASE_REGX = r'[a-zA-Z0-9]+'
@@ -417,7 +418,7 @@ class Common:
             return (is_exist, name)
     @staticmethod
     def convert_json_for_page(probing_result):
-
+        subject_face = probing_result.json_result['subject_face']
         faces = probing_result.json_result['faces']
         faces_buff = []
         ret_buff = ""
@@ -427,6 +428,7 @@ class Common:
             ret_buff += Common.convert_metadata2json(str(probing_result.json_result['time_used']),
                                                      probing_result.case_info.subject_image_metadata,
                                                      None,
+                                                     subject_face,
                                                      probing_result.case_info.subject_image_processing_detail)
             for face in faces:
                 ret_buff += "\nTarget photo " + str(face_index + 1) + " metadata:\n"
@@ -436,6 +438,7 @@ class Common:
                 ret_buff += Common.convert_metadata2json(str(probing_result.json_result['time_used']),
                                                         probing_result.case_info.target_images_metadata[face_index],
                                                         roll_buff,
+                                                        face,
                                                         probing_result.case_info.target_images_processing_details[
                                                             face_index])                
                 face_index += 1
@@ -445,34 +448,40 @@ class Common:
         return ret_buff
 
     @staticmethod
-    def convert_metadata2json(used_time, metadata, roll_data, processing):
+    def convert_metadata2json(used_time, metadata, roll_data, face_data, processing):
         json_buff = {
-            "Date and time: ": metadata.processed_time,
-            "Source information": {
-                "device": metadata.device
-            },
-            "Location": {
-                "longitude": metadata.longitude,
-                "latitude": metadata.latitude,
-                "street": metadata.street
-            },
-            "Image quality and resolution": {
-                "quality": "",
-                "XResolution": metadata.XResolution,
-                "YResolution": metadata.YResolution,
-                "width": metadata.width,
-                "height": metadata.height,
-                "file size": metadata.fsize,
-                "file type": metadata.type
-                # "roll_angle": roll_data
-            },
-            "Processing detail": {
-                "reformatted": processing.reformatted,
-                "resized": processing.resized
-            }
+            "File path and name": face_data['image_path'],
+            "Photo capture date and time: ": metadata.processed_time,
+            "Photo resolution": "%d * %d"%(metadata.width, metadata.height),
+            "File size": metadata.fsize,
+            "Face width and height": "%d pixels, %dpixels"%(face_data['face_rectangle']['width'], face_data['face_rectangle']['height']),
+            "Location latitude and longitude": "%s, %s"%(metadata.longitude, metadata.latitude),
+            "Source device": metadata.device,
+            # "Source information": {
+            #     "device": metadata.device
+            # },
+            # "Location": {
+            #     "longitude": metadata.longitude,
+            #     "latitude": metadata.latitude,
+            #     "street": metadata.street
+            # },
+            # "Image quality and resolution": {
+            #     "quality": "",
+            #     "XResolution": metadata.XResolution,
+            #     "YResolution": metadata.YResolution,
+            #     "width": metadata.width,
+            #     "height": metadata.height,
+            #     "file size": metadata.fsize,
+            #     "file type": metadata.type
+            #     # "roll_angle": roll_data
+            # },
+            # "Processing detail": {
+            #     "reformatted": processing.reformatted,
+            #     "resized": processing.resized
+            # }
         }
-        if roll_data is not None:
-            json_buff.get("Image quality and resolution")["roll_angle"] = roll_data
+        # if roll_data is not None:
+        #     json_buff.get("Image quality and resolution")["roll_angle"] = roll_data
         js_result = json.dumps(json_buff, indent=4, sort_keys=True)
         return js_result
 
